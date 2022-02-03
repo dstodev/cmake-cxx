@@ -1,0 +1,62 @@
+# 2021 Daniel Stotts
+# ~Version 47
+
+---
+BasedOnStyle: LLVM
+ColumnLimit: 120
+IndentWidth: 4  # Width is 4 to consume less of the ColumnLimit
+TabWidth: 4  # Should be the same value as IndentWidth
+AccessModifierOffset: -4  # Do not indent access specifiers, e.g. `public`
+UseTab: ForIndentation  # Tabs are used to facilitate personal tab width preferences
+Language: Cpp
+Standard: Latest
+
+# Brace wrapping
+BraceWrapping:
+  AfterClass: true
+  AfterEnum: true
+  AfterExternBlock: false
+  AfterFunction: true
+  AfterNamespace: false
+  AfterStruct: true
+  AfterUnion: true
+  BeforeElse: true
+  SplitEmptyFunction: false
+  SplitEmptyNamespace: false
+  SplitEmptyRecord: false
+BreakBeforeBraces: Custom
+
+# Align all the things!
+AlignAfterOpenBracket: Align
+AlignConsecutiveMacros: Consecutive
+AlignEscapedNewlines: DontAlign
+AlignOperands: AlignAfterOperator
+
+# Penalties
+PenaltyBreakAssignment: 500
+
+# Other
+AllowAllArgumentsOnNextLine: false
+AllowAllConstructorInitializersOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: Empty
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: false
+AlwaysBreakTemplateDeclarations: Yes
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBinaryOperators: NonAssignment
+BreakConstructorInitializers: BeforeComma
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+IncludeBlocks: Preserve
+IndentPPDirectives: None
+MaxEmptyLinesToKeep: 2
+PointerAlignment: Left
+ReflowComments: true
+SortIncludes: true  # CaseSensitive
+SortUsingDeclarations: true
+SpaceAfterCStyleCast: true
+SpaceBeforeCpp11BracedList: true
+SpacesBeforeTrailingComments: 2
+...
