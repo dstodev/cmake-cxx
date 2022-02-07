@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.14)
 project(Properties)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
+
 # Using approach from:
 # https://docs.conan.io/en/latest/integrations/build_system/cmake/cmake_find_package_generator.html#in-a-conanfile-txt
 include(${PROJECT_BINARY_DIR}/conan_paths.cmake)
