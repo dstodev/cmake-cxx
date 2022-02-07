@@ -25,6 +25,8 @@ Run `script/run_docker_tests.sh`
 
 # VS Code integration
 
+Open the project as a workspace using `project.code-workspace`.
+
 Installing the extensions identified in `./vscode/extensions.json` will include, among other helpful
 tools, the `ms-vscode.cmake-tools` extension. CMake Tools integrates CMake into VS Code to provide
 code intellisense and other helpful build utilities.
