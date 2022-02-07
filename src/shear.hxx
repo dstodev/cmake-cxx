@@ -3,6 +3,12 @@
 
 #include <Eigen/Dense>
 
-void shear(Eigen::Vector2d& v, float x_magnitude, float y_magnitude);
+namespace my {
+
+typedef Eigen::Vector2f point_t;
+
+void shear(point_t& point, float x_magnitude, float y_magnitude);
+
+}  // namespace my
 
 #endif

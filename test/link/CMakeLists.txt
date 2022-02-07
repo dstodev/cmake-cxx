@@ -1,12 +1,12 @@
+find_package(AddGoogleExecutable REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(HelpGTestLibrary REQUIRED)
 
-help_gtest_library(links_gtest
+add_google_executable(link_gtest TEST
 	SOURCES
 		link_gtest.cxx
 )
 
-help_gtest_library(links_eigen
+add_google_executable(link_eigen TEST
 	SOURCES
 		link_eigen.cxx
 

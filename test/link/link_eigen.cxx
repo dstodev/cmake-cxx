@@ -1,8 +1,7 @@
-#include <gtest/gtest.h>
 #include <Eigen/Dense>
+#include <gtest/gtest.h>
 
-using namespace Eigen;
-
-TEST(Links, eigen) {
-	Matrix2d m;
+TEST(Links, eigen)
+{
+	Eigen::Matrix2d m;
 }

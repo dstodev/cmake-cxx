@@ -1,14 +1,28 @@
 include(GoogleTest)
 
 find_package(HelpParseArguments REQUIRED)
-find_package(GTest REQUIRED)
 
-function(help_gtest_library target)
+
+function(add_google_executable target)
 	help_parse_arguments(args
-		""
+		"TEST;BENCHMARK"
 		""
 		"SOURCES;LIBRARIES"
 	)
+
+	if (args_TEST)
+		find_package(GTest REQUIRED)
+		list(APPEND google_links "GTest::gtest_main")
+	endif()
+
+	if (args_BENCHMARK)
+		find_package(benchmark REQUIRED)
+		list(APPEND google_links "benchmark::benchmark")
+	endif()
+
+	if (NOT google_links OR (args_TEST AND args_BENCHMARK))
+		message(FATAL_ERROR "Exactly one option must be provided: TEST or BENCHMARK")
+	endif()
 
 	add_executable(${target}
 		${args_SOURCES}
@@ -16,7 +30,7 @@ function(help_gtest_library target)
 	target_link_libraries(${target}
 		PRIVATE
 			${args_LIBRARIES}
-			GTest::gtest_main
+			${google_links}
 	)
 	target_compile_features(${target}
 		PRIVATE
@@ -30,5 +44,7 @@ function(help_gtest_library target)
 			                          # https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html
 	)
 
-	gtest_discover_tests(${target})
+	if (args_TEST)
+		gtest_discover_tests(${target})
+	endif()
 endfunction()
