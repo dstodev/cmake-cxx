@@ -6,6 +6,11 @@ add_google_executable(link_gtest TEST
 		link_gtest.cxx
 )
 
+add_google_executable(link_benchmark TEST BENCHMARK
+	SOURCES
+		link_benchmark.cxx
+)
+
 add_google_executable(link_eigen TEST
 	SOURCES
 		link_eigen.cxx

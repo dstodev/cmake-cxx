@@ -2,7 +2,6 @@ include(GoogleTest)
 
 find_package(HelpParseArguments REQUIRED)
 
-
 function(add_google_executable target)
 	help_parse_arguments(args
 		"TEST;BENCHMARK"
@@ -20,8 +19,8 @@ function(add_google_executable target)
 		list(APPEND google_links "benchmark::benchmark")
 	endif()
 
-	if (NOT google_links OR (args_TEST AND args_BENCHMARK))
-		message(FATAL_ERROR "Exactly one option must be provided: TEST or BENCHMARK")
+	if (NOT google_links)
+		message(FATAL_ERROR "At least one option must be provided: TEST or BENCHMARK")
 	endif()
 
 	add_executable(${target}

@@ -11,6 +11,4 @@ static void run_shear(benchmark::State& state, float x, float y, float x_mag, fl
 	}
 }
 
-BENCHMARK_CAPTURE(run_shear, "1234", 1.0f, 2.0f, 3.0f, 4.0f);
-
-BENCHMARK_MAIN();
+BENCHMARK_CAPTURE(run_shear, 1234, 1.0f, 2.0f, 3.0f, 4.0f);
