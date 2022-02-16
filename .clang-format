@@ -1,5 +1,5 @@
-# 2021 Daniel Stotts
-# ~Version 47
+# 2022 Daniel Stotts
+# ~Version 48
 
 ---
 BasedOnStyle: LLVM
@@ -11,7 +11,7 @@ UseTab: ForIndentation  # Tabs are used to facilitate personal tab width prefere
 Language: Cpp
 Standard: Latest
 
-# Brace wrapping
+# Braces
 BraceWrapping:
   AfterClass: true
   AfterEnum: true
@@ -40,7 +40,7 @@ AllowAllArgumentsOnNextLine: false
 AllowAllConstructorInitializersOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortCaseLabelsOnASingleLine: true
-AllowShortFunctionsOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: None
 AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: Yes

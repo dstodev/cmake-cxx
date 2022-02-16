@@ -2,6 +2,7 @@
 
 #include <benchmark/benchmark.h>
 
-TEST(Links, benchmark) {
+TEST(Links, benchmark)
+{
 	benchmark::TimeUnit t;
 }

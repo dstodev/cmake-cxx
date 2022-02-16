@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
-TEST(Links, gtest) {
+TEST(Links, gtest)
+{
 	ASSERT_TRUE(true);
 }
