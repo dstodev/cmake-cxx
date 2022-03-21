@@ -9,7 +9,8 @@ include(${PROJECT_BINARY_DIR}/conan_paths.cmake)
 
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/lib/cmake")
 
-enable_testing()
+include(CPack)
+include(CTest)
 
 add_subdirectory(src)
 add_subdirectory(test)

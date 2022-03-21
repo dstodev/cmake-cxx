@@ -1,7 +1,19 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
+    <Objective-C-extensions>
+      <extensions>
+        <pair source="cxx" header="hxx" fileNamingConvention="SNAKE_CASE" />
+        <pair source="c" header="h" fileNamingConvention="NONE" />
+        <pair source="cu" header="cuh" fileNamingConvention="NONE" />
+      </extensions>
+    </Objective-C-extensions>
     <clangFormatSettings>
       <option name="ENABLED" value="true" />
     </clangFormatSettings>
+    <codeStyleSettings language="CMake">
+      <indentOptions>
+        <option name="CONTINUATION_INDENT_SIZE" value="4" />
+      </indentOptions>
+    </codeStyleSettings>
   </code_scheme>
 </component>
