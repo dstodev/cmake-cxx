@@ -31,8 +31,3 @@ install(EXPORT ${target_name}
 	DESTINATION cmake
 	NAMESPACE shear::
 )
-
-# Include Eigen headers in the package
-install(DIRECTORY "$<TARGET_PROPERTY:Eigen3::Eigen,INTERFACE_INCLUDE_DIRECTORIES>/Eigen"
-	DESTINATION include
-)
