@@ -9,7 +9,7 @@ else
 	build_dir="$1"
 fi
 
-conan install "$source_dir" --install-folder "$build_dir" --build missing
+conan install "$source_dir" --install-folder="$build_dir" --build=missing
 r=$?
 
 if [ $r -ne 0 ]; then

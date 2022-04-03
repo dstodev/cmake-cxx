@@ -1,6 +1,6 @@
 include(GoogleTest)
 
-find_package(HelpParseArguments REQUIRED)
+find_package(HelpParseArguments CONFIG REQUIRED)
 
 function(add_google_executable target)
 	help_parse_arguments(args

@@ -1,4 +1,4 @@
-find_package(AddGoogleExecutable REQUIRED)
+find_package(AddGoogleExecutable CONFIG REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 add_google_executable(link_gtest TEST
