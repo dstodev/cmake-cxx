@@ -7,3 +7,7 @@ add_google_executable(benchmark_shear BENCHMARK
 	LIBRARIES
 		shear
 )
+
+add_custom_target(all_benchmarks
+	benchmark_shear
+)

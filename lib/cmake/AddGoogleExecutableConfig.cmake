@@ -36,12 +36,6 @@ function(add_google_executable target)
 			cxx_std_11  # GoogleTest requires at least C++11 after version 1.8.1
 			            # https://github.com/google/googletest/releases/tag/release-1.8.1
 	)
-	target_compile_definitions(${target}
-		PRIVATE
-			_GLIBCXX_USE_CXX11_ABI=0  # For compatibility with default Conan settings; see:
-			                          # https://docs.conan.io/en/latest/howtos/manage_gcc_abi.html
-			                          # https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html
-	)
 
 	if (args_TEST)
 		gtest_discover_tests(${target})
