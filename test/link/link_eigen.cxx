@@ -5,4 +5,5 @@
 TEST(Links, eigen)
 {
 	Eigen::Matrix2d m;
+	(void) m;
 }

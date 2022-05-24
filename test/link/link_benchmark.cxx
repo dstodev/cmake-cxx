@@ -5,4 +5,5 @@
 TEST(Links, benchmark)
 {
 	benchmark::TimeUnit t;
+	(void) t;
 }
