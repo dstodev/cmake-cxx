@@ -9,5 +9,5 @@ else
 	build_dir="$1"
 fi
 
-cmake -B "$build_dir" -S "$source_dir" -DCMAKE_BUILD_TYPE=Release
+cmake -B "$build_dir" -S "$source_dir"
 cmake --build "$build_dir" --target all test all_benchmarks
