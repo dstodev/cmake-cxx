@@ -1,14 +1,20 @@
 cmake_minimum_required(VERSION 3.16)
 project(EigenSample)
 
-if (NOT CMAKE_BUILD_TYPE)
+if (NOT CACHE{CMAKE_BUILD_TYPE})  # CACHE{<name>} syntax since 3.14: https://cmake.org/cmake/help/latest/command/if.html#existence-checks
 	#[[
 		If the build is invoked from the command line e.g.:
 			cmake -B build_dir -S source_dir
-		and CMAKE_BUILD_TYPE is left unspecified, then it will be set in
-		the CMake cache as an empty string.
+		and CMAKE_BUILD_TYPE is left unprovided, then it will still already
+		be set in the CMake cache as an empty string as default.
 		So we use FORCE here to overwrite it to a better default.
 		(and Conan requires that it is NOT an empty string!)
+
+		The default-when-unspecified value for CMAKE_BUILD_TYPE is "", a falsy
+		value (https://developer.mozilla.org/en-US/docs/Glossary/Falsy),
+		so we use NOT.
+		The condition must be only "NOT" instead of "NOT DEFINED", because it
+		*will* already be defined in the cache.
 	]]
 	set(CMAKE_BUILD_TYPE Release CACHE STRING "Build mode (Debug, Release, ...)" FORCE)
 endif()
