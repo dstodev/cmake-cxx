@@ -12,6 +12,6 @@ docker build --file="%docker_dir%\ubuntu2004.dockerfile" "%docker_dir%" --tag="%
 mkdir "%build_dir%"
 docker run --mount "type=bind,readonly,src=%source_dir%,dst=/project"^
            --mount "type=bind,src=%build_dir%,dst=/build"^
-           "%image_name%" sh /project/script/run_tests.sh /build
+           "%image_name%" sh /project/script/run-tests.sh /build
 
 :: TODO: Abstract with e.g. Python instead of these scripts?

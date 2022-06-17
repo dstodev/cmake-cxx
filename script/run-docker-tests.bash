@@ -13,4 +13,4 @@ mounts=('--mount' "type=bind,readonly,src=$source_dir,dst=/project"
         '--mount' "type=bind,src=$build_dir,dst=/build")
 
 mkdir -p "$build_dir"
-docker run "${mounts[@]}" "$image_name" sh /project/script/run_tests.sh /build
+docker run "${mounts[@]}" "$image_name" sh /project/script/run-tests.sh /build
