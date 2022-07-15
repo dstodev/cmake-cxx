@@ -1,5 +1,5 @@
 # 2022 Daniel Stotts
-# ~Version 48
+# Version ~49
 
 ---
 BasedOnStyle: LLVM
@@ -54,7 +54,7 @@ IndentPPDirectives: None
 MaxEmptyLinesToKeep: 2
 PointerAlignment: Left
 ReflowComments: true
-SortIncludes: true  # CaseSensitive
+SortIncludes: CaseSensitive
 SortUsingDeclarations: true
 SpaceAfterCStyleCast: true
 SpaceBeforeCpp11BracedList: true
