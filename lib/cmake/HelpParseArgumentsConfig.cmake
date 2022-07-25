@@ -37,7 +37,7 @@
 			foreach (val IN LISTS args_OTHER_VALUES)
 				message("Other value: ${val}")
 			endforeach ()
-		endif ()
+		endif()
 	endfunction()
 
 	my_function(some_target PRINT_VALUES VALUE1 a b VALUE2 "c;d" OTHER_VALUES e f g)
