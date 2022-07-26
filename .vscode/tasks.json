@@ -2,24 +2,20 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "Fetch C++ dependencies",
-			"type": "shell",
-			"command": "${workspaceFolder}/script/fetch_dependencies.sh",
-			"group": "build",
-			"detail": "Conan from conanfile.txt"
-		},
-		{
 			"label": "Run tests",
 			"detail": "Native",
 			"type": "shell",
-			"command": "${workspaceFolder}/script/run_tests.sh",
+			"command": "${workspaceFolder}/script/run-tests.sh",
 			"group": "test"
 		},
 		{
 			"label": "Run tests",
 			"detail": "Docker (Ubuntu2004)",
 			"type": "shell",
-			"command": "${workspaceFolder}/script/run_docker_tests.sh",
+			"command": "${workspaceFolder}/script/run-docker-tests.sh",
+			"windows": {
+				"command": "${workspaceFolder}/script/run-docker-tests.bat"
+			},
 			"group": "test"
 		}
 	]
