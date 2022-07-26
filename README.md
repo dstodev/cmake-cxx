@@ -38,3 +38,7 @@ Notes:
 - Make sure that the CMake Tools extension is configured to match the CMAKE_BUILD_TYPE.
 - There are currently intellisense bugs on MacOS due to CMake Tools. One such issue is being tracked
   [here](https://github.com/microsoft/vscode-cmake-tools/issues/1178).
+- On Windows make sure that you use the Ninja generator if you are able.  
+  On other platforms make sure that you use a Makefile generator.  
+  This is to [generate `build/vscode/compile_commands.json`](https://cmake.org/cmake/help/latest/variable/CMAKE_EXPORT_COMPILE_COMMANDS.html)
+  for automatic intellisense.  

@@ -20,6 +20,7 @@
 		// For intellisense to work, this path must be the same prefix
 		// to the compile_commands path in .vscode/c_cpp_properties.json
 		"cmake.buildDirectory": "${workspaceFolder}/build/vscode",
+		"cmake.preferredGenerators": [ "Ninja" ],
 
 		/* ~~~~~~~~~~~~~~~~~~~~~
 		     Other Settings
