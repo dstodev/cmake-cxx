@@ -21,10 +21,10 @@ The following scripts have been tested on MacOS Monterey and Windows 10.
 
 - through Docker
   - on Mac/Linux  
-    Run `script/run-docker-tests.sh`
+    Run `script/run-docker-tests.bash`
 
   - on Windows  
-    Run `script/run-docker-tests.bat`  
+    Run `script/run-docker-tests.bat`
 
 # Visual Studio Code integration
 
