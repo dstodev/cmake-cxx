@@ -3,7 +3,7 @@
 script_dir="$(cd "$(dirname "$0")" && pwd -P)"
 source_dir="$script_dir/.."
 docker_dir="$source_dir/docker"
-build_dir="$source_dir/build"
+build_dir="$source_dir/build/run-docker-tests-bash"
 
 image_name='build:ubuntu2004'
 

@@ -3,7 +3,7 @@
 set script_dir=%~dp0
 set source_dir=%script_dir%..
 set docker_dir=%source_dir%\docker
-set build_dir=%source_dir%\build
+set build_dir=%source_dir%\build\run-docker-tests-bat
 
 set image_name=build:ubuntu2004
 
