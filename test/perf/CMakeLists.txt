@@ -1,13 +1,12 @@
 find_package(AddGoogleExecutable CONFIG REQUIRED)
+find_package(AddLocalAllTarget CONFIG REQUIRED)
 
 add_google_executable(benchmark_shear BENCHMARK
 	SOURCES
 		perf-shear.cxx
 
 	LIBRARIES
-		shear
+		project
 )
 
-add_custom_target(all_benchmarks
-	benchmark_shear
-)
+add_local_all_target(all_perf)

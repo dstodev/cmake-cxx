@@ -41,4 +41,4 @@ Notes:
 - On Windows make sure that you use the Ninja generator if you are able.  
   On other platforms make sure that you use a Makefile generator.  
   This is to [generate `build/vscode/compile_commands.json`](https://cmake.org/cmake/help/latest/variable/CMAKE_EXPORT_COMPILE_COMMANDS.html)
-  for automatic intellisense.  
+  for automatic intellisense.

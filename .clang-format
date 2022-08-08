@@ -34,13 +34,14 @@ AlignOperands: AlignAfterOperator
 
 # Penalties
 PenaltyBreakAssignment: 500
+PenaltyReturnTypeOnItsOwnLine: 500
 
 # Other
 AllowAllArgumentsOnNextLine: false
 AllowAllConstructorInitializersOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortCaseLabelsOnASingleLine: true
-AllowShortFunctionsOnASingleLine: None
+AllowShortFunctionsOnASingleLine: InlineOnly
 AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: Yes

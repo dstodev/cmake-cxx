@@ -1,15 +1,19 @@
-set(target_name "shear")
+set(target_name "project")
 
 set(header_files_to_package
 	shear.hxx
+	image.hxx
 )
 
-set(dll_export_macro SHEAR_API)
+set(dll_export_macro PROJECT_API)
 
 #[[
 	Configure the library
 ]]
 add_library(${target_name}
+	image-utilities.cxx
+	image-utilities.hxx
+	image.hxx
 	shear.cxx
 	shear.hxx
 )
@@ -18,7 +22,7 @@ set_target_properties(${target_name}
 		PUBLIC_HEADER "${header_files_to_package}"
 )
 target_include_directories(${target_name}
-	PUBLIC  # Could be INTERFACE if only using relative includes e.g. #include "shear.hxx"
+	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 		$<INSTALL_INTERFACE:include>
 )
@@ -35,7 +39,7 @@ target_link_libraries(${target_name}
 )
 
 #[[
-	The header this part describes will be generated to the current binary
+	The header this part describes is generated to the current binary
 	directory as ${CMAKE_CURRENT_BINARY_DIR}/${target_name}_export.h
 ]]
 include(GenerateExportHeader)
@@ -60,5 +64,5 @@ install(TARGETS ${target_name}
 )
 install(EXPORT ${target_name}
 	DESTINATION cmake
-	NAMESPACE shear::
+	NAMESPACE eigen-sample::
 )

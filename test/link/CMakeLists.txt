@@ -1,4 +1,6 @@
 find_package(AddGoogleExecutable CONFIG REQUIRED)
+find_package(AddLocalAllTarget CONFIG REQUIRED)
+
 find_package(Eigen3 REQUIRED)
 
 add_google_executable(link_gtest TEST
@@ -18,3 +20,5 @@ add_google_executable(link_eigen TEST
 	LIBRARIES
 		Eigen3::Eigen
 )
+
+add_local_all_target(all_links)

@@ -2,12 +2,14 @@
 
 #include <shear.hxx>
 
+using namespace project;
+
 static void run_shear(benchmark::State& state, float x, float y, float x_mag, float y_mag)
 {
-	my::point_t point {x, y};
+	point_t point {x, y};
 
 	for (auto _ : state) {
-		my::shear(point, x_mag, y_mag);
+		shear(point, x_mag, y_mag);
 	}
 }
 

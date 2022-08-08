@@ -1,15 +1,16 @@
-#ifndef SHEAR_H
-#define SHEAR_H
+#ifndef SHEAR_HXX
+#define SHEAR_HXX
 
 #include <Eigen/Dense>
-#include <shear_export.h>
 
-namespace my {
+#include <project_export.h>
+
+namespace project {
 
 typedef Eigen::Vector2f point_t;
 
-SHEAR_API void shear(point_t& point, float x_magnitude, float y_magnitude);
+PROJECT_API void shear(point_t& point, float x_magnitude, float y_magnitude);
 
-}  // namespace my
+}  // namespace project
 
-#endif
+#endif  // SHEAR_HXX
