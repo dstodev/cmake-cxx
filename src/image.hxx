@@ -1,6 +1,7 @@
 #ifndef IMAGE_HXX
 #define IMAGE_HXX
 
+#include <algorithm>
 #include <exception>
 #include <ostream>
 #include <vector>
@@ -19,14 +20,15 @@ std::ostream& operator<<(std::ostream& os, const Image<TPixel>& image);
 /**
  * @brief An Image is a rendered arrangement of Pixels.
  *
- * This class arranges pixels in a rectangular pattern.
- * Pixels are accessed by row, column:
+ * This class arranges pixels in a rectangle:
+ *    number-of-pixels = width (number of columns) * height (number of rows)
  *
- *              row column
- *     0 1   a: 0   0
- *   0 a b   b: 0   1
- *   1 c d   c: 1   0
- *           d: 1   1
+ * Pixels are accessed by row, column:
+ *                   row column
+ *      | 0 1    a: 0   0
+ *    --+----    b: 0   1
+ *    0 | a b    c: 1   0
+ *    1 | c d    d: 1   1
  *
  * @tparam TPixel
  */
@@ -34,9 +36,10 @@ template <typename TPixel>
 class Image
 {
 public:
-	using container_t = std::vector<TPixel>;
+	using value_type = TPixel;  // stl often names this specific member 'value_type'
+	using container_type = std::vector<value_type>;
 
-	explicit Image(dimension_t width = 0, dimension_t height = 0, container_t pixels = {});
+	explicit Image(dimension_type width = 0, dimension_type height = 0, container_type pixels = {});
 	virtual ~Image() = default;
 
 	Image(Image const& copy) = default;
@@ -45,28 +48,28 @@ public:
 	Image& operator=(Image const& copy) = default;
 	Image& operator=(Image&& move) noexcept = default;
 
-	auto width() const { return _width; }
-	void width(dimension_t width) { _width = width; }
+	auto width() const;
+	void width(dimension_type width);
 
-	auto height() const { return _height; }
-	void height(dimension_t height) { _height = height; }
+	auto height() const;
+	void height(dimension_type height);
 
-	auto pixels() const -> container_t const& { return _pixels; }
-	void pixels(container_t const& pixels) { _pixels = pixels; }
+	auto pixels() const -> container_type const&;
+	void pixels(container_type pixels);
 
-	auto pixel(dimension_t row, dimension_t column) const;
+	auto pixel(dimension_type row, dimension_type column) const;
 
-	// The '<>' after the operator name tells the compiler that this friend is a template
-	friend std::ostream& operator<< <>(std::ostream& os, Image<TPixel> const& image);
+	// The '<>' after the operator name indicates that this friend is a template prototype
+	friend std::ostream& operator<< <>(std::ostream& os, Image<value_type> const& image);
 
 private:
-	dimension_t _width;
-	dimension_t _height;
-	container_t _pixels;
+	dimension_type _width;
+	dimension_type _height;
+	container_type _pixels;
 };
 
 template <typename TPixel>
-Image<TPixel>::Image(dimension_t width, dimension_t height, container_t pixels)
+Image<TPixel>::Image(dimension_type width, dimension_type height, container_type pixels)
     : _width(width)
     , _height(height)
     , _pixels(pixels)
@@ -85,7 +88,43 @@ Image<TPixel>::Image(dimension_t width, dimension_t height, container_t pixels)
 }
 
 template <typename TPixel>
-auto Image<TPixel>::pixel(dimension_t row, dimension_t column) const
+auto Image<TPixel>::width() const
+{
+	return _width;
+}
+
+template <typename TPixel>
+void Image<TPixel>::width(dimension_type width)
+{
+	_width = width;
+}
+
+template <typename TPixel>
+auto Image<TPixel>::height() const
+{
+	return _height;
+}
+
+template <typename TPixel>
+void Image<TPixel>::height(dimension_type height)
+{
+	_height = height;
+}
+
+template <typename TPixel>
+auto Image<TPixel>::pixels() const -> container_type const&
+{
+	return _pixels;
+}
+
+template <typename TPixel>
+void Image<TPixel>::pixels(container_type pixels)
+{
+	std::swap(_pixels, pixels);
+}
+
+template <typename TPixel>
+auto Image<TPixel>::pixel(dimension_type row, dimension_type column) const
 {
 	if (row >= _height) {
 		throw std::domain_error("Row out of bounds");

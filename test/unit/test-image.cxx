@@ -9,9 +9,24 @@ using namespace project;
 
 TEST(Image, construct)
 {
-	Image<char> image(0, 0);
+	Image<char> image;
 	ASSERT_EQ(0, image.width());
 	ASSERT_EQ(0, image.height());
+}
+
+TEST(Image, construct_non_default)
+{
+	Image<char> image(0, 1);
+	ASSERT_EQ(0, image.width());
+	ASSERT_EQ(1, image.height());
+}
+
+TEST(Image, construct_copy)
+{
+	Image<char> image(0, 1);
+	Image<char> copy(image);  // NOLINT(performance-unnecessary-copy-initialization)
+	ASSERT_EQ(0, copy.width());
+	ASSERT_EQ(1, copy.height());
 }
 
 TEST(Image, setters)
@@ -24,7 +39,8 @@ TEST(Image, setters)
 
 	auto& pixels = image.pixels();
 	ASSERT_TRUE(pixels.empty());
-	image.pixels(decltype(image)::container_t {3, 4});
+
+	image.pixels(decltype(image)::container_type {3, 4});
 	ASSERT_EQ(3, pixels[0]);
 	ASSERT_EQ(4, pixels[1]);
 }

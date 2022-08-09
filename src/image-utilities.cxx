@@ -2,9 +2,9 @@
 
 namespace project {
 
-index_t pixel_index_2d_to_1d(dimension_t stride, index_t row, index_t column)
+index_type pixel_index_2d_to_1d(dimension_type width, index_type row, index_type column)
 {
-	return stride * row + column;
+	return row * width + column;
 }
 
 }  // namespace project
