@@ -24,7 +24,7 @@ std::ostream& operator<<(std::ostream& os, const Image<TPixel>& image);
  *    number-of-pixels = width (number of columns) * height (number of rows)
  *
  * Pixels are accessed by row, column:
- *                   row column
+ *                  row column
  *      | 0 1    a: 0   0
  *    --+----    b: 0   1
  *    0 | a b    c: 1   0
@@ -48,16 +48,25 @@ public:
 	Image& operator=(Image const& copy) = default;
 	Image& operator=(Image&& move) noexcept = default;
 
-	auto width() const;
+	auto width() const -> dimension_type;
 	void width(dimension_type width);
 
-	auto height() const;
+	auto height() const -> dimension_type;
 	void height(dimension_type height);
 
 	auto pixels() const -> container_type const&;
 	void pixels(container_type pixels);
 
-	auto pixel(dimension_type row, dimension_type column) const;
+	// TODO: Non-const getter
+	auto pixel(dimension_type row, dimension_type column) const -> value_type;
+
+	using iterator = typename container_type::iterator;
+	using const_iterator = typename container_type::const_iterator;
+
+	auto begin() -> iterator;
+	auto begin() const -> const_iterator;
+	auto end() -> iterator;
+	auto end() const -> const_iterator;
 
 	// The '<>' after the operator name indicates that this friend is a template prototype
 	friend std::ostream& operator<< <>(std::ostream& os, Image<value_type> const& image);
@@ -79,7 +88,7 @@ Image<TPixel>::Image(dimension_type width, dimension_type height, container_type
 
 	if (!pixels_match_size) {
 		if (pixels_provided) {
-			throw std::domain_error("Dimensions do not match length of provided pixels");
+			throw std::domain_error("Dimensions do not match number of provided pixels");
 		}
 		else {
 			_pixels.resize(_width * _height);
@@ -88,7 +97,7 @@ Image<TPixel>::Image(dimension_type width, dimension_type height, container_type
 }
 
 template <typename TPixel>
-auto Image<TPixel>::width() const
+auto Image<TPixel>::width() const -> dimension_type
 {
 	return _width;
 }
@@ -100,7 +109,7 @@ void Image<TPixel>::width(dimension_type width)
 }
 
 template <typename TPixel>
-auto Image<TPixel>::height() const
+auto Image<TPixel>::height() const -> dimension_type
 {
 	return _height;
 }
@@ -124,7 +133,7 @@ void Image<TPixel>::pixels(container_type pixels)
 }
 
 template <typename TPixel>
-auto Image<TPixel>::pixel(dimension_type row, dimension_type column) const
+auto Image<TPixel>::pixel(dimension_type row, dimension_type column) const -> value_type
 {
 	if (row >= _height) {
 		throw std::domain_error("Row out of bounds");
@@ -134,6 +143,30 @@ auto Image<TPixel>::pixel(dimension_type row, dimension_type column) const
 	}
 	auto index = pixel_index_2d_to_1d(_width, row, column);
 	return _pixels[index];
+}
+
+template <typename TPixel>
+auto Image<TPixel>::begin() -> iterator
+{
+	return _pixels.begin();
+}
+
+template <typename TPixel>
+auto Image<TPixel>::begin() const -> const_iterator
+{
+	return _pixels.begin();
+}
+
+template <typename TPixel>
+auto Image<TPixel>::end() -> iterator
+{
+	return _pixels.end();
+}
+
+template <typename TPixel>
+auto Image<TPixel>::end() const -> const_iterator
+{
+	return _pixels.end();
 }
 
 template <typename TPixel>

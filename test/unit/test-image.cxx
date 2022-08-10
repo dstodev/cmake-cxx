@@ -96,3 +96,29 @@ TEST(Image, pixel_column_out_of_bounds)
 	image.pixel(0, 0);
 	ASSERT_ANY_THROW(image.pixel(0, 1)) << image;
 }
+
+TEST(Image, iterator)
+{
+	Image<char> image(2, 2, {0, 1, 2, 3});
+	for (auto i : image) {
+		ASSERT_EQ(i, image.pixels()[i]);
+	}
+}
+
+TEST(Image, iterator_mutates)
+{
+	Image<char> image(2, 2, {0, 1, 2, 3});
+	for (auto& i : image) {
+		auto index = i;
+		i += 1;
+		ASSERT_EQ(index + 1, image.pixels()[index]);
+	}
+}
+
+TEST(Image, const_iterator)
+{
+	Image<char> const image(2, 2, {0, 1, 2, 3});
+	for (auto i : image) {
+		ASSERT_EQ(i, image.pixels()[i]);
+	}
+}
