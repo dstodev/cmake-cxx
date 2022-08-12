@@ -12,12 +12,14 @@ using index_type = std::size_t;
 
 /** @brief Translate a row,column coordinate to 1-dimensional ordinal index
  *
+ * @code
  *    image       inputs, width=2  | output
  *                  | row | column | index
  *      | 0 1    a: | 0   | 0      | 0
  *    --+----    b: | 0   | 1      | 1
  *    0 | a b    c: | 1   | 0      | 2
  *    1 | c d    d: | 1   | 1      | 3
+ * @endcode
  *
  * @param width Width of the image; number of columns
  * @param row Row of target index

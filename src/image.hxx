@@ -23,12 +23,14 @@ std::ostream& operator<<(std::ostream& os, const Image<TPixel>& image);
  * This class arranges pixels in a rectangle:
  *    number-of-pixels = width (number of columns) * height (number of rows)
  *
+ * @code
  * Pixels are accessed by row, column:
- *                  row column
- *      | 0 1    a: 0   0
- *    --+----    b: 0   1
- *    0 | a b    c: 1   0
- *    1 | c d    d: 1   1
+ *                  row  column
+ *      | 0 1    a: 0    0
+ *    --+----    b: 0    1
+ *    0 | a b    c: 1    0
+ *    1 | c d    d: 1    1
+ * @endcode
  *
  * @tparam TPixel
  */
@@ -38,6 +40,9 @@ class Image
 public:
 	using value_type = TPixel;  // stl often names this specific member 'value_type'
 	using container_type = std::vector<value_type>;
+
+	using iterator = typename container_type::iterator;
+	using const_iterator = typename container_type::const_iterator;
 
 	explicit Image(dimension_type width = 0, dimension_type height = 0, container_type pixels = {});
 	virtual ~Image() = default;
@@ -57,11 +62,10 @@ public:
 	auto pixels() const -> container_type const&;
 	void pixels(container_type pixels);
 
-	// TODO: Non-const getter
 	auto pixel(dimension_type row, dimension_type column) const -> value_type;
+	void pixel(dimension_type row, dimension_type column, value_type value);
 
-	using iterator = typename container_type::iterator;
-	using const_iterator = typename container_type::const_iterator;
+	// TODO: operator()(row,column) for pixel() shorthand
 
 	auto begin() -> iterator;
 	auto begin() const -> const_iterator;
@@ -75,6 +79,8 @@ private:
 	dimension_type _width;
 	dimension_type _height;
 	container_type _pixels;
+
+	auto pixel_index(dimension_type row, dimension_type column) const -> index_type;
 };
 
 template <typename TPixel>
@@ -135,14 +141,15 @@ void Image<TPixel>::pixels(container_type pixels)
 template <typename TPixel>
 auto Image<TPixel>::pixel(dimension_type row, dimension_type column) const -> value_type
 {
-	if (row >= _height) {
-		throw std::domain_error("Row out of bounds");
-	}
-	if (column >= _width) {
-		throw std::domain_error("Column out of bounds");
-	}
-	auto index = pixel_index_2d_to_1d(_width, row, column);
+	auto index = pixel_index(row, column);
 	return _pixels[index];
+}
+
+template <typename TPixel>
+void Image<TPixel>::pixel(dimension_type row, dimension_type column, value_type value)
+{
+	auto index = pixel_index(row, column);
+	_pixels[index] = value;
 }
 
 template <typename TPixel>
@@ -170,7 +177,7 @@ auto Image<TPixel>::end() const -> const_iterator
 }
 
 template <typename TPixel>
-std::ostream& operator<<(std::ostream& os, const Image<TPixel>& image)
+std::ostream& operator<<(std::ostream& os, Image<TPixel> const& image)
 {
 	for (auto i = 0; i < image._width * image._height; ++i) {
 		if (i % image._width == 0) {
@@ -180,6 +187,19 @@ std::ostream& operator<<(std::ostream& os, const Image<TPixel>& image)
 	}
 	os << std::endl;
 	return os;
+}
+
+template <typename TPixel>
+auto Image<TPixel>::pixel_index(dimension_type row, dimension_type column) const -> index_type
+{
+	if (row >= _height) {
+		throw std::domain_error("Row out of bounds");
+	}
+	if (column >= _width) {
+		throw std::domain_error("Column out of bounds");
+	}
+	auto index = pixel_index_2d_to_1d(_width, row, column);
+	return index;
 }
 
 }  // namespace project

@@ -1,6 +1,5 @@
-#include <gtest/gtest.h>
-
 #include <Eigen/Dense>
+#include <gtest/gtest.h>
 
 TEST(Links, eigen)
 {

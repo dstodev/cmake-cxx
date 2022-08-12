@@ -1,9 +1,10 @@
+#include <string>
+
 #include <gtest/gtest.h>
 
+#include "assertions.hxx"
 #include <image.hxx>
 #include <shear.hxx>
-
-#include <string>
 
 using namespace project;
 
@@ -29,7 +30,7 @@ TEST(Image, construct_copy)
 	ASSERT_EQ(1, copy.height());
 }
 
-TEST(Image, setters)
+TEST(Image, dimension_getters_and_setters)
 {
 	Image<char> image(0, 0);
 	image.width(1);
@@ -58,7 +59,7 @@ TEST(Image, construct_with_data)
 	ASSERT_EQ(4, pixels[1]);
 }
 
-TEST(Image, pixel_horizontal_rectangle)
+TEST(Image, pixel_get_horizontal_rectangle)
 {
 	/*
 	      0 1 2 3 4   a b c d e f g h i j
@@ -69,7 +70,7 @@ TEST(Image, pixel_horizontal_rectangle)
 	ASSERT_EQ('h', image.pixel(1, 2)) << image;
 }
 
-TEST(Image, pixel_vertical_rectangle)
+TEST(Image, pixel_get_vertical_rectangle)
 {
 	/*
 	      0 1   a b c d e f g h i j
@@ -83,23 +84,50 @@ TEST(Image, pixel_vertical_rectangle)
 	ASSERT_EQ('f', image.pixel(2, 1)) << image;
 }
 
-TEST(Image, pixel_row_out_of_bounds)
+TEST(Image, pixel_get_row_out_of_bounds)
 {
 	Image<char> image(1, 1);
 	image.pixel(0, 0);
 	ASSERT_ANY_THROW(image.pixel(1, 0)) << image;
 }
 
-TEST(Image, pixel_column_out_of_bounds)
+TEST(Image, pixel_get_column_out_of_bounds)
 {
 	Image<char> image(1, 1);
 	image.pixel(0, 0);
 	ASSERT_ANY_THROW(image.pixel(0, 1)) << image;
 }
 
+TEST(Image, pixel_set)
+{
+	Image<char> image(1, 2, {3, 4});
+	image.pixel(1, 0, 5);
+	ASSERT_EQ(5, image.pixel(1, 0)) << image;
+}
+
+TEST(Image, pixel_set_row_out_of_bounds)
+{
+	Image<char> image(1, 1);
+	image.pixel(0, 0, 1);
+	ASSERT_ANY_THROW(image.pixel(1, 0, 2)) << image;
+}
+
+TEST(Image, pixel_set_column_out_of_bounds)
+{
+	Image<char> image(1, 1);
+	image.pixel(0, 0, 1);
+	ASSERT_ANY_THROW(image.pixel(0, 1, 2)) << image;
+}
+
 TEST(Image, iterator)
 {
 	Image<char> image(2, 2, {0, 1, 2, 3});
+
+	// Assert that the non-const iterator is used with a non-const image
+	using image_type = decltype(image);
+	MY_ASSERT_SAME_TYPE(image_type::iterator, decltype(std::declval<image_type>().begin()));
+	MY_ASSERT_SAME_TYPE(image_type::iterator, decltype(std::declval<image_type>().end()));
+
 	for (auto i : image) {
 		ASSERT_EQ(i, image.pixels()[i]);
 	}
@@ -118,6 +146,12 @@ TEST(Image, iterator_mutates)
 TEST(Image, const_iterator)
 {
 	Image<char> const image(2, 2, {0, 1, 2, 3});
+
+	// Assert that the const iterator is used with a const image
+	using image_type = decltype(image);
+	MY_ASSERT_SAME_TYPE(image_type::const_iterator, decltype(std::declval<image_type>().begin()));
+	MY_ASSERT_SAME_TYPE(image_type::const_iterator, decltype(std::declval<image_type>().end()));
+
 	for (auto i : image) {
 		ASSERT_EQ(i, image.pixels()[i]);
 	}

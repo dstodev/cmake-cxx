@@ -1,6 +1,5 @@
-#include <gtest/gtest.h>
-
 #include <benchmark/benchmark.h>
+#include <gtest/gtest.h>
 
 TEST(Links, benchmark)
 {
