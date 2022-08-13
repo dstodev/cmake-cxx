@@ -30,7 +30,7 @@ TEST(Image, construct_copy)
 	ASSERT_EQ(1, copy.height());
 }
 
-TEST(Image, dimension_getters_and_setters)
+TEST(Image, dimension_setters)
 {
 	Image<char> image(0, 0);
 	image.width(1);

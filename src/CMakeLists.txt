@@ -5,6 +5,7 @@ set(header_files_to_package
 	image.hxx
 )
 
+set(dll_export_file "${target_name}-export.h")
 set(dll_export_macro PROJECT_API)
 
 #[[
@@ -28,7 +29,7 @@ target_include_directories(${target_name}
 )
 target_compile_features(${target_name}
 	PUBLIC
-		cxx_std_11
+		cxx_std_17  # for helpful features like [[nodiscard]]
 )
 
 find_package(Eigen3 REQUIRED)
@@ -44,6 +45,7 @@ target_link_libraries(${target_name}
 ]]
 include(GenerateExportHeader)
 generate_export_header(${target_name}
+	EXPORT_FILE_NAME ${dll_export_file}
 	EXPORT_MACRO_NAME ${dll_export_macro}
 )
 target_include_directories(${target_name}
@@ -53,7 +55,7 @@ target_include_directories(${target_name}
 )
 set_property(TARGET ${target_name}
 	APPEND PROPERTY PUBLIC_HEADER
-		"${CMAKE_CURRENT_BINARY_DIR}/${target_name}_export.h"
+		"${CMAKE_CURRENT_BINARY_DIR}/${dll_export_file}"
 )
 
 #[[
@@ -64,5 +66,5 @@ install(TARGETS ${target_name}
 )
 install(EXPORT ${target_name}
 	DESTINATION cmake
-	NAMESPACE eigen-sample::
+	NAMESPACE sample::
 )

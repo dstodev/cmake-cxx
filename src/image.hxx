@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "image-utilities.hxx"
-#include <project_export.h>
+#include <project-export.h>
 
 namespace project {
 
@@ -53,10 +53,10 @@ public:
 	Image& operator=(Image const& copy) = default;
 	Image& operator=(Image&& move) noexcept = default;
 
-	auto width() const -> dimension_type;
+	[[nodiscard]] auto width() const -> dimension_type;
 	void width(dimension_type width);
 
-	auto height() const -> dimension_type;
+	[[nodiscard]] auto height() const -> dimension_type;
 	void height(dimension_type height);
 
 	auto pixels() const -> container_type const&;
@@ -80,7 +80,7 @@ private:
 	dimension_type _height;
 	container_type _pixels;
 
-	auto pixel_index(dimension_type row, dimension_type column) const -> index_type;
+	[[nodiscard]] auto pixel_index(dimension_type row, dimension_type column) const -> index_type;
 };
 
 template <typename TPixel>
