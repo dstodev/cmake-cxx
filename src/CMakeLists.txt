@@ -30,7 +30,7 @@ target_include_directories(${target_name}
 )
 target_compile_features(${target_name}
 	PUBLIC
-		cxx_std_17  # for helpful features like [[nodiscard]]
+		cxx_std_20  # for helpful features like [[nodiscard]] and operator<=>
 )
 #[[
 	This call to target_precompile_headers() affects development builds

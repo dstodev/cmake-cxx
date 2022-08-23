@@ -50,6 +50,10 @@ TEST(Placeholder, operators_assignment)
 	o symbol 0; \
 	o symbol 'a';
 
+/* These tests basically assert that the placeholder type can be used
+ * in various situations and still compile.
+ */
+
 TEST(Placeholder, operators_arithmetic)
 {
 	placeholder_t o, i;
@@ -73,6 +77,19 @@ TEST(Placeholder, operators_compound)
 }
 
 #undef operate
+
+TEST(Placeholder, operators_comparison)
+{
+	placeholder_t o, i;
+
+	auto r = o == i;
+	r = o != i;
+	r = o < i;
+	r = o > i;
+	r = o <= i;
+	r = o >= i;
+}
+
 
 // TODO: Add operators
 //       - arbitrary index: o[...]
