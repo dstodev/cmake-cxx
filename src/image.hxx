@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "image-utilities.hxx"
-#include <project-export.h>
+#include <project-api.h>
 
 namespace project {
 

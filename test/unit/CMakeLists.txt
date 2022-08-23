@@ -6,6 +6,7 @@ add_google_executable(test_project TEST
 		assertions.hxx
 		test-image-utilities.cxx
 		test-image.cxx
+		test-placeholder.cxx
 		test-shear.cxx
 
 	LIBRARIES

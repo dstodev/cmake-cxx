@@ -25,7 +25,7 @@ TEST(Image, construct_non_default)
 TEST(Image, construct_copy)
 {
 	Image<char> image(0, 1);
-	Image<char> copy(image);  // NOLINT(performance-unnecessary-copy-initialization)
+	Image<char> copy(image);
 	ASSERT_EQ(0, copy.width());
 	ASSERT_EQ(1, copy.height());
 }

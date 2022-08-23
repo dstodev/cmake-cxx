@@ -3,7 +3,7 @@
 
 #include <Eigen/Dense>
 
-#include <project-export.h>
+#include <project-api.h>
 
 namespace project {
 
