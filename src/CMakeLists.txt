@@ -89,5 +89,5 @@ install(TARGETS ${target_name}
 )
 install(EXPORT ${target_name}
 	DESTINATION cmake
-	NAMESPACE sample::
+	NAMESPACE project::
 )

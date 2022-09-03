@@ -52,6 +52,13 @@
     <clangFormatSettings>
       <option name="ENABLED" value="true" />
     </clangFormatSettings>
+    <files>
+      <extensions>
+        <pair source="cxx" header="hxx" fileNamingConvention="NONE" />
+        <pair source="c" header="h" fileNamingConvention="NONE" />
+        <pair source="cu" header="cuh" fileNamingConvention="NONE" />
+      </extensions>
+    </files>
     <codeStyleSettings language="CMake">
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />

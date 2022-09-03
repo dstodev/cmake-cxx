@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(EigenSample)
+project(Project)
 
 if (NOT CMAKE_BUILD_TYPE)
 	#[[
