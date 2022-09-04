@@ -5,3 +5,7 @@ eigen/3.4.0@
 
 [generators]
 cmake_find_package
+
+[imports]
+bin, *.dll -> ../bin  # put dll files in INSTALL_FOLDER/../bin (project bin dir)
+lib, *.dylib -> ../bin
