@@ -24,6 +24,7 @@ endif()
 
 option(BUILD_SHARED_LIBS "Build a shared artifact (.dll, .so, .dylib)?" TRUE)
 option(CMAKE_EXPORT_COMPILE_COMMANDS "Generate compile_commands.json?" TRUE)
+option(CMAKE_VERBOSE_MAKEFILE "Emit verbose build output?" FALSE)
 
 # https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#output-artifacts
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")  # .lib, .a, ...
