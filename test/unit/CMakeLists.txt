@@ -4,8 +4,8 @@ find_package(AddLocalAllTarget CONFIG REQUIRED)
 add_google_executable(test_project TEST
 	SOURCES
 		assertions.hxx
-		test-image-utilities.cxx
-		test-image.cxx
+	test-utilities.cxx
+	test-grid.cxx
 		test-placeholder.cxx
 		test-shear.cxx
 

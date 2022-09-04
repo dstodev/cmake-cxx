@@ -1,8 +1,8 @@
 set(target_name "project")
 
 set(header_files_to_package
+	grid.hxx
 	shear.hxx
-	image.hxx
 )
 
 set(dll_export_file "${target_name}-api.h")
@@ -12,12 +12,12 @@ set(dll_export_macro PROJECT_API)
 	Configure the library
 ]]
 add_library(${target_name}
-	image-utilities.cxx
-	image-utilities.hxx
-	image.hxx
+	grid.hxx
 	placeholder.hxx
 	shear.cxx
 	shear.hxx
+	utilities.cxx
+	utilities.hxx
 )
 set_target_properties(${target_name}
 	PROPERTIES
