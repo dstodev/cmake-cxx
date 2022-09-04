@@ -24,10 +24,13 @@ The following scripts have been tested on MacOS Monterey and Windows 10.
     Run `script/run-docker-tests.bash`
 
   - on Windows  
-    Run `script/run-docker-tests.bat`, or  
-    Run `docker compose -f docker/compose.yaml run ubuntu`
+    Run `script/run-docker-tests.bat`
+  
+  - with [Compose](https://docs.docker.com/compose/)  
+    Run `docker compose -f docker/compose.yaml run ubuntu`, or  
+    Run `docker compose -f docker/compose.yaml run ubuntu-clang`
 
-#### Helpers
+### Helpers
 
 Open terminal in docker build environment  
 `docker compose -f docker/compose.yaml run --entrypoint=/bin/bash ubuntu`
