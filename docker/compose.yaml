@@ -6,8 +6,8 @@ services: # https://docs.docker.com/compose/compose-file/
     volumes: # https://docs.docker.com/storage/volumes/#use-a-volume-with-docker-compose
       - type: bind  # https://docs.docker.com/storage/bind-mounts/#use-a-bind-mount-with-compose
         source: ..
-        target: /src
-    entrypoint: bash /src/script/run-tests.sh
+        target: /project
+    entrypoint: bash /project/script/run-tests.sh
 
   ubuntu-clang:
     extends: ubuntu
