@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 project(Project)
 
 if (NOT CMAKE_BUILD_TYPE)
-	#[[ If the build is invoked without specifying CMAKE_BUILD_TYPE:
+	#[[
+		If the build is invoked without specifying CMAKE_BUILD_TYPE:
 			cmake -B build_dir -S source_dir
 		then CMAKE_BUILD_TYPE is still set in the CMake cache as an empty
 		string by default. So FORCE here to overwrite to a better default.
