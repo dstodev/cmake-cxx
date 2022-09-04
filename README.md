@@ -25,6 +25,18 @@ The following scripts have been tested on MacOS Monterey and Windows 10.
 
   - on Windows  
     Run `script/run-docker-tests.bat`
+  
+  - with [Compose](https://docs.docker.com/compose/)  
+    Run `docker compose -f docker/compose.yaml run ubuntu`, or  
+    Run `docker compose -f docker/compose.yaml run ubuntu-clang`
+
+### Helpers
+
+Open terminal in docker build environment  
+`docker compose -f docker/compose.yaml run --entrypoint=/bin/bash ubuntu`
+
+Rebuild Docker image  
+`docker compose -f docker/compose.yaml build ubuntu`
 
 # Visual Studio Code integration
 

@@ -5,9 +5,9 @@ set source_dir=%script_dir%..
 set docker_dir=%source_dir%\docker
 set build_dir=%source_dir%\build\run-docker-tests-bat
 
-set image_name=build:ubuntu2004
+set image_name=build:ubuntu
 
-docker build --file="%docker_dir%\ubuntu2004.dockerfile" "%docker_dir%" --tag="%image_name%"
+docker build --file="%docker_dir%\ubuntu.dockerfile" "%docker_dir%" --tag="%image_name%"
 
 if not exist "%build_dir%\NUL" mkdir "%build_dir%"
 

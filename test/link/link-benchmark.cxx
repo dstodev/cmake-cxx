@@ -3,6 +3,6 @@
 
 TEST(Links, benchmark)
 {
-	benchmark::TimeUnit t;
-	(void) t;
+	benchmark::TimeUnit o;
+	(void) o;
 }
