@@ -1,0 +1,16 @@
+services: # https://docs.docker.com/compose/compose-file/
+  ubuntu:
+    build:
+      context: .
+      dockerfile: ubuntu.dockerfile
+    volumes: # https://docs.docker.com/storage/volumes/#use-a-volume-with-docker-compose
+      - type: bind  # https://docs.docker.com/storage/bind-mounts/#use-a-bind-mount-with-compose
+        source: ..
+        target: /src
+    entrypoint: bash /src/script/run-tests.sh
+
+  ubuntu-clang:
+    extends: ubuntu
+    environment:
+      CC: /usr/bin/clang
+      CXX: /usr/bin/clang++

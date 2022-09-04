@@ -5,9 +5,9 @@ source_dir="$script_dir/.."
 docker_dir="$source_dir/docker"
 build_dir="$source_dir/build/run-docker-tests-bash"
 
-image_name='build:ubuntu2004'
+image_name='build:ubuntu'
 
-docker build --file="$docker_dir/ubuntu2004.dockerfile" "$docker_dir" --tag="$image_name"
+docker build --file="$docker_dir/ubuntu.dockerfile" "$docker_dir" --tag="$image_name"
 
 mounts=('--mount' "type=bind,readonly,src=$source_dir,dst=/project"
         '--mount' "type=bind,src=$build_dir,dst=/build")

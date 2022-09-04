@@ -10,7 +10,7 @@
 		},
 		{
 			"label": "Run tests",
-			"detail": "Docker (Ubuntu2004)",
+			"detail": "Docker (Ubuntu)",
 			"type": "shell",
 			"command": "${workspaceFolder}/script/run-docker-tests.sh",
 			"windows": {
