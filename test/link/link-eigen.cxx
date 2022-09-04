@@ -3,6 +3,6 @@
 
 TEST(Links, eigen)
 {
-	Eigen::Matrix2d m;
-	(void) m;
+	Eigen::Matrix2d o;
+	(void) o;
 }
