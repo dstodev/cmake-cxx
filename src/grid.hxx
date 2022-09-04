@@ -25,11 +25,11 @@ std::ostream& operator<<(std::ostream& os, const Grid<T>& grid);
  *
  * @code
  * Elements are accessed by row, column:
- *                  row  column
- *      | 0 1    a: 0    0
- *    --+----    b: 0    1
- *    0 | a b    c: 1    0
- *    1 | c d    d: 1    1
+ *      | 0 1       row  column
+ *    --+----    a: 0    0
+ *    0 | a b    b: 0    1
+ *    1 | c d    c: 1    0
+ *               d: 1    1
  * @endcode
  */
 template <typename T>
