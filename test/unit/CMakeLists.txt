@@ -17,4 +17,4 @@ target_compile_features(test_project
 		cxx_std_17
 )
 
-add_local_all_target(all_unit)
+add_local_all_target(_all_unit)

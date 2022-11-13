@@ -21,4 +21,4 @@ add_google_executable(link_eigen TEST
 		Eigen3::Eigen
 )
 
-add_local_all_target(all_links)
+add_local_all_target(_all_link)
