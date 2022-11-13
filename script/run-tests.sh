@@ -10,4 +10,4 @@ else
 fi
 
 cmake -B "$build_dir" -S "$source_dir" -DCMAKE_BUILD_TYPE=Release
-cmake --build "$build_dir" --target all test all_perf
+cmake --build "$build_dir" --target all_test
