@@ -3,7 +3,7 @@ find_package(AddLocalAllTarget CONFIG REQUIRED)
 
 add_google_executable(benchmark_shear BENCHMARK
 	SOURCES
-		perf-shear.cxx
+		shear.cxx
 
 	LIBRARIES
 		project

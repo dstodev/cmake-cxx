@@ -4,10 +4,10 @@ find_package(AddLocalAllTarget CONFIG REQUIRED)
 add_google_executable(test_project TEST
 	SOURCES
 		assertions.hxx
-		test-grid.cxx
-		test-placeholder.cxx
-		test-shear.cxx
-		test-utilities.cxx
+		grid.cxx
+		placeholder.cxx
+		shear.cxx
+		utilities.cxx
 
 	LIBRARIES
 		project
