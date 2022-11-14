@@ -14,7 +14,7 @@ if (NOT CMAKE_BUILD_TYPE)
 	set(default_build_type Release)
 	message(WARNING "CMAKE_BUILD_TYPE is not set. Forcing to: ${default_build_type}")
 	set(CMAKE_BUILD_TYPE ${default_build_type} CACHE STRING "Build type (Debug, Release, ...)" FORCE)
-endif ()
+endif()
 
 option(BUILD_SHARED_LIBS "Build a shared artifact (.dll, .so, .dylib)?" TRUE)
 option(CMAKE_EXPORT_COMPILE_COMMANDS "Generate compile_commands.json?" TRUE)
