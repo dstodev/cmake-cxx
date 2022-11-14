@@ -8,9 +8,7 @@ set(header_files_to_package
 set(dll_export_file "${target_name}-api.h")
 set(dll_export_macro PROJECT_API)
 
-#[[
-	Configure the library
-]]
+# Configure the library
 add_library(${target_name}
 	grid.hxx
 	placeholder.hxx
@@ -43,8 +41,7 @@ target_compile_features(${target_name}
 
 	The project::placeholder_t type is usable on-the-fly while developing,
 	as the header is implicitly provided. However, the header is not supplied
-	in an install() context, so compiling a CPack package that still uses
-	this placeholder type will fail.
+	to packages, so packages still using this type will fail to compile.
 
 	This signals that the package should not release; the placeholder type
 	should first be replaced with a real type. Therefore, the 'placeholder'
@@ -55,17 +52,14 @@ target_precompile_headers(${target_name}
 		$<BUILD_INTERFACE:placeholder.hxx>
 )
 
+# Link dependencies
 find_package(Eigen3 REQUIRED)
-
 target_link_libraries(${target_name}
 	PUBLIC
 		Eigen3::Eigen
 )
 
-#[[
-	The header this part describes is generated to the current binary
-	directory as ${CMAKE_CURRENT_BINARY_DIR}/${target_name}_export.h
-]]
+# Generate header for DLL export macro
 include(GenerateExportHeader)
 generate_export_header(${target_name}
 	EXPORT_FILE_NAME ${dll_export_file}
@@ -81,9 +75,7 @@ set_property(TARGET ${target_name}
 		"${CMAKE_CURRENT_BINARY_DIR}/${dll_export_file}"
 )
 
-#[[
-	Package the library
-]]
+# Package the library
 install(TARGETS ${target_name}
 	EXPORT ${target_name}
 )
