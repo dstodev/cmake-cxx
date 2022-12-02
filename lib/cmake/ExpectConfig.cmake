@@ -10,7 +10,7 @@ function(${fn_name})
 
 	if(${argv})
 		_increment_fails()
-		string(JOIN " " expr ${argv})
+		string(JOIN " " expr ${${prefix}_UNPARSED_ARGUMENTS})
 		get_filename_component(file ${CMAKE_CURRENT_LIST_FILE} NAME)
 		set(pretty_message "${fn_name}(${expr}) failed in file ${file}:0")
 		message(AUTHOR_WARNING "${pretty_message}")
