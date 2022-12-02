@@ -41,5 +41,3 @@ conan_cmake_install(PATH_OR_REFERENCE "${CMAKE_CURRENT_LIST_DIR}/conanfile.txt" 
 
 add_subdirectory(src)
 add_subdirectory(test)
-
-error_if_any_expect_fail()
