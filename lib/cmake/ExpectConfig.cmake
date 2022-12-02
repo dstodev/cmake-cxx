@@ -2,6 +2,7 @@ set(fn_name "expect")
 
 function(${fn_name})
 	set(prefix "__${fn_name}_args")
+	# cmake_parse_arguments() will escape list semicolons, etc.
 	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "" "" "")
 	set(argv "${${prefix}_UNPARSED_ARGUMENTS}")
 
