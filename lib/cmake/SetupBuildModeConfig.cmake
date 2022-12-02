@@ -1,8 +1,6 @@
 find_package(StringCapitalize CONFIG REQUIRED)
 
 function(setup_build_mode default_mode)
-	get_cmake_property(is_multi_config GENERATOR_IS_MULTI_CONFIG)  # https://cmake.org/cmake/help/latest/prop_gbl/GENERATOR_IS_MULTI_CONFIG.html
-
 	if (NOT default_mode)
 		if ("${default_mode}" STREQUAL "")
 			set(hint " (empty string)")
@@ -10,6 +8,7 @@ function(setup_build_mode default_mode)
 		message(FATAL_ERROR "Invalid value for default_mode must evaluate TRUE: \"${default_mode}\"${hint}")
 	endif()
 
+	get_cmake_property(is_multi_config GENERATOR_IS_MULTI_CONFIG)  # https://cmake.org/cmake/help/latest/prop_gbl/GENERATOR_IS_MULTI_CONFIG.html
 	if (is_multi_config)
 		_multi_config()
 	else()

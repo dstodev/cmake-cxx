@@ -37,5 +37,4 @@ endfunction()
 include_guard(GLOBAL)
 _set_test_assert_fails(0)
 
-# https://cmake.org/cmake/help/latest/command/cmake_language.html#defer
-cmake_language(DEFER CALL error_if_any_${fn_name}_fail)
+cmake_language(DEFER CALL error_if_any_${fn_name}_fail)  # https://cmake.org/cmake/help/latest/command/cmake_language.html#defer
