@@ -1,20 +1,14 @@
 cmake_minimum_required(VERSION 3.16)
-project(Project)
 
-if (NOT CMAKE_BUILD_TYPE)
-	#[[
-		If the build is invoked without specifying CMAKE_BUILD_TYPE:
-			cmake -B build_dir -S source_dir
-		then CMAKE_BUILD_TYPE is still set in the CMake cache as an empty
-		string by default. So FORCE here to overwrite to a better default.
-		(and Conan requires that it is NOT an empty string!)
-		The default-when-unspecified value for CMAKE_BUILD_TYPE is "", a falsy
-		value (https://developer.mozilla.org/en-US/docs/Glossary/Falsy), so NOT.
-	]]
-	set(default_build_type Release)
-	message(WARNING "CMAKE_BUILD_TYPE is not set. Forcing to: ${default_build_type}")
-	set(CMAKE_BUILD_TYPE ${default_build_type} CACHE STRING "Build type (Debug, Release, ...)" FORCE)
-endif ()
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/lib/cmake")  # mostly for include()
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/lib/cmake")  # mostly for find_package()
+
+find_package(Expect CONFIG REQUIRED)  # Some configs use this module
+
+find_package(SetupBuildMode CONFIG REQUIRED)
+setup_build_mode("Release")
+
+project(Project)
 
 option(BUILD_SHARED_LIBS "Build a shared artifact (.dll, .so, .dylib)?" TRUE)
 option(CMAKE_EXPORT_COMPILE_COMMANDS "Generate compile_commands.json?" TRUE)
@@ -24,8 +18,6 @@ option(CMAKE_VERBOSE_MAKEFILE "Emit verbose build output?" FALSE)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")  # .lib, .a, ...
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")  # .so, .dylib, ...
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")  # .exe, .dll, ...
-
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/lib/cmake")
 
 # When building the `install` target, put artifacts in this directory.
 set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/package_stage")  # https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html
@@ -49,3 +41,5 @@ conan_cmake_install(PATH_OR_REFERENCE "${CMAKE_CURRENT_LIST_DIR}/conanfile.txt" 
 
 add_subdirectory(src)
 add_subdirectory(test)
+
+error_if_any_expect_fail()

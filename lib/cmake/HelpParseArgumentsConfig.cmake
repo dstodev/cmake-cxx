@@ -54,9 +54,13 @@
 macro(help_parse_arguments prefix options one_value_keywords multi_value_keywords)
 	# Variables are prefixed with _ to avoid name collisions in parent scope
 
-	list(LENGTH ARGV _num_argv)  # Number of arguments passed to the calling function
+	set(_argc ARGC)  # Total number of arguments passed to the calling function
 	list(LENGTH ARGN _num_argn)  # Number of arguments past the last expected parameter
-	math(EXPR _expected_args_offset "${_num_argv} - ${_num_argn}")
+	math(EXPR _expected_args_offset "${${_argc}} - ${_num_argn}")  # Calculated number of positional args
+
+	#set(_argn ARGN)
+	#set(_argv ARGV)
+	#message("\nargc ${${_argc}}\nargn ${${_argn}}\nargv ${${_argv}}\n")
 
 	# Skip past the expected args.
 	cmake_parse_arguments(PARSE_ARGV "${_expected_args_offset}" "${prefix}"
@@ -103,7 +107,38 @@ function(help_print_parsed_arguments _prefix)
 	# Remove leading & duplicate semicolons
 	string(REGEX REPLACE "(^|;);" "\\1" _prefixed_variables "${_prefixed_variables}")
 
-	foreach (_var IN LISTS _prefixed_variables)
+	foreach(_var IN LISTS _prefixed_variables)
 		message(${_params_VERBOSITY} "${_var}: ${${_var}}")
-	endforeach ()
+	endforeach()
 endfunction()
+
+include_guard(GLOBAL)  # Always put this before expect() tests to run only once
+
+function(test_parse_options a b c)
+	help_parse_arguments(args "FLAG1;FLAG2" "" "")
+	expect(args_FLAG1)
+	expect(NOT args_FLAG2)
+	message("aa ${args_UNPARSED_ARGUMENTS}")
+	expect(1 IN_LIST args_UNPARSED_ARGUMENTS)
+	expect(2 IN_LIST args_UNPARSED_ARGUMENTS)
+	expect(NOT 3 IN_LIST args_UNPARSED_ARGUMENTS)
+endfunction()
+test_parse_options(a b c 1 2 FLAG1)
+
+function(test_parse_one_value_keywords a b c)
+	help_parse_arguments(args "FLAG1;FLAG2" "OPTION1;OPTION2" "")
+	expect(NOT args_FLAG1)
+	expect(NOT args_FLAG2)
+	expect(d STREQUAL "${args_OPTION1}")
+	expect(NOT args_OPTION2)
+endfunction()
+test_parse_one_value_keywords(a b c OPTION1 d)
+
+function(test_parse_multi_value_keywords a b c)
+	help_parse_arguments(args "" "OPTION1;OPTION2" "MULTIS1;MULTIS2")
+	expect(NOT args_OPTION1)
+	expect(NOT args_OPTION2)
+	expect("d;e" STREQUAL "${args_MULTIS1}")
+	expect(NOT args_MULTIS2)
+endfunction()
+test_parse_multi_value_keywords(a b c MULTIS1 d e)
