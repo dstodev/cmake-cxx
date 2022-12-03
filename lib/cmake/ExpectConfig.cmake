@@ -8,6 +8,10 @@ function(${fn_name})
 	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "" "" "")
 	set(argv "${${prefix}_UNPARSED_ARGUMENTS}")
 
+	string(JOIN " " expr ${${prefix}_UNPARSED_ARGUMENTS})
+	get_filename_component(file ${CMAKE_CURRENT_LIST_FILE} NAME)
+	set(pretty_message "${fn_name}(${expr}) failed in file ${file}:0")
+
 	# Uses cmake_language(EVAL CODE) https://cmake.org/cmake/help/latest/command/cmake_language.html#evaluating-code
 	# to handle empty strings in ${argv}
 	#   e.g. argv: ;;IN_LIST;mylist; fails because it expands to if(NOT(IN_LIST mylist)
@@ -18,9 +22,6 @@ function(${fn_name})
 	cmake_language(EVAL CODE "
 		if(NOT (${argv}))
 			_increment_fails()
-			string(JOIN \" \" expr ${${prefix}_UNPARSED_ARGUMENTS})
-			get_filename_component(file ${CMAKE_CURRENT_LIST_FILE} NAME)
-			set(pretty_message \"${fn_name}(${expr}) failed in file ${file}:0\")
 			message(AUTHOR_WARNING \"${pretty_message}\")
 		endif()
 	")
