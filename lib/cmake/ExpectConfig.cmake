@@ -1,6 +1,8 @@
 set(fn_name "expect")
 
 function(${fn_name})
+	_increment_calls()
+
 	set(prefix "__${fn_name}_args")
 	# cmake_parse_arguments() will escape list semicolons, etc.
 	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "" "" "")
@@ -18,23 +20,39 @@ function(${fn_name})
 	endif()
 endfunction()
 
-function(_increment_fails)
-	math(EXPR fails "${test_assert_fails} + 1")
-	_set_test_assert_fails(${fails})
+function(_increment_calls)
+	math(EXPR calls "${${fn_name}_calls} + 1")
+	_set_calls(${calls})
 endfunction()
 
-function(_set_test_assert_fails value)
-	set(doc "Number of test assertion failures")
-	set(test_assert_fails ${value} CACHE INTERNAL "${doc}")
+function(_set_calls value)
+	set(doc "Number of ${fn_name}() calls")
+	set(${fn_name}_calls ${value} CACHE INTERNAL "${doc}")
+endfunction()
+
+function(report_${fn_name}_calls)
+	message("${fn_name}() performed ${${fn_name}_calls} assertion(s)!")
+endfunction()
+
+function(_increment_fails)
+	math(EXPR fails "${${fn_name}_fails} + 1")
+	_set_fails(${fails})
+endfunction()
+
+function(_set_fails value)
+	set(doc "Number of times ${fn_name}() evaluated FALSE")
+	set(${fn_name}_fails ${value} CACHE INTERNAL "${doc}")
 endfunction()
 
 function(error_if_any_${fn_name}_fail)
-	if(test_assert_fails GREATER 0)
-		message(FATAL_ERROR "${fn_name}() failed ${test_assert_fails} time(s)!")
+	if(${fn_name}_fails GREATER 0)
+		message(FATAL_ERROR "${fn_name}() failed ${${fn_name}_fails} time(s)!")
 	endif()
 endfunction()
 
 include_guard(GLOBAL)
-_set_test_assert_fails(0)
+_set_fails(0)
+_set_calls(0)
 
-cmake_language(DEFER CALL error_if_any_${fn_name}_fail)  # https://cmake.org/cmake/help/latest/command/cmake_language.html#defer
+cmake_language(DEFER CALL report_${fn_name}_calls)  # https://cmake.org/cmake/help/latest/command/cmake_language.html#defer
+cmake_language(DEFER CALL error_if_any_${fn_name}_fail)
