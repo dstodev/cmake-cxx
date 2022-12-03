@@ -7,13 +7,25 @@ function(${fn_name})
 	# cmake_parse_arguments() will escape list semicolons, etc.
 	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "" "" "")
 	set(argv "${${prefix}_UNPARSED_ARGUMENTS}")
+	list(GET argv 0 first_token)
 
-	list(PREPEND argv "NOT;(")
-	list(APPEND argv ")")
+	if(first_token STREQUAL "")
+		list(LENGTH argv len)
 
-	# ${argv} MUST NOT be quoted here "${argv}" because quoted strings usually
-	# evaluate FALSE instead of passing ARGV tokens to if().
-	if(${argv})
+		if(len GREATER 1)
+			list(SUBLIST argv 1 -1 rest_of_tokens)
+		endif()
+
+		if(NOT "" ${rest_of_tokens})
+			set(fail TRUE)
+		endif()
+	else()
+		if(NOT (${argv}))
+			set(fail TRUE)
+		endif()
+	endif()
+
+	if(fail)
 		_increment_fails()
 		string(JOIN " " expr ${${prefix}_UNPARSED_ARGUMENTS})
 		get_filename_component(file ${CMAKE_CURRENT_LIST_FILE} NAME)

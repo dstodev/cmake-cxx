@@ -3,7 +3,7 @@
 
 	Helps parse arguments by abstracting technical details of CMake's builtin (>= CMake 3.5)
 	cmake_parse_arguments(). Automatically uses the more intuitive but harder to use PARSE_ARGV
-	variant of cmake_parse_arguments() to enable passing lists as one-value keyword arguments.
+	variant of cmake_parse_arguments() to enable passing e.g. lists.
 
 	Parameters
 	----------
@@ -54,9 +54,9 @@
 macro(help_parse_arguments prefix options one_value_keywords multi_value_keywords)
 	# Variables are prefixed with _ to avoid name collisions in parent scope
 
-	set(_argc ARGC)  # Total number of arguments passed to the calling function
+	list(LENGTH ARGV _num_argv)  # Total number of arguments passed to the calling function
 	list(LENGTH ARGN _num_argn)  # Number of arguments past the last expected parameter
-	math(EXPR _expected_args_offset "${${_argc}} - ${_num_argn}")  # Calculated number of positional args
+	math(EXPR _expected_args_offset "${_num_argv} - ${_num_argn}")  # Calculated number of positional args
 
 	#set(_argn ARGN)
 	#set(_argv ARGV)
@@ -141,3 +141,12 @@ function(test_parse_multi_value_keywords a b c)
 	expect(NOT args_MULTIS2)
 endfunction()
 test_parse_multi_value_keywords(a b c MULTIS1 d e)
+
+function(test_parse_argv)
+	help_parse_arguments(args "" "" "")
+	expect("" IN_LIST args_UNPARSED_ARGUMENTS)
+	expect("1;2" IN_LIST args_UNPARSED_ARGUMENTS)
+	expect("3" IN_LIST args_UNPARSED_ARGUMENTS)
+	expect("4" IN_LIST args_UNPARSED_ARGUMENTS)
+endfunction()
+test_parse_argv("" "1;2" 3 4)
