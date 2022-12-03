@@ -11,6 +11,8 @@ function(${fn_name})
 	list(PREPEND argv "NOT;(")
 	list(APPEND argv ")")
 
+	# ${argv} MUST NOT be quoted here "${argv}" because quoted strings usually
+	# evaluate FALSE instead of passing ARGV tokens to if().
 	if(${argv})
 		_increment_fails()
 		string(JOIN " " expr ${${prefix}_UNPARSED_ARGUMENTS})
