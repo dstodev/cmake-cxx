@@ -7,31 +7,23 @@ function(${fn_name})
 	# cmake_parse_arguments() will escape list semicolons, etc.
 	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "" "" "")
 	set(argv "${${prefix}_UNPARSED_ARGUMENTS}")
-	list(GET argv 0 first_token)
 
-	if(first_token STREQUAL "")
-		list(LENGTH argv len)
-
-		if(len GREATER 1)
-			list(SUBLIST argv 1 -1 rest_of_tokens)
-		endif()
-
-		if(NOT "" ${rest_of_tokens})
-			set(fail TRUE)
-		endif()
-	else()
+	# Uses cmake_language(EVAL CODE) https://cmake.org/cmake/help/latest/command/cmake_language.html#evaluating-code
+	# to handle empty strings in ${argv}
+	#   e.g. argv: ;;IN_LIST;mylist; fails because it expands to if(NOT(IN_LIST mylist)
+	#        so replace empty strings with quotes so it expands instead to if(NOT("" IN_LIST mylist)
+	# This cannot be done using if("${argv}") in the current scope, as it would instead expand
+	# to a literal string if("NOT;(;;IN_LIST;args_UNPARSED_ARGUMENTS;)") which evaluates FALSE.
+	string(REGEX REPLACE "^;|;;" "\"\" " argv "${argv}")
+	cmake_language(EVAL CODE "
 		if(NOT (${argv}))
-			set(fail TRUE)
+			_increment_fails()
+			string(JOIN \" \" expr ${${prefix}_UNPARSED_ARGUMENTS})
+			get_filename_component(file ${CMAKE_CURRENT_LIST_FILE} NAME)
+			set(pretty_message \"${fn_name}(${expr}) failed in file ${file}:0\")
+			message(AUTHOR_WARNING \"${pretty_message}\")
 		endif()
-	endif()
-
-	if(fail)
-		_increment_fails()
-		string(JOIN " " expr ${${prefix}_UNPARSED_ARGUMENTS})
-		get_filename_component(file ${CMAKE_CURRENT_LIST_FILE} NAME)
-		set(pretty_message "${fn_name}(${expr}) failed in file ${file}:0")
-		message(AUTHOR_WARNING "${pretty_message}")
-	endif()
+	")
 endfunction()
 
 function(_increment_calls)
