@@ -18,7 +18,7 @@ function(${fn_name})
 	#        so replace empty strings with quotes so it expands instead to if(NOT("" IN_LIST mylist)
 	# This cannot be done using if("${argv}") in the current scope, as it would instead expand
 	# to a literal string if("NOT;(;;IN_LIST;args_UNPARSED_ARGUMENTS;)") which evaluates FALSE.
-	string(REGEX REPLACE "^;|;;" "\"\" " argv "${argv}")
+	string(REGEX REPLACE "^;|;;|;$" " \"\" " argv "${argv}")
 	cmake_language(EVAL CODE "
 		if(NOT (${argv}))
 			_increment_fails()
@@ -63,3 +63,15 @@ _set_calls(0)
 
 cmake_language(DEFER CALL report_${fn_name}_calls)  # https://cmake.org/cmake/help/latest/command/cmake_language.html#defer
 cmake_language(DEFER CALL error_if_any_${fn_name}_fail)
+
+function(test_expect)
+	set(mylist "1;2")
+
+	expect("" STREQUAL "")
+	expect(TRUE)
+	expect(NOT FALSE)
+	expect(1 IN_LIST mylist)
+	expect(2 IN_LIST mylist)
+	expect(NOT 3 IN_LIST mylist)
+endfunction()
+test_expect()
