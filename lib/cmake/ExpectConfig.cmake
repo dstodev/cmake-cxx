@@ -57,7 +57,8 @@ function(error_if_any_${fn_name}_fail)
 	endif()
 endfunction()
 
-include_guard(GLOBAL)
+include_guard(GLOBAL)  # Always put this before expect() tests to run only once
+
 _set_fails(0)
 _set_calls(0)
 
