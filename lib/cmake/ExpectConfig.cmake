@@ -13,8 +13,8 @@ function(${fn_name})
 	string(REGEX REPLACE ";;" ";\"\";" argv "${argv}")
 	string(REGEX REPLACE ";$" ";\"\"" argv "${argv}")
 
-	# Manually separate list by replacing non-escaped semicolons with space
-	# avoid string(JOIN " " argv ${argv}) because it un-escapes passed-in lists
+	# Manually separate list by replacing non-escaped semicolons with space " "
+	# Avoid string(JOIN " " argv ${argv}) because it un-escapes passed-in lists
 	string(REGEX REPLACE "([^\\]);" "\\1 " argv "${argv}")
 
 	get_filename_component(file ${CMAKE_CURRENT_LIST_FILE} NAME)
@@ -75,7 +75,7 @@ cmake_language(DEFER CALL report_${fn_name}_calls)  # https://cmake.org/cmake/he
 cmake_language(DEFER CALL error_if_any_${fn_name}_fail)
 
 function(test_expect)
-	set(mylist "1;2")
+	set(mylist "1;2;")  # trailing semicolon puts "empty string" i.e. "" at end
 
 	expect("" STREQUAL "")
 	expect(TRUE)
@@ -83,5 +83,6 @@ function(test_expect)
 	expect(1 IN_LIST mylist)
 	expect(2 IN_LIST mylist)
 	expect(NOT 3 IN_LIST mylist)
+	expect("" IN_LIST mylist)
 endfunction()
 test_expect()
