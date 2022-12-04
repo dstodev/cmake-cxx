@@ -8,13 +8,17 @@ function(${fn_name})
 	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "" "" "")
 	set(argv "${${prefix}_UNPARSED_ARGUMENTS}")
 
+	# Replace empty strings with literal quote pairs
 	string(REGEX REPLACE "^;" "\"\";" argv "${argv}")
 	string(REGEX REPLACE ";;" ";\"\";" argv "${argv}")
 	string(REGEX REPLACE ";$" ";\"\"" argv "${argv}")
+
+	# Manually separate list by replacing non-escaped semicolons with space
+	# avoid string(JOIN " " argv ${argv}) because it un-escapes passed-in lists
 	string(REGEX REPLACE "([^\\]);" "\\1 " argv "${argv}")
 
 	get_filename_component(file ${CMAKE_CURRENT_LIST_FILE} NAME)
-	string(REPLACE "\"" "\\\"" expr "${argv}")
+	string(REPLACE "\"" "\\\"" expr "${argv}")  # double-escape quotes for message
 	set(pretty_message "${fn_name}(${expr}) failed in file ${file}:0")
 
 	# Uses cmake_language(EVAL CODE) https://cmake.org/cmake/help/latest/command/cmake_language.html#evaluating-code
