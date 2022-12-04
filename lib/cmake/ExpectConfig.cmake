@@ -80,6 +80,8 @@ function(test_expect)
 	expect("" STREQUAL "")
 	expect(TRUE)
 	expect(NOT FALSE)
+
+	# unset(mylist)  # uncomment to check error output
 	expect(1 IN_LIST mylist)
 	expect(2 IN_LIST mylist)
 	expect(NOT 3 IN_LIST mylist)
