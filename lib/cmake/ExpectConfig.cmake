@@ -23,10 +23,10 @@ function(${fn_name})
 
 	# Uses cmake_language(EVAL CODE) https://cmake.org/cmake/help/latest/command/cmake_language.html#evaluating-code
 	# to handle empty strings in ${argv}
-	#   e.g. argv: ;;IN_LIST;mylist; fails because it expands to if(NOT(IN_LIST mylist)
-	#        so replace empty strings with quotes so it expands instead to if(NOT("" IN_LIST mylist)
-	# This cannot be done using if("${argv}") in the current scope, as it would instead expand
-	# to a literal string if("NOT;(;;IN_LIST;args_UNPARSED_ARGUMENTS;)") which evaluates FALSE.
+	#   e.g. argv: ";IN_LIST;mylist" fails because it expands to if(NOT (IN_LIST mylist)
+	#        so replace empty strings with quotes so it expands instead to if(NOT ("" IN_LIST mylist)
+	# This cannot be done using if(NOT ("${argv}")) in the current scope, as it would instead expand
+	# to a literal string e.g. if(NOT (";IN_LIST;mylist")) which evaluates FALSE.
 	set(code "
 		if(NOT (${argv}))
 			_increment_fails()
