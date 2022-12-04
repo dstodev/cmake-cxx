@@ -47,7 +47,7 @@ function(_set_calls value)
 endfunction()
 
 function(report_${fn_name}_calls)
-	message("${fn_name}() performed ${${fn_name}_calls} assertion(s)!")
+	message(STATUS "${fn_name}() performed ${${fn_name}_calls} assertion(s)!")
 endfunction()
 
 function(_increment_fails)
