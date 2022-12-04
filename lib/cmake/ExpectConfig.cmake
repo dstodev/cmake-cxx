@@ -8,8 +8,13 @@ function(${fn_name})
 	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "" "" "")
 	set(argv "${${prefix}_UNPARSED_ARGUMENTS}")
 
-	string(JOIN " " expr ${${prefix}_UNPARSED_ARGUMENTS})
+	string(REGEX REPLACE "^;" "\"\";" argv "${argv}")
+	string(REGEX REPLACE ";;" ";\"\";" argv "${argv}")
+	string(REGEX REPLACE ";$" ";\"\"" argv "${argv}")
+	string(REGEX REPLACE "([^\\]);" "\\1 " argv "${argv}")
+
 	get_filename_component(file ${CMAKE_CURRENT_LIST_FILE} NAME)
+	string(REPLACE "\"" "\\\"" expr "${argv}")
 	set(pretty_message "${fn_name}(${expr}) failed in file ${file}:0")
 
 	# Uses cmake_language(EVAL CODE) https://cmake.org/cmake/help/latest/command/cmake_language.html#evaluating-code
@@ -18,13 +23,13 @@ function(${fn_name})
 	#        so replace empty strings with quotes so it expands instead to if(NOT("" IN_LIST mylist)
 	# This cannot be done using if("${argv}") in the current scope, as it would instead expand
 	# to a literal string if("NOT;(;;IN_LIST;args_UNPARSED_ARGUMENTS;)") which evaluates FALSE.
-	string(REGEX REPLACE "^;|;;|;$" " \"\" " argv "${argv}")
-	cmake_language(EVAL CODE "
+	set(code "
 		if(NOT (${argv}))
 			_increment_fails()
 			message(AUTHOR_WARNING \"${pretty_message}\")
 		endif()
 	")
+	cmake_language(EVAL CODE "${code}")
 endfunction()
 
 function(_increment_calls)
