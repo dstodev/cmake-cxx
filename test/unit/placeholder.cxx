@@ -41,8 +41,8 @@ TEST(Placeholder, constructor_int_and_char)
 TEST(Placeholder, operators_assignment)
 {
 	placeholder_t o, i;
-	o = i;                 // copy
-	o = placeholder_t {};  // move
+	o = i;  // copy
+	o = std::move(i);
 }
 
 #define operate(symbol) \
