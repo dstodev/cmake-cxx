@@ -90,7 +90,20 @@ TEST(Placeholder, operators_comparison)
 	r = o >= i;
 }
 
+TEST(Placeholder, operator_brackets)
+{
+	placeholder_t o;
+	ASSERT_EQ(o, o["abc"]);
+}
 
-// TODO: Add operators
-//       - arbitrary index: o[...]
-//       - arbitrary call:  o(...)
+TEST(Placeholder, operator_call_empty)
+{
+	placeholder_t o;
+	ASSERT_EQ(o, o());
+}
+
+TEST(Placeholder, operator_call)
+{
+	placeholder_t o;
+	ASSERT_EQ(o, o("abc", 123));
+}

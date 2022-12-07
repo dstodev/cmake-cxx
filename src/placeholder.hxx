@@ -28,6 +28,18 @@ public:
 
 	auto operator<=>(placeholder_t const& rhs) const = default;
 
+	template <typename T>
+	placeholder_t const& operator[](T _) const
+	{
+		return *this;
+	}
+
+	template <typename... Ts>
+	placeholder_t const& operator()(Ts... _) const
+	{
+		return *this;
+	}
+
 	generic_operator(+);  // Semicolons for correct auto-format
 	generic_operator(+=);
 	generic_operator(-);
