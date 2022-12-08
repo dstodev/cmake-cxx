@@ -37,12 +37,17 @@ TEST(Grid, setters)
 	ASSERT_EQ(1, o.width());
 	ASSERT_EQ(2, o.height());
 
-	auto& data = o.data();
-	ASSERT_TRUE(data.empty());
-
 	o.data(decltype(o)::container_type {3, 4});
+
+	auto const& data = o.data();
 	ASSERT_EQ(3, data[0]);
 	ASSERT_EQ(4, data[1]);
+}
+
+TEST(Grid, size)
+{
+	Grid<char> o(2, 3);
+	ASSERT_EQ(6, o.size());
 }
 
 TEST(Grid, construct_with_invalid_data_dimensions)
@@ -169,4 +174,98 @@ TEST(Grid, const_iterator)
 	for (auto i : o) {
 		ASSERT_EQ(i, o.data()[i]);
 	}
+}
+
+TEST(Grid, change_height_maintains_data_consistency)
+{
+	Grid<char> o(2, 2, {0, 1, 2, 3});
+	ASSERT_EQ(4, o.size());
+
+	/*
+	      0 1
+	    0 0 1
+	    1 2 3
+	 */
+	ASSERT_EQ(0, o.at(0, 0));
+	ASSERT_EQ(1, o.at(0, 1));
+	ASSERT_EQ(2, o.at(1, 0));
+	ASSERT_EQ(3, o.at(1, 1));
+
+	o.height(4);
+	ASSERT_EQ(8, o.size());
+
+	/*
+	      0 1
+	    0 0 1
+	    1 2 3
+	    2 0 0
+	    3 0 0
+	 */
+	ASSERT_EQ(0, o.at(0, 0));
+	ASSERT_EQ(1, o.at(0, 1));
+	ASSERT_EQ(2, o.at(1, 0));
+	ASSERT_EQ(3, o.at(1, 1));
+	ASSERT_EQ(0, o.at(2, 0));
+	ASSERT_EQ(0, o.at(2, 1));
+	ASSERT_EQ(0, o.at(3, 0));
+	ASSERT_EQ(0, o.at(3, 1));
+
+	o.height(2);
+	ASSERT_EQ(4, o.size());
+
+	/*
+	      0 1
+	    0 0 1
+	    1 2 3
+	 */
+	ASSERT_EQ(0, o.at(0, 0));
+	ASSERT_EQ(1, o.at(0, 1));
+	ASSERT_EQ(2, o.at(1, 0));
+	ASSERT_EQ(3, o.at(1, 1));
+}
+
+TEST(Grid, change_width_maintains_data_consistency)
+{
+	Grid<char> o(2, 2, {0, 1, 2, 3});
+	ASSERT_EQ(4, o.size());
+
+	/*
+	      0 1
+	    0 0 1
+	    1 2 3
+	 */
+	ASSERT_EQ(0, o.at(0, 0));
+	ASSERT_EQ(1, o.at(0, 1));
+	ASSERT_EQ(2, o.at(1, 0));
+	ASSERT_EQ(3, o.at(1, 1));
+
+	o.width(4);
+	ASSERT_EQ(8, o.size());
+
+	/*
+	      0 1 2 3
+	    0 0 1 0 0
+	    1 2 3 0 0
+	 */
+	ASSERT_EQ(0, o.at(0, 0));
+	ASSERT_EQ(1, o.at(0, 1));
+	ASSERT_EQ(0, o.at(0, 2));
+	ASSERT_EQ(0, o.at(0, 3));
+	ASSERT_EQ(2, o.at(1, 0));
+	ASSERT_EQ(3, o.at(1, 1));
+	ASSERT_EQ(0, o.at(1, 2));
+	ASSERT_EQ(0, o.at(1, 3));
+
+	o.width(2);
+	ASSERT_EQ(4, o.size());
+
+	/*
+	      0 1
+	    0 0 1
+	    1 2 3
+	 */
+	ASSERT_EQ(0, o.at(0, 0));
+	ASSERT_EQ(1, o.at(0, 1));
+	ASSERT_EQ(2, o.at(1, 0));
+	ASSERT_EQ(3, o.at(1, 1));
 }

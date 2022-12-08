@@ -39,6 +39,7 @@ public:
 	using value_type = T;  // stl often names this specific member 'value_type'
 	using container_type = std::vector<value_type>;
 
+	// Defer iterators to container
 	using iterator = typename container_type::iterator;
 	using const_iterator = typename container_type::const_iterator;
 
@@ -64,6 +65,8 @@ public:
 	auto at(std::size_t row, std::size_t column) const -> value_type const&;
 	auto at(std::size_t row, std::size_t column) -> value_type&;
 
+	[[nodiscard]] auto size() const -> std::size_t;
+
 	// TODO: operator()(row,column) for at() shorthand
 
 	auto begin() -> iterator;
@@ -88,13 +91,13 @@ Grid<T>::Grid(std::size_t width, std::size_t height, container_type data)
     , _height(height)
     , _data(data)
 {
-	bool data_matches_size = data.size() == _width * _height;
+	bool data_matches_size = size() == data.size();
 
 	if (!data_matches_size) {
 		bool data_is_default = data.empty();
 
 		if (data_is_default) {
-			_data.resize(_width * _height);
+			_data.resize(size());
 		}
 		else {
 			throw std::domain_error("Dimensions do not match size of provided data");
@@ -111,7 +114,22 @@ auto Grid<T>::width() const -> std::size_t
 template <typename T>
 void Grid<T>::width(std::size_t width)
 {
-	// TODO: Resize data preserving shape
+	if (width > _width) {
+		// make me bigger
+		auto const size_delta = width - _width;
+		for (auto i {size()}; i > 0; i -= _width) {
+			_data.insert(_data.begin() + i, size_delta, {});
+		}
+	}
+	else if (width < _width) {
+		// make me smaller
+		auto const size_delta = _width - width;
+		for (auto i {size()}; i > 0; i -= _width) {
+			auto current_pos = _data.begin() + i;
+			_data.erase(current_pos - size_delta, current_pos);
+		}
+	}
+
 	_width = width;
 }
 
@@ -125,6 +143,7 @@ template <typename T>
 void Grid<T>::height(std::size_t height)
 {
 	_height = height;
+	_data.resize(size());
 }
 
 template <typename T>
@@ -157,6 +176,12 @@ auto Grid<T>::at(std::size_t row, std::size_t column) -> value_type&
 {
 	auto index = element_index(row, column);
 	return _data[index];
+}
+
+template <typename T>
+auto Grid<T>::size() const -> std::size_t
+{
+	return _width * _height;
 }
 
 template <typename T>
