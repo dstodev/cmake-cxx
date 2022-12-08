@@ -114,8 +114,12 @@ auto Grid<T>::width() const -> std::size_t
 template <typename T>
 void Grid<T>::width(std::size_t width)
 {
+	// iterators in this function start from size() and iterate backwards
+	// to preserve data-index continuity.
+
 	if (width > _width) {
 		// make me bigger
+		_data.reserve(width * _height);
 		auto const size_delta = width - _width;
 		for (auto i {size()}; i > 0; i -= _width) {
 			_data.insert(_data.begin() + i, size_delta, {});
