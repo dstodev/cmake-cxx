@@ -14,6 +14,10 @@ set(fn_name "expect")
 		not count toward the number of expect() failures, so will not contribute toward
 		emitting message(FATAL_ERROR).
 
+	MESSAGE "custom-error-message"
+		If provided and expect() fails, custom-error-message emits instead of the
+		default warning message.
+
 	Description
 	-----------
 	expect() is useful to assert that the project is "working as intended", and notify
@@ -84,9 +88,10 @@ function(${fn_name})
 
 	set(prefix "__${fn_name}_args")
 	# cmake_parse_arguments() will escape list semicolons, etc.
-	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "SAFE" "" "")
+	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "SAFE" "MESSAGE" "")
 	set(argv "${${prefix}_UNPARSED_ARGUMENTS}")
 	set(safe ${${prefix}_SAFE})
+	set(msg ${${prefix}_MESSAGE})
 
 	# Replace empty strings with literal quote pairs
 	string(REGEX REPLACE "^;" "\"\";" argv "${argv}")
@@ -97,9 +102,13 @@ function(${fn_name})
 	# Avoid string(JOIN " " argv ${argv}) because it un-escapes passed-in lists
 	string(REGEX REPLACE "([^\\]);" "\\1 " argv "${argv}")
 
-	get_filename_component(file ${CMAKE_CURRENT_LIST_FILE} NAME)
-	string(REPLACE "\"" "\\\"" expr "${argv}")  # double-escape quotes for message
-	set(pretty_message "${fn_name}(${expr}) failed in file ${file}:0")
+	if(msg)
+		set(pretty_message "${msg}")
+	else()
+		get_filename_component(file ${CMAKE_CURRENT_LIST_FILE} NAME)
+		string(REPLACE "\"" "\\\"" expr "${argv}")  # double-escape quotes for message
+		set(pretty_message "${fn_name}(${expr}) failed in file ${file}:0")
+	endif()
 
 	# Uses cmake_language(EVAL CODE) https://cmake.org/cmake/help/latest/command/cmake_language.html#evaluating-code
 	# to handle empty strings in ${argv}:
@@ -172,9 +181,15 @@ endfunction()
 test_expect()
 
 function(test_expect_safe)
-	set(CMAKE_MESSAGE_LOG_LEVEL ERROR)  # comment-out to check error output
+	set(CMAKE_MESSAGE_LOG_LEVEL ERROR)  # comment-out to check error output for this function
 	expect(SAFE FALSE)
 	expect(FALSE SAFE)
 	expect("1" STREQUAL SAFE "2")  # try something really weird
 endfunction()
 test_expect_safe()
+
+function(test_expect_message)
+	set(CMAKE_MESSAGE_LOG_LEVEL ERROR)  # comment-out to check error output for this function
+	expect(FALSE MESSAGE "Assertion failed!" SAFE)
+endfunction()
+test_expect_message()
