@@ -9,6 +9,11 @@ set(fn_name "expect")
 	expr
 		Expression to test. Can use the same way as if(), e.g. expect("" IN_LIST mylist)
 
+	SAFE
+		If provided, a warning will still emit if expect() fails, but the call will
+		not count toward the number of expect() failures, so will not contribute toward
+		emitting message(FATAL_ERROR).
+
 	Description
 	-----------
 	expect() is useful to assert that the project is "working as intended", and notify
@@ -79,8 +84,9 @@ function(${fn_name})
 
 	set(prefix "__${fn_name}_args")
 	# cmake_parse_arguments() will escape list semicolons, etc.
-	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "" "" "")
+	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "SAFE" "" "")
 	set(argv "${${prefix}_UNPARSED_ARGUMENTS}")
+	set(safe ${${prefix}_SAFE})
 
 	# Replace empty strings with literal quote pairs
 	string(REGEX REPLACE "^;" "\"\";" argv "${argv}")
@@ -103,7 +109,9 @@ function(${fn_name})
 	# to a literal string e.g. if(NOT (";IN_LIST;mylist")) which evaluates FALSE.
 	set(code "
 		if(NOT (${argv}))
-			_increment_fails()
+			if(NOT ${safe})
+				_increment_fails()
+			endif()
 			message(AUTHOR_WARNING \"${pretty_message}\")
 		endif()
 	")
@@ -161,3 +169,11 @@ function(test_expect)
 	expect("" IN_LIST mylist)
 endfunction()
 test_expect()
+
+function(test_expect_safe)
+	set(CMAKE_MESSAGE_LOG_LEVEL ERROR)  # comment-out to check error output
+	expect(SAFE FALSE)
+	expect(FALSE SAFE)
+	expect("1" STREQUAL SAFE "2")  # try something really weird
+endfunction()
+test_expect_safe()
