@@ -2,10 +2,7 @@ set(fn_name "expect")
 
 #[[
 	expect(expr) asserts that expr evaluates TRUE. If expr instead evaluates FALSE, then
-	expect() "fails", and a warning message is immediately emitted.
-
-	When CMake configuration completes, if any expect() call failed, then
-	a message(FATAL_ERROR) is emitted containing the number of failed calls.
+	this expect() call "fails", and a warning message is immediately emitted.
 
 	To use this module, include the module as early as possible (preferably
 	near the top of the top-level CMakeLists.txt):
@@ -14,13 +11,13 @@ set(fn_name "expect")
 	list(APPEND CMAKE_PREFIX_PATH directory/containing/this/file)
 	find_package(Expect CONFIG REQUIRED)
 
-	When applicable, expect() will emit message(FATAL_ERROR) once the CMake directory
-	which first included this module finishes configuring. For this reason, developers
-	should include this module only once close to the top of the top-level CMakeLists.txt
-	and all CMake files in the project may "assume" that expect() exists, almost as if
-	it were a builtin command.
+	If any expect() call fails, emits message(FATAL_ERROR) once the CMake directory
+	which first includes this module finishes configuring. For this reason, developers
+	should include this module only once near the top of the top-level CMakeLists.txt,
+	and all CMake files in the project may assume that expect() exists, almost as if
+	it were a built-in command.
 
-	if all expect() calls succeed, a message is emitted containing the number of
+	If all expect() calls succeed, emits a message containing the total number of
 	tested expressions.
 
 	Because other CMake modules may use expect() for testing, include this module
@@ -127,12 +124,11 @@ cmake_language(DEFER CALL report_${fn_name}_calls)  # https://cmake.org/cmake/he
 cmake_language(DEFER CALL error_if_any_${fn_name}_fail)
 
 function(test_expect)
-	set(mylist "1;2;")  # trailing semicolon puts "empty string" i.e. "" at end
-
 	expect("" STREQUAL "")
 	expect(TRUE)
 	expect(NOT FALSE)
 
+	set(mylist "1;2;")  # trailing semicolon puts "empty string" i.e. "" at end
 	# unset(mylist)  # uncomment to check error output
 	expect(1 IN_LIST mylist)
 	expect(2 IN_LIST mylist)
@@ -140,3 +136,11 @@ function(test_expect)
 	expect("" IN_LIST mylist)
 endfunction()
 test_expect()
+
+function(test_example)
+	set(mylist "1;2")
+	expect(1 IN_LIST mylist)
+	expect(2 IN_LIST mylist)
+	expect(NOT 3 IN_LIST mylist)
+endfunction()
+test_example()
