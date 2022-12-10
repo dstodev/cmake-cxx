@@ -1,5 +1,57 @@
 set(fn_name "expect")
 
+#[[
+	expect(expr) asserts that expr evaluates TRUE. If expr instead evaluates FALSE, then
+	expect() "fails", and a warning message is immediately emitted.
+
+	When CMake configuration completes, if any expect() call failed, then
+	a message(FATAL_ERROR) is emitted containing the number of failed calls.
+
+	To use this module, include the module as early as possible (preferably
+	near the top of the top-level CMakeLists.txt):
+
+	cmake_minimum_required(VERSION 3.18)
+	list(APPEND CMAKE_PREFIX_PATH directory/containing/this/file)
+	find_package(Expect CONFIG REQUIRED)
+
+	When applicable, expect() will emit message(FATAL_ERROR) once the CMake directory
+	which first included this module finishes configuring. For this reason, developers
+	should include this module only once close to the top of the top-level CMakeLists.txt
+	and all CMake files in the project may "assume" that expect() exists, almost as if
+	it were a builtin command.
+
+	if all expect() calls succeed, a message is emitted containing the number of
+	tested expressions.
+
+	Because other CMake modules may use expect() for testing, include this module
+	before other modules are loaded with find_package() or similar.
+
+	Developers should place include_guard(GLOBAL) before expect() tests so that they
+	run only once when modules calling expect() are, for example, included with
+	find_package() in multiple directories. For each file using expect(), this guard
+	should come before the first call to expect(), but only once.
+
+	If developers fail to use include_guard(GLOBAL) before expect() tests, then printed
+	metrics (number of expect() pass/fail) are invalidated, as some calls will likely run
+	multiple times, counting as multiple pass/fails.
+
+	Parameters
+	----------
+	expr
+		Expression to test. Can use the same way as if(), e.g. expect("" IN_LIST mylist)
+
+	Example
+	-------
+	include_guard(GLOBAL)  # Always put this before expect() tests to run them only once
+
+	function(test_example)
+		set(mylist "1;2")
+		expect(1 IN_LIST mylist)
+		expect(2 IN_LIST mylist)
+		expect(NOT 3 IN_LIST mylist)
+	endfunction()
+	test_example()
+]]
 function(${fn_name})
 	_increment_calls()
 
@@ -66,7 +118,7 @@ function(error_if_any_${fn_name}_fail)
 	endif()
 endfunction()
 
-include_guard(GLOBAL)  # Always put this before expect() tests to run only once
+include_guard(GLOBAL)  # Always put this before expect() tests to run them only once
 
 _set_fails(0)
 _set_calls(0)
