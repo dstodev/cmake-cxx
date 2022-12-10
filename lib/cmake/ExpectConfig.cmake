@@ -75,10 +75,10 @@ set(fn_name "expect")
 
 	Disabling expect():
 
-	Because modules may assume that expect() exists "as a built-in", expect() cannot
-	be removed, but can easily be replaced. To disable expect(), simply do not include
-	the Expect module, and instead define a simple replacement function that takes
-	any amount of parameters but has no behavior:
+	Because modules may assume that expect() exists "as a built-in command", expect()
+	is not easily removable, but is easily replaceable. To disable expect(), simply
+	do not include the Expect module, and instead define a simple replacement function
+	that takes any amount of parameters but has no behavior:
 
 		function(expect)
 		endfunction()
