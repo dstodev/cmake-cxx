@@ -102,11 +102,12 @@ function(${fn_name})
 	set(pretty_message "${fn_name}(${expr}) failed in file ${file}:0")
 
 	# Uses cmake_language(EVAL CODE) https://cmake.org/cmake/help/latest/command/cmake_language.html#evaluating-code
-	# to handle empty strings in ${argv}
-	#   e.g. argv: ";IN_LIST;mylist" fails because it expands to if(NOT (IN_LIST mylist)
-	#        so replace empty strings with quotes so it expands instead to if(NOT ("" IN_LIST mylist)
-	# This cannot be done using if(NOT ("${argv}")) in the current scope, as it would instead expand
-	# to a literal string e.g. if(NOT (";IN_LIST;mylist")) which evaluates FALSE.
+	# to handle empty strings in ${argv}:
+	# If argv contains an empty string e.g. at the front: ;IN_LIST;mylist
+	# the generated syntax is invalid because it becomes if(NOT (IN_LIST mylist)
+	# so replace empty strings with quotes so it becomes if(NOT ("" IN_LIST mylist)
+	# Cannot use if(NOT ("${argv}")) instead, as it becomes if(NOT (";IN_LIST;mylist"))
+	# which evaluates like if(FALSE).
 	set(code "
 		if(NOT (${argv}))
 			if(NOT ${safe})
