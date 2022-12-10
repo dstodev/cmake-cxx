@@ -4,6 +4,13 @@ set(fn_name "expect")
 	expect(expr) asserts that expr evaluates TRUE. If expr instead evaluates FALSE, then
 	the expect() call "fails", and a warning message is immediately emitted.
 
+	Parameters
+	----------
+	expr
+		Expression to test. Can use the same way as if(), e.g. expect("" IN_LIST mylist)
+
+	Description
+	-----------
 	expect() is useful to assert that the project is "working as intended", and notify
 	developers when it is not:
 
@@ -31,6 +38,19 @@ set(fn_name "expect")
 
 	Using expect() to unit test CMake code:
 
+	Using a simple idiom, developers may test CMake code by defining a function
+	to introduce scope & purpose, then setting up the environment and calling expect():
+
+		include_guard(GLOBAL)  # Always put this before expect() tests to run them only once
+
+		function(test_example)
+			set(mylist "1;2")
+			expect(1 IN_LIST mylist)
+			expect(2 IN_LIST mylist)
+			expect(NOT 3 IN_LIST mylist)
+		endfunction()
+		test_example()
+
 	Developers should place include_guard(GLOBAL) before expect() tests so the tests
 	run only once when modules calling expect() are, for example, included more than
 	once. For each file using expect(), this guard should come before the first call
@@ -40,9 +60,9 @@ set(fn_name "expect")
 	printed metrics (number of expect() pass/fail) are invalidated, as some calls will
 	likely run multiple times, counting as multiple pass/fails.
 
-	When used as suggested, expect() tests every configure. This helps
-	"unit test" CMake code every time the project is configured, asserting that the
-	project configures in a good state.
+	When used as suggested, expect() tests run every CMake configure. This means CMake code
+	is tested every time the project is configured, asserting that the project configures
+	in a good state.
 
 	Disabling expect():
 
@@ -53,23 +73,6 @@ set(fn_name "expect")
 
 		function(expect)
 		endfunction()
-
-	Parameters
-	----------
-	expr
-		Expression to test. Can use the same way as if(), e.g. expect("" IN_LIST mylist)
-
-	Example
-	-------
-	include_guard(GLOBAL)  # Always put this before expect() tests to run them only once
-
-	function(test_example)
-		set(mylist "1;2")
-		expect(1 IN_LIST mylist)
-		expect(2 IN_LIST mylist)
-		expect(NOT 3 IN_LIST mylist)
-	endfunction()
-	test_example()
 ]]
 function(${fn_name})
 	_increment_calls()
@@ -158,11 +161,3 @@ function(test_expect)
 	expect("" IN_LIST mylist)
 endfunction()
 test_expect()
-
-function(test_example)
-	set(mylist "1;2")
-	expect(1 IN_LIST mylist)
-	expect(2 IN_LIST mylist)
-	expect(NOT 3 IN_LIST mylist)
-endfunction()
-test_example()
