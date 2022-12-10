@@ -4,6 +4,11 @@ set(fn_name "expect")
 	expect(expr) asserts that expr evaluates TRUE. If expr instead evaluates FALSE, then
 	the expect() call "fails", and a warning message is immediately emitted.
 
+	expect() is useful to assert that the project is "working as intended", and notify
+	developers when it is not:
+
+		expect(CMAKE_BUILD_TYPE MATCHES "Debug|Release")
+
 	To use this module, include the module as early as possible (preferably
 	near the top of the top-level CMakeLists.txt):
 
@@ -18,28 +23,33 @@ set(fn_name "expect")
 	it were a built-in command.
 
 	Once the CMake directory which first includes this module finishes configuring,
-	emits a message containing the total number of tested expressions.
+	emits a message containing the total number of expect() calls.
 
-	Because other CMake modules may use expect() for testing, include this module
-	before other modules are loaded with find_package() or similar.
+	Developers should take care to avoid duplicating expect() calls by e.g. including
+	them multiple times with find_package() or include(). If calls are duplicated,
+	printed metrics will also contain duplicates.
 
-	Developers should place include_guard(GLOBAL) before expect() tests so that they
-	run only once when modules calling expect() are, for example, included with
-	find_package() in multiple directories. For each file using expect(), this guard
-	should come before the first call to expect(), but only once.
+	Using expect() to unit test CMake code:
 
-	If developers fail to use include_guard(GLOBAL) before expect() tests, then printed
-	metrics (number of expect() pass/fail) are invalidated, as some calls will likely run
-	multiple times, counting as multiple pass/fails.
+	Developers should place include_guard(GLOBAL) before expect() tests so the tests
+	run only once when modules calling expect() are, for example, included more than
+	once. For each file using expect(), this guard should come before the first call
+	to expect(), but only once.
 
-	When used as suggested, expect() tests expressions every configure. This helps
+	If module developers fail to use include_guard(GLOBAL) before expect() tests, then
+	printed metrics (number of expect() pass/fail) are invalidated, as some calls will
+	likely run multiple times, counting as multiple pass/fails.
+
+	When used as suggested, expect() tests every configure. This helps
 	"unit test" CMake code every time the project is configured, asserting that the
 	project configures in a good state.
 
-	However, if tests are to be disabled, modules assuming that expect() exists "as a
-	built-in" will start to fail, as expect() will no longer exist. Thus, to disable tests,
-	simply do not include the Expect module, and instead define a simple replacement
-	function that takes any amount of parameters but has no behavior:
+	Disabling expect():
+
+	Because modules may assume that expect() exists "as a built-in", expect() cannot
+	be removed, but can easily be replaced. To disable expect(), simply do not include
+	the Expect module, and instead define a simple replacement function that takes
+	any amount of parameters but has no behavior:
 
 		function(expect)
 		endfunction()

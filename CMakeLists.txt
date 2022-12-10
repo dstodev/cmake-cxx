@@ -8,6 +8,8 @@ find_package(Expect CONFIG REQUIRED)  # some modules use this module
 find_package(SetupBuildMode CONFIG REQUIRED)
 setup_build_mode("Release")
 
+expect(CMAKE_BUILD_TYPE MATCHES "Debug|Release")
+
 project(Project)
 
 option(BUILD_SHARED_LIBS "Build a shared artifact (.dll, .so, .dylib)?" TRUE)
