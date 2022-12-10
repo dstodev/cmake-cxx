@@ -4,11 +4,6 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/lib/cmake")  # mostly f
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/lib/cmake")  # mostly for find_package()
 
 find_package(Expect CONFIG REQUIRED)  # some modules use this module
-# disable expect() tests by removing the package and defining a simple stub
-# replacement function:
-#   function(expect)
-#   endfunction()
-# so modules which call expect() can still be used.
 
 find_package(SetupBuildMode CONFIG REQUIRED)
 setup_build_mode("Release")

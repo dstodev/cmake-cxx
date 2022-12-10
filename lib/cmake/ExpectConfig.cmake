@@ -2,14 +2,14 @@ set(fn_name "expect")
 
 #[[
 	expect(expr) asserts that expr evaluates TRUE. If expr instead evaluates FALSE, then
-	this expect() call "fails", and a warning message is immediately emitted.
+	the expect() call "fails", and a warning message is immediately emitted.
 
 	To use this module, include the module as early as possible (preferably
 	near the top of the top-level CMakeLists.txt):
 
-	cmake_minimum_required(VERSION 3.18)
-	list(APPEND CMAKE_PREFIX_PATH directory/containing/this/file)
-	find_package(Expect CONFIG REQUIRED)
+		cmake_minimum_required(VERSION 3.18)
+		list(APPEND CMAKE_PREFIX_PATH directory/containing/this/file)
+		find_package(Expect CONFIG REQUIRED)
 
 	If any expect() call fails, emits message(FATAL_ERROR) once the CMake directory
 	which first includes this module finishes configuring. For this reason, developers
@@ -17,8 +17,8 @@ set(fn_name "expect")
 	and all CMake files in the project may assume that expect() exists, almost as if
 	it were a built-in command.
 
-	If all expect() calls succeed, emits a message containing the total number of
-	tested expressions.
+	Once the CMake directory which first includes this module finishes configuring,
+	emits a message containing the total number of tested expressions.
 
 	Because other CMake modules may use expect() for testing, include this module
 	before other modules are loaded with find_package() or similar.
@@ -31,6 +31,18 @@ set(fn_name "expect")
 	If developers fail to use include_guard(GLOBAL) before expect() tests, then printed
 	metrics (number of expect() pass/fail) are invalidated, as some calls will likely run
 	multiple times, counting as multiple pass/fails.
+
+	When used as suggested, expect() tests expressions every configure. This helps
+	"unit test" CMake code every time the project is configured, asserting that the
+	project configures in a good state.
+
+	However, if tests are to be disabled, modules assuming that expect() exists "as a
+	built-in" will start to fail, as expect() will no longer exist. Thus, to disable tests,
+	simply do not include the Expect module, and instead define a simple replacement
+	function that takes any amount of parameters but has no behavior:
+
+		function(expect)
+		endfunction()
 
 	Parameters
 	----------
