@@ -25,7 +25,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")  # .exe, .dll, .
 set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/package_stage")  # https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html
 
 include(CPack)
-include(CTest)
 
 # Using Conan integration approach from: https://github.com/conan-io/cmake-conan
 include(lib/third-party/conan.cmake)
