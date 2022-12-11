@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 script_dir="$(cd "$(dirname "$0")" && pwd -P)"
 source_dir="$script_dir/.."
