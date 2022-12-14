@@ -10,9 +10,14 @@ set(fn_name "expect")
 		Expression to test. Can use the same way as if(), e.g. expect("" IN_LIST mylist)
 
 	SAFE
-		If provided, a warning will still emit if expect() fails, but the call will
-		not count toward the number of expect() failures, so will not contribute toward
-		emitting message(FATAL_ERROR).
+		If provided and expect() fails, the call will not count toward the number
+		of expect() failures, so will not contribute toward emitting message(FATAL_ERROR).
+		Still emits a warning message on failure.
+
+	REQUIRED
+		If provided and expect() fails, emits message(FATAL_ERROR) immediately
+		instead of a warning.
+		Because it emits FATAL_ERROR immediately, SAFE has no effect.
 
 	MESSAGE "custom-error-message"
 		If provided and expect() fails, custom-error-message emits instead of the
@@ -88,10 +93,11 @@ function(${fn_name})
 
 	set(prefix "__${fn_name}_args")
 	# cmake_parse_arguments() will escape list semicolons, etc.
-	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "SAFE" "MESSAGE" "")
+	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "SAFE;REQUIRED" "MESSAGE" "")
 	set(argv "${${prefix}_UNPARSED_ARGUMENTS}")
-	set(safe ${${prefix}_SAFE})
 	set(msg ${${prefix}_MESSAGE})
+	set(required ${${prefix}_REQUIRED})
+	set(safe ${${prefix}_SAFE})
 
 	# Replace empty strings with literal quote pairs
 	string(REGEX REPLACE "^;" "\"\";" argv "${argv}")
@@ -101,6 +107,12 @@ function(${fn_name})
 	# Manually separate list by replacing non-escaped semicolons with space " "
 	# Avoid string(JOIN " " argv ${argv}) because it un-escapes passed-in lists
 	string(REGEX REPLACE "([^\\]);" "\\1 " argv "${argv}")
+
+	if(${${prefix}_REQUIRED})
+		set(message_mode FATAL_ERROR)
+	else()
+		set(message_mode AUTHOR_WARNING)
+	endif()
 
 	if(msg)
 		set(pretty_message "${msg}")
@@ -122,7 +134,7 @@ function(${fn_name})
 			if(NOT ${safe})
 				_increment_fails()
 			endif()
-			message(AUTHOR_WARNING \"${pretty_message}\")
+			message(${message_mode} \"${pretty_message}\")
 		endif()
 	")
 	cmake_language(EVAL CODE "${code}")
@@ -193,3 +205,9 @@ function(test_expect_message)
 	expect(FALSE MESSAGE "Assertion failed!" SAFE)
 endfunction()
 test_expect_message()
+
+function(test_required)
+	expect(TRUE REQUIRED)
+	#expect(FALSE MESSAGE "Comment-out this test!" REQUIRED)  # uncomment to check error output
+endfunction()
+test_required()
