@@ -123,12 +123,10 @@ function(${fn_name})
 	endif()
 
 	#[[
-		Uses cmake_language(EVAL CODE) https://cmake.org/cmake/help/latest/command/cmake_language.html#evaluating-code
-		to handle empty strings in ${argv}:
-
 		If called like expect("" IN_LIST mylist), then "${argv}" is ";IN_LIST;mylist"
 		Evaluating argv like this is invalid because it becomes if(NOT (IN_LIST mylist)
-		so replace empty strings with quotes so it becomes if(NOT ("" IN_LIST mylist)
+		So, replace empty strings with literal quotes to become if(NOT ("" IN_LIST mylist)
+		when evaluated by cmake_language(EVAL CODE)  https://cmake.org/cmake/help/latest/command/cmake_language.html#evaluating-code
 
 		Cannot use if(NOT ("${argv}")) instead, as it becomes if(NOT (";IN_LIST;mylist"))
 		which evaluates like if(FALSE).
