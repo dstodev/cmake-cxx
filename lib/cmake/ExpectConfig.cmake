@@ -44,13 +44,13 @@ set(fn_name "expect")
 	it were a built-in command.
 
 	Once the CMake directory which first includes this module finishes configuring,
-	emits a message containing the total number of expect() calls.
+	emits a message conveying the total number of expect() calls.
 
 	Developers should take care to avoid duplicating expect() calls by e.g. including
 	them multiple times with find_package() or include(). If calls are duplicated,
-	printed metrics will also contain duplicates.
+	printed metrics will contain duplicates.
 
-	Using expect() to unit test CMake code:
+	-- Using expect() to unit test CMake code:
 
 	Using a simple idiom, developers may test CMake code by defining a function
 	to introduce scope & purpose, then setting up the environment and calling expect():
@@ -78,7 +78,7 @@ set(fn_name "expect")
 	is tested every time the project is configured, asserting that the project configures
 	in a good state.
 
-	Disabling expect():
+	-- Disabling expect():
 
 	Because modules may assume that expect() exists "as a built-in command", expect()
 	is not easily removable, but is easily replaceable. To disable expect(), simply
@@ -122,13 +122,17 @@ function(${fn_name})
 		set(pretty_message "${fn_name}(${expr}) failed in file ${file}:0")
 	endif()
 
-	# Uses cmake_language(EVAL CODE) https://cmake.org/cmake/help/latest/command/cmake_language.html#evaluating-code
-	# to handle empty strings in ${argv}:
-	# If argv contains an empty string e.g. at the front: ;IN_LIST;mylist
-	# the generated syntax is invalid because it becomes if(NOT (IN_LIST mylist)
-	# so replace empty strings with quotes so it becomes if(NOT ("" IN_LIST mylist)
-	# Cannot use if(NOT ("${argv}")) instead, as it becomes if(NOT (";IN_LIST;mylist"))
-	# which evaluates like if(FALSE).
+	#[[
+		Uses cmake_language(EVAL CODE) https://cmake.org/cmake/help/latest/command/cmake_language.html#evaluating-code
+		to handle empty strings in ${argv}:
+
+		If called like expect("" IN_LIST mylist), then "${argv}" is ";IN_LIST;mylist"
+		Evaluating argv like this is invalid because it becomes if(NOT (IN_LIST mylist)
+		so replace empty strings with quotes so it becomes if(NOT ("" IN_LIST mylist)
+
+		Cannot use if(NOT ("${argv}")) instead, as it becomes if(NOT (";IN_LIST;mylist"))
+		which evaluates like if(FALSE).
+	]]
 	set(code "
 		if(NOT (${argv}))
 			if(NOT ${safe})
@@ -183,7 +187,7 @@ function(test_expect)
 	expect(TRUE)
 	expect(NOT FALSE)
 
-	set(mylist "1;2;")  # trailing semicolon puts "empty string" i.e. "" at end
+	set(mylist "1;2;")  # trailing semicolon puts empty string i.e. "" at end
 	# unset(mylist)  # uncomment to check error output
 	expect(1 IN_LIST mylist)
 	expect(2 IN_LIST mylist)
