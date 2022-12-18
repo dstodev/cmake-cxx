@@ -1,7 +1,7 @@
 #include <Eigen/Dense>
 #include <gtest/gtest.h>
 
-TEST(Links, eigen)
+TEST(Link, eigen)
 {
 	Eigen::Matrix2d o;
 	(void) o;

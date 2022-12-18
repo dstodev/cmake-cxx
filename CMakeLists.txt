@@ -33,11 +33,13 @@ set(conan_build_dir "${PROJECT_BINARY_DIR}/conan")
 list(APPEND CMAKE_MODULE_PATH "${conan_build_dir}")
 
 conan_cmake_autodetect(conan_settings)  # https://github.com/conan-io/cmake-conan#conan_cmake_autodetect
+message(STATUS "Autodetected Conan settings: ${conan_settings}")
+
 conan_cmake_install(PATH_OR_REFERENCE "${CMAKE_CURRENT_LIST_DIR}/conanfile.txt"  # https://github.com/conan-io/cmake-conan#conan_cmake_install
 	BUILD missing
+	INSTALL_FOLDER ${conan_build_dir}
 	REMOTE conancenter
 	SETTINGS ${conan_settings}
-	INSTALL_FOLDER ${conan_build_dir}
 )
 
 add_subdirectory(src)

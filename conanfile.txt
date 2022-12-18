@@ -2,9 +2,13 @@
 gtest/1.11.0@
 benchmark/1.6.0@
 eigen/3.4.0@
+opencv/4.5.5@
 
 [generators]
 cmake_find_package
+
+[options]
+opencv:with_ffmpeg=False
 
 [imports]
 bin, *.dll -> ../bin  # put dll files in INSTALL_FOLDER/../bin (project bin dir)

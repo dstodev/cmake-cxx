@@ -1,6 +1,5 @@
 # 2022 Daniel Stotts
-# Version ~50
-
+# Version ~52
 ---
 BasedOnStyle: LLVM
 ColumnLimit: 120
@@ -31,6 +30,7 @@ AlignAfterOpenBracket: Align
 AlignConsecutiveMacros: Consecutive
 AlignEscapedNewlines: DontAlign
 AlignOperands: AlignAfterOperator
+AlignTrailingComments: false
 
 # Penalties
 PenaltyBreakAssignment: 500
@@ -52,7 +52,7 @@ BreakConstructorInitializers: BeforeComma
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 IncludeBlocks: Preserve
 IndentPPDirectives: None
-MaxEmptyLinesToKeep: 2
+MaxEmptyLinesToKeep: 1
 PointerAlignment: Left
 ReflowComments: true
 SortIncludes: CaseSensitive
