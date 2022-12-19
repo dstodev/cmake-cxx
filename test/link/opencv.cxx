@@ -40,6 +40,13 @@ static constexpr unsigned char RGBWCMYK[] {
 };
 // clang-format on
 
+Mat convert(InputArray array, int conversion_code)
+{
+	Mat converted(array.size(), array.type());
+	cvtColor(array, converted, conversion_code);
+	return converted;
+}
+
 TEST(Sanity, opencv_load_rgb)
 {
 	Mat pixels(2, 4, CV_8UC3, (void*) RGBWCMYK);
@@ -56,9 +63,24 @@ TEST(Sanity, opencv_load_rgb)
 	/* K */ EXPECT_EQ(Vec3b({0, 0, 0}), pixels.at<Vec3b>(1, 3));
 
 	// OpenCV expects BGR color space
-	Mat converted(pixels.size(), pixels.type());
-	cvtColor(pixels, converted, COLOR_RGB2BGR);
+	pixels = convert(pixels, COLOR_RGB2BGR);
 
 	// Save visual-inspection-test image
-	imwrite("opencv-sanity-check-rgbwcmyk.png", converted);
+	imwrite("opencv-sanity-check-rgbwcmyk.png", pixels);
+}
+
+TEST(Sanity, opencv_rgb_to_yuv444)
+{
+	Mat pixels(2, 4, CV_8UC3, (void*) RGBWCMYK);
+	pixels = convert(pixels, COLOR_RGB2YUV);
+	pixels = convert(pixels, COLOR_YUV2BGR);
+	imwrite("opencv-sanity-check-yuv444.png", pixels);
+}
+
+TEST(Sanity, opencv_rgb_to_yuv420)
+{
+	Mat pixels(2, 4, CV_8UC3, (void*) RGBWCMYK);
+	pixels = convert(pixels, COLOR_RGB2YUV_YV12);
+	pixels = convert(pixels, COLOR_YUV2BGR_YV12);
+	imwrite("opencv-sanity-check-yuv420.png", pixels);
 }
