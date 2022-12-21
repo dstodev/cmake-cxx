@@ -3,13 +3,6 @@
 
 #include <compare>
 
-#define generic_operator(symbol) \
-	template <typename... Args> \
-	[[maybe_unused]] auto& operator symbol([[maybe_unused]] Args... args) \
-	{ \
-		return *this; \
-	}
-
 namespace project {
 
 class placeholder_t
@@ -38,6 +31,13 @@ public:
 	placeholder_t const& operator()(Ts... _) const
 	{
 		return *this;
+	}
+
+#define generic_operator(symbol) \
+	template <typename... Args> \
+	[[maybe_unused]] auto& operator symbol([[maybe_unused]] Args... args) \
+	{ \
+		return *this; \
 	}
 
 	generic_operator(+);  // Semicolons for correct auto-format

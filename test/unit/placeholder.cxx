@@ -57,7 +57,6 @@ TEST(Placeholder, operators_assignment)
 TEST(Placeholder, operators_arithmetic)
 {
 	placeholder_t o, i;
-
 	operate(+);
 	operate(-);
 	operate(*);
@@ -68,7 +67,6 @@ TEST(Placeholder, operators_arithmetic)
 TEST(Placeholder, operators_compound)
 {
 	placeholder_t o, i;
-
 	operate(+=);
 	operate(-=);
 	operate(*=);
@@ -81,13 +79,12 @@ TEST(Placeholder, operators_compound)
 TEST(Placeholder, operators_comparison)
 {
 	placeholder_t o, i;
-
-	auto r = o == i;
-	r = o != i;
-	r = o < i;
-	r = o > i;
-	r = o <= i;
-	r = o >= i;
+	ASSERT_TRUE(o == i);
+	ASSERT_FALSE(o != i);
+	ASSERT_FALSE(o < i);
+	ASSERT_FALSE(o > i);
+	ASSERT_TRUE(o <= i);
+	ASSERT_TRUE(o >= i);
 }
 
 TEST(Placeholder, operator_brackets)
