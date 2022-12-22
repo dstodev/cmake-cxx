@@ -3,8 +3,6 @@
 
 #include <compare>
 
-namespace project {
-
 class placeholder_t
 {
 public:
@@ -51,7 +49,5 @@ public:
 	generic_operator(%);
 	generic_operator(%=);
 };
-
-}  // namespace project
 
 #endif  // PLACEHOLDER_HXX

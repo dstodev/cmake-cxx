@@ -34,7 +34,7 @@ target_compile_features(${target_name}
 	This call to target_precompile_headers() affects development builds
 	(i.e. not sources in an install() context) by prepending
 	'#include <placeholder.hxx>' to all sources, exposing the
-	project::placeholder_t type for developer utility.
+	placeholder_t type for developer utility.
 
 	This behavior applies in a BUILD_INTERFACE context and not in a
 	INSTALL_INTERFACE context, meaning that:

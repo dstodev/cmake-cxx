@@ -5,8 +5,6 @@
 
 #include <utility>
 
-using namespace project;
-
 TEST(Placeholder, constructor_default)
 {
 	placeholder_t o;

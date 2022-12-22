@@ -65,21 +65,21 @@ TEST(Grid, construct_with_data)
 
 TEST(Grid, at_horizontal_rectangle)
 {
-	/*    0 1 2 3 4   a b c d e f g h i j
-	    0 a b c d e   0 1 2 3 4 5 6 7 8 9
-	    1 f g h i j   */
+	/*  0 1 2 3 4   a b c d e f g h i j
+	  0 a b c d e   0 1 2 3 4 5 6 7 8 9
+	  1 f g h i j  */
 	Grid<char> o(5, 2, {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'});
 	ASSERT_EQ('h', o.at(1, 2)) << o;
 }
 
 TEST(Grid, at_vertical_rectangle)
 {
-	/*    0 1   a b c d e f g h i j
-	    0 a b   0 1 2 3 4 5 6 7 8 9
-	    1 c d
-	    2 e f
-	    3 g h
-	    4 i j   */
+	/*  0 1   a b c d e f g h i j
+	  0 a b   0 1 2 3 4 5 6 7 8 9
+	  1 c d
+	  2 e f
+	  3 g h
+	  4 i j  */
 	Grid<char> o(2, 5, {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'});
 	ASSERT_EQ('f', o.at(2, 1)) << o;
 }
@@ -177,9 +177,9 @@ TEST(Grid, change_height_maintains_data_consistency)
 	Grid<char> o(2, 2, {0, 1, 2, 3});
 	ASSERT_EQ(4, o.size());
 
-	/*    0 1
-	    0 0 1
-	    1 2 3  */
+	/*  0 1
+	  0 0 1
+	  1 2 3  */
 	ASSERT_EQ(0, o.at(0, 0));
 	ASSERT_EQ(1, o.at(0, 1));
 	ASSERT_EQ(2, o.at(1, 0));
@@ -188,11 +188,11 @@ TEST(Grid, change_height_maintains_data_consistency)
 	o.height(4);
 	ASSERT_EQ(8, o.size());
 
-	/*    0 1
-	    0 0 1
-	    1 2 3
-	    2 0 0
-	    3 0 0  */
+	/*  0 1
+	  0 0 1
+	  1 2 3
+	  2 0 0
+	  3 0 0  */
 	ASSERT_EQ(0, o.at(0, 0));
 	ASSERT_EQ(1, o.at(0, 1));
 	ASSERT_EQ(2, o.at(1, 0));
@@ -205,9 +205,9 @@ TEST(Grid, change_height_maintains_data_consistency)
 	o.height(2);
 	ASSERT_EQ(4, o.size());
 
-	/*    0 1
-	    0 0 1
-	    1 2 3  */
+	/*  0 1
+	  0 0 1
+	  1 2 3  */
 	ASSERT_EQ(0, o.at(0, 0));
 	ASSERT_EQ(1, o.at(0, 1));
 	ASSERT_EQ(2, o.at(1, 0));
@@ -219,9 +219,9 @@ TEST(Grid, change_width_maintains_data_consistency)
 	Grid<char> o(2, 2, {0, 1, 2, 3});
 	ASSERT_EQ(4, o.size());
 
-	/*    0 1
-	    0 0 1
-	    1 2 3  */
+	/*  0 1
+	  0 0 1
+	  1 2 3  */
 	ASSERT_EQ(0, o.at(0, 0));
 	ASSERT_EQ(1, o.at(0, 1));
 	ASSERT_EQ(2, o.at(1, 0));
@@ -230,9 +230,9 @@ TEST(Grid, change_width_maintains_data_consistency)
 	o.width(4);
 	ASSERT_EQ(8, o.size());
 
-	/*    0 1 2 3
-	    0 0 1 0 0
-	    1 2 3 0 0  */
+	/*  0 1 2 3
+	  0 0 1 0 0
+	  1 2 3 0 0  */
 	ASSERT_EQ(0, o.at(0, 0));
 	ASSERT_EQ(1, o.at(0, 1));
 	ASSERT_EQ(0, o.at(0, 2));
@@ -245,9 +245,9 @@ TEST(Grid, change_width_maintains_data_consistency)
 	o.width(2);
 	ASSERT_EQ(4, o.size());
 
-	/*    0 1
-	    0 0 1
-	    1 2 3  */
+	/*  0 1
+	  0 0 1
+	  1 2 3  */
 	ASSERT_EQ(0, o.at(0, 0));
 	ASSERT_EQ(1, o.at(0, 1));
 	ASSERT_EQ(2, o.at(1, 0));
