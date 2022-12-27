@@ -7,6 +7,10 @@
 
 using namespace project;
 
+#if SUPPORT_EIGEN
+using namespace Eigen;
+#endif
+
 TEST(Grid, construct)
 {
 	Grid<char> o;
@@ -58,7 +62,15 @@ TEST(Grid, construct_with_invalid_data_dimensions)
 TEST(Grid, construct_with_data)
 {
 	Grid<char> o(1, 2, {3, 4});
-	auto& data = o.data();
+	auto* data = o.data();
+	ASSERT_EQ(3, data[0]);
+	ASSERT_EQ(4, data[1]);
+}
+
+TEST(Grid, data_const)
+{
+	Grid<char> const o(1, 2, {3, 4});
+	auto const* data = o.data();
 	ASSERT_EQ(3, data[0]);
 	ASSERT_EQ(4, data[1]);
 }
@@ -119,18 +131,29 @@ TEST(Grid, at_set_column_out_of_bounds)
 	ASSERT_ANY_THROW(o.at(0, 1) = 2) << o;
 }
 
-TEST(Grid, data_const)
-{
-	const Grid<char> o(1, 2, {3, 4});
-	auto const& data = o.data();
-	ASSERT_EQ(3, data[0]);
-	ASSERT_EQ(4, data[1]);
-}
-
 TEST(Grid, at_const)
 {
-	const Grid<char> o(1, 1);
+	Grid<char> const o(1, 1);
 	auto const& element = o.at(0, 0);
+	ASSERT_EQ(0, element);
+}
+
+TEST(Grid, call_operator)
+{
+	Grid<char> o(1, 1);
+
+	ASSERT_EQ(0, o(0, 0));
+	o(0, 0) = 1;
+	ASSERT_EQ(1, o(0, 0));
+
+	ASSERT_ANY_THROW(o(1, 0) = 2) << o;
+	ASSERT_ANY_THROW(o(0, 1) = 2) << o;
+}
+
+TEST(Grid, call_operator_const)
+{
+	Grid<char> const o(1, 1);
+	auto const& element = o(0, 0);
 	ASSERT_EQ(0, element);
 }
 
@@ -253,3 +276,30 @@ TEST(Grid, change_width_maintains_data_consistency)
 	ASSERT_EQ(2, o.at(1, 0));
 	ASSERT_EQ(3, o.at(1, 1));
 }
+
+#if SUPPORT_EIGEN
+TEST(Grid, eigen_interaction)
+{
+	Grid<char> grid(2, 2, {0, 1, 2, 3});
+	/*     x=0  x=1  x=column
+	  y=0  0    1    y=row
+	  y=1  2    3          */
+
+	// Grid is indexed like (row, column) = (y, x)
+	ASSERT_EQ(0, grid(0, 0));
+	ASSERT_EQ(1, grid(0, 1));
+	ASSERT_EQ(2, grid(1, 0));
+	ASSERT_EQ(3, grid(1, 1));
+
+	// Matrix is indexed like (x, y) = (column, row)
+	auto matrix = grid.as_matrix<2, 2>();
+	ASSERT_EQ(0, matrix(0, 0));
+	ASSERT_EQ(1, matrix(1, 0));
+	ASSERT_EQ(2, matrix(0, 1));
+	ASSERT_EQ(3, matrix(1, 1));
+
+	matrix(0, 0) = 4;
+	ASSERT_EQ(4, matrix(0, 0));
+	ASSERT_EQ(0, grid(0, 0));  // grid is unchanged
+}
+#endif  // SUPPORT_EIGEN

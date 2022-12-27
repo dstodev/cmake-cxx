@@ -2,7 +2,7 @@
 
 namespace project {
 
-std::size_t index_2d_to_1d(std::size_t width, std::size_t row, std::size_t column)
+size_t index_2d_to_1d(size_t width, size_t row, size_t column)
 {
 	return row * width + column;
 }

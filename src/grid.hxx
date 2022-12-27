@@ -9,6 +9,10 @@
 #include "utilities.hxx"
 #include <project-api.h>
 
+#if SUPPORT_EIGEN
+#include <Eigen/Dense>
+#endif
+
 namespace project {
 
 template <typename T>
@@ -43,7 +47,7 @@ public:
 	using iterator = typename container_type::iterator;
 	using const_iterator = typename container_type::const_iterator;
 
-	explicit Grid(std::size_t width = 0, std::size_t height = 0, container_type data = {});
+	explicit Grid(size_t width = 0, size_t height = 0, container_type data = {});
 	virtual ~Grid() = default;
 
 	Grid(Grid const& copy) = default;
@@ -52,22 +56,23 @@ public:
 	Grid& operator=(Grid const& copy) = default;
 	Grid& operator=(Grid&& move) noexcept = default;
 
-	[[nodiscard]] auto width() const -> std::size_t;
-	void width(std::size_t width);
+	[[nodiscard]] auto width() const -> size_t;
+	void width(size_t width);
 
-	[[nodiscard]] auto height() const -> std::size_t;
-	void height(std::size_t height);
+	[[nodiscard]] auto height() const -> size_t;
+	void height(size_t height);
 
-	auto data() const -> container_type const&;
-	auto data() -> container_type&;
+	auto data() const -> value_type const*;
+	auto data() -> value_type*;
 	void data(container_type data);  // Uses copy-swap idiom
 
-	auto at(std::size_t row, std::size_t column) const -> value_type const&;
-	auto at(std::size_t row, std::size_t column) -> value_type&;
+	auto at(size_t row, size_t column) const -> value_type const&;
+	auto at(size_t row, size_t column) -> value_type&;
 
-	[[nodiscard]] auto size() const -> std::size_t;
+	auto operator()(size_t row, size_t column) const -> value_type const&;  // Forwards to at()
+	auto operator()(size_t row, size_t column) -> value_type&;  // Forwards to at()
 
-	// TODO: operator()(row,column) for at() shorthand
+	[[nodiscard]] auto size() const -> size_t;
 
 	auto begin() -> iterator;
 	auto begin() const -> const_iterator;
@@ -77,16 +82,21 @@ public:
 	// The '<>' after the operator name indicates that this friend is a template prototype
 	friend std::ostream& operator<< <>(std::ostream& os, Grid<value_type> const& grid);
 
+#if SUPPORT_EIGEN
+	template <size_t U, size_t V>
+	Eigen::Matrix<T, U, V> as_matrix() const;
+#endif
+
 private:
-	std::size_t _width;
-	std::size_t _height;
+	size_t _width;
+	size_t _height;
 	container_type _data;
 
-	[[nodiscard]] auto element_index(std::size_t row, std::size_t column) const -> std::size_t;
+	[[nodiscard]] auto element_index(size_t row, size_t column) const -> size_t;
 };
 
 template <typename T>
-Grid<T>::Grid(std::size_t width, std::size_t height, container_type data)
+Grid<T>::Grid(size_t width, size_t height, container_type data)
     : _width(width)
     , _height(height)
     , _data(data)
@@ -106,13 +116,13 @@ Grid<T>::Grid(std::size_t width, std::size_t height, container_type data)
 }
 
 template <typename T>
-auto Grid<T>::width() const -> std::size_t
+auto Grid<T>::width() const -> size_t
 {
 	return _width;
 }
 
 template <typename T>
-void Grid<T>::width(std::size_t width)
+void Grid<T>::width(size_t width)
 {
 	// iterators in this function start from size() and iterate backwards
 	// to preserve data-index continuity.
@@ -138,28 +148,28 @@ void Grid<T>::width(std::size_t width)
 }
 
 template <typename T>
-auto Grid<T>::height() const -> std::size_t
+auto Grid<T>::height() const -> size_t
 {
 	return _height;
 }
 
 template <typename T>
-void Grid<T>::height(std::size_t height)
+void Grid<T>::height(size_t height)
 {
 	_height = height;
 	_data.resize(size());
 }
 
 template <typename T>
-auto Grid<T>::data() const -> container_type const&
+auto Grid<T>::data() const -> value_type const*
 {
-	return _data;
+	return _data.data();
 }
 
 template <typename T>
-auto Grid<T>::data() -> Grid::container_type&
+auto Grid<T>::data() -> value_type*
 {
-	return _data;
+	return _data.data();
 }
 
 template <typename T>
@@ -169,21 +179,33 @@ void Grid<T>::data(container_type data)
 }
 
 template <typename T>
-auto Grid<T>::at(std::size_t row, std::size_t column) const -> value_type const&
+auto Grid<T>::at(size_t row, size_t column) const -> value_type const&
 {
 	auto index = element_index(row, column);
 	return _data[index];
 }
 
 template <typename T>
-auto Grid<T>::at(std::size_t row, std::size_t column) -> value_type&
+auto Grid<T>::at(size_t row, size_t column) -> value_type&
 {
 	auto index = element_index(row, column);
 	return _data[index];
 }
 
 template <typename T>
-auto Grid<T>::size() const -> std::size_t
+auto Grid<T>::operator()(size_t row, size_t column) const -> value_type const&
+{
+	return at(row, column);
+}
+
+template <typename T>
+auto Grid<T>::operator()(size_t row, size_t column) -> value_type&
+{
+	return at(row, column);
+}
+
+template <typename T>
+auto Grid<T>::size() const -> size_t
 {
 	return _width * _height;
 }
@@ -226,7 +248,7 @@ std::ostream& operator<<(std::ostream& os, Grid<T> const& grid)
 }
 
 template <typename T>
-auto Grid<T>::element_index(std::size_t row, std::size_t column) const -> std::size_t
+auto Grid<T>::element_index(size_t row, size_t column) const -> size_t
 {
 	if (row >= _height) {
 		throw std::domain_error("Row out of bounds");
@@ -237,6 +259,17 @@ auto Grid<T>::element_index(std::size_t row, std::size_t column) const -> std::s
 	auto index = index_2d_to_1d(_width, row, column);
 	return index;
 }
+
+#if SUPPORT_EIGEN
+template <typename T>
+template <size_t U, size_t V>
+Eigen::Matrix<T, U, V> Grid<T>::as_matrix() const
+{
+	Eigen::Matrix<T, U, V> matrix(data());
+	return matrix;
+}
+
+#endif
 
 }  // namespace project
 

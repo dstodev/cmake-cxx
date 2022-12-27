@@ -23,7 +23,7 @@ namespace project {
  * @param column Column of target index
  * @return 1D index of coordinate row,column
  */
-PROJECT_API std::size_t index_2d_to_1d(std::size_t stride, std::size_t row, std::size_t column);
+PROJECT_API size_t index_2d_to_1d(size_t stride, size_t row, size_t column);
 
 }  // namespace project
 

@@ -1,6 +1,8 @@
 find_package(AddGoogleExecutable CONFIG REQUIRED)
 find_package(AddLocalAllTarget CONFIG REQUIRED)
 
+find_package(Eigen3 REQUIRED)
+
 add_google_executable(test_project TEST
 	SOURCES
 		assertions.hxx
@@ -11,6 +13,7 @@ add_google_executable(test_project TEST
 
 	LIBRARIES
 		project
+		Eigen3::Eigen
 )
 target_compile_features(test_project
 	PRIVATE
