@@ -277,8 +277,7 @@ template <typename T>
 template <int... Args>
 Eigen::Matrix<T, Args...> Grid<T>::as_matrix() const
 {
-	Eigen::Matrix<T, Args...> matrix(data());
-	return matrix;
+	return Eigen::Matrix<T, Args...>(data());
 }
 
 #endif  // SUPPORT_EIGEN
