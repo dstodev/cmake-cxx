@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <string>
-
 #include "assertions.hxx"
 #include <grid.hxx>
 
@@ -278,23 +276,45 @@ TEST(Grid, change_width_maintains_data_consistency)
 }
 
 #if SUPPORT_EIGEN
-TEST(Grid, eigen_interaction)
+
+// https://github.com/google/googletest/blob/main/docs/primer.md#test-fixtures-using-the-same-data-configuration-for-multiple-tests-same-data-multiple-tests
+class GridToFromEigenMatrix : public ::testing::Test
 {
-	Grid<char> grid(3, 2, {0, 1, 2, 3, 4, 5});
-	/*     x=0  x=1  x=2 x=column
-	  y=0  0    1    2   y=row
-	  y=1  3    4    5         */
+protected:
+	Grid<char> _grid;
 
-	// Grid is as-expected
-	ASSERT_EQ(0, grid(0, 0));
-	ASSERT_EQ(1, grid(0, 1));
-	ASSERT_EQ(2, grid(0, 2));
-	ASSERT_EQ(3, grid(1, 0));
-	ASSERT_EQ(4, grid(1, 1));
-	ASSERT_EQ(5, grid(1, 2));
+	void SetUp() override
+	{
+		_grid = Grid<char>(3, 2, {0, 1, 2, 3, 4, 5});
 
-	// Grid is convertible to matrix
-	auto matrix = grid.as_matrix<2, 3, RowMajor>();  // Eigen's default is ColMajor
+		/*     x=0  x=1  x=2 x=column
+		  y=0  0    1    2   y=row
+		  y=1  3    4    5         */
+		ASSERT_EQ(0, _grid(0, 0));
+		ASSERT_EQ(1, _grid(0, 1));
+		ASSERT_EQ(2, _grid(0, 2));
+		ASSERT_EQ(3, _grid(1, 0));
+		ASSERT_EQ(4, _grid(1, 1));
+		ASSERT_EQ(5, _grid(1, 2));
+	}
+};
+
+TEST_F(GridToFromEigenMatrix, grid_convertible_to_matrix_and_forces_row_major)
+{
+	auto matrix = _grid.as_matrix<2, 3, ColMajor>();
+	ASSERT_TRUE(matrix.IsRowMajor);
+	ASSERT_EQ(0, matrix(0, 0));
+	ASSERT_EQ(1, matrix(0, 1));
+	ASSERT_EQ(2, matrix(0, 2));
+	ASSERT_EQ(3, matrix(1, 0));
+	ASSERT_EQ(4, matrix(1, 1));
+	ASSERT_EQ(5, matrix(1, 2));
+}
+
+TEST_F(GridToFromEigenMatrix, row_major_matrix_convertible_to_grid)
+{
+	auto matrix = Matrix<char, 2, 3, RowMajor>();
+	matrix << 0, 1, 2, 3, 4, 5;
 	ASSERT_EQ(0, matrix(0, 0));
 	ASSERT_EQ(1, matrix(0, 1));
 	ASSERT_EQ(2, matrix(0, 2));
@@ -302,18 +322,55 @@ TEST(Grid, eigen_interaction)
 	ASSERT_EQ(4, matrix(1, 1));
 	ASSERT_EQ(5, matrix(1, 2));
 
-	auto const mod = 6;
+	_grid = Grid<char>(matrix);
+	ASSERT_EQ(0, _grid(0, 0));
+	ASSERT_EQ(1, _grid(0, 1));
+	ASSERT_EQ(2, _grid(0, 2));
+	ASSERT_EQ(3, _grid(1, 0));
+	ASSERT_EQ(4, _grid(1, 1));
+	ASSERT_EQ(5, _grid(1, 2));
+}
+
+TEST_F(GridToFromEigenMatrix, col_major_matrix_convertible_to_grid)
+{
+	auto matrix = Matrix<char, 2, 3, ColMajor>();
+	matrix << 0, 1, 2, 3, 4, 5;
+	ASSERT_EQ(0, matrix(0, 0));
+	ASSERT_EQ(1, matrix(0, 1));
+	ASSERT_EQ(2, matrix(0, 2));
+	ASSERT_EQ(3, matrix(1, 0));
+	ASSERT_EQ(4, matrix(1, 1));
+	ASSERT_EQ(5, matrix(1, 2));
+
+	_grid = Grid<char>(matrix);
+	ASSERT_EQ(0, _grid(0, 0));
+	ASSERT_EQ(1, _grid(0, 1));
+	ASSERT_EQ(2, _grid(0, 2));
+	ASSERT_EQ(3, _grid(1, 0));
+	ASSERT_EQ(4, _grid(1, 1));
+	ASSERT_EQ(5, _grid(1, 2));
+}
+
+TEST_F(GridToFromEigenMatrix, matrix_is_a_copy_not_a_mutable_view)
+{
+	auto matrix = _grid.as_matrix<2, 3>();
+
+	auto constexpr mod = 6;
 	matrix(0, 0) = mod;
 	ASSERT_EQ(mod, matrix(0, 0));
-	ASSERT_EQ(0, grid(0, 0));  // grid is unchanged
-
-	// Matrix is convertible to grid
-	grid = Grid<char>(matrix);
-	ASSERT_EQ(mod, grid(0, 0));
-	ASSERT_EQ(1, grid(0, 1));
-	ASSERT_EQ(2, grid(0, 2));
-	ASSERT_EQ(3, grid(1, 0));
-	ASSERT_EQ(4, grid(1, 1));
-	ASSERT_EQ(5, grid(1, 2));
+	ASSERT_EQ(0, _grid(0, 0));  // grid is unchanged
 }
+
+TEST_F(GridToFromEigenMatrix, grid_is_a_copy_not_a_mutable_view)
+{
+	auto matrix = Matrix<char, 2, 3>();
+	matrix << 0, 1, 2, 3, 4, 5;
+	_grid = Grid<char>(matrix);
+
+	auto constexpr mod = 6;
+	_grid(0, 0) = mod;
+	ASSERT_EQ(mod, _grid(0, 0));
+	ASSERT_EQ(0, matrix(0, 0));  // matrix is unchanged
+}
+
 #endif  // SUPPORT_EIGEN

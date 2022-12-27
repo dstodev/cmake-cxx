@@ -83,11 +83,11 @@ public:
 	friend std::ostream& operator<< <>(std::ostream& os, Grid<value_type> const& grid);
 
 #if SUPPORT_EIGEN
-	template <int... Args>
-	explicit Grid(Eigen::Matrix<value_type, Args...> matrix);
+	template <int rows, int cols, int options = 0, int max_rows = rows, int max_cols = cols>
+	explicit Grid(Eigen::Matrix<value_type, rows, cols, options, max_rows, max_cols> matrix);
 
-	template <int... Args>
-	Eigen::Matrix<T, Args...> as_matrix() const;
+	template <int rows, int cols, int options = 0, int max_rows = rows, int max_cols = cols>
+	Eigen::Matrix<T, rows, cols, options | Eigen::RowMajor, max_rows, max_cols> as_matrix() const;
 #endif
 
 private:
@@ -266,18 +266,26 @@ auto Grid<T>::element_index(size_t row, size_t column) const -> size_t
 #if SUPPORT_EIGEN
 
 template <typename T>
-template <int... Args>
-Grid<T>::Grid(Eigen::Matrix<value_type, Args...> matrix)
-    : _data(std::vector<value_type>(matrix.data(), matrix.data() + matrix.size()))
+template <int rows, int cols, int options, int max_rows, int max_cols>
+Grid<T>::Grid(Eigen::Matrix<value_type, rows, cols, options, max_rows, max_cols> matrix)
+    : _data()
     , _width(matrix.cols())
     , _height(matrix.rows())
-{}
+{
+	if (matrix.IsRowMajor) {
+		_data = std::vector<value_type>(matrix.data(), matrix.data() + matrix.size());
+	}
+	else {
+		Eigen::Matrix<value_type, rows, cols, options | Eigen::RowMajor, max_rows, max_cols> row_matrix(matrix);
+		_data = std::vector<value_type>(row_matrix.data(), row_matrix.data() + row_matrix.size());
+	}
+}
 
 template <typename T>
-template <int... Args>
-Eigen::Matrix<T, Args...> Grid<T>::as_matrix() const
+template <int rows, int cols, int options, int max_rows, int max_cols>
+Eigen::Matrix<T, rows, cols, options | Eigen::RowMajor, max_rows, max_cols> Grid<T>::as_matrix() const
 {
-	return Eigen::Matrix<T, Args...>(data());
+	return Eigen::Matrix<value_type, rows, cols, options | Eigen::RowMajor, max_rows, max_cols>(data());
 }
 
 #endif  // SUPPORT_EIGEN
