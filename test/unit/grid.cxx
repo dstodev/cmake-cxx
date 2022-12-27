@@ -280,26 +280,40 @@ TEST(Grid, change_width_maintains_data_consistency)
 #if SUPPORT_EIGEN
 TEST(Grid, eigen_interaction)
 {
-	Grid<char> grid(2, 2, {0, 1, 2, 3});
-	/*     x=0  x=1  x=column
-	  y=0  0    1    y=row
-	  y=1  2    3          */
+	Grid<char> grid(3, 2, {0, 1, 2, 3, 4, 5});
+	/*     x=0  x=1  x=2 x=column
+	  y=0  0    1    2   y=row
+	  y=1  3    4    5         */
 
-	// Grid is indexed like (row, column) = (y, x)
+	// Grid is as-expected
 	ASSERT_EQ(0, grid(0, 0));
 	ASSERT_EQ(1, grid(0, 1));
-	ASSERT_EQ(2, grid(1, 0));
-	ASSERT_EQ(3, grid(1, 1));
+	ASSERT_EQ(2, grid(0, 2));
+	ASSERT_EQ(3, grid(1, 0));
+	ASSERT_EQ(4, grid(1, 1));
+	ASSERT_EQ(5, grid(1, 2));
 
-	// Matrix is indexed like (x, y) = (column, row)
-	auto matrix = grid.as_matrix<2, 2>();
+	// Grid is convertible to matrix
+	auto matrix = grid.as_matrix<2, 3, RowMajor>();  // Eigen's default is ColMajor
 	ASSERT_EQ(0, matrix(0, 0));
-	ASSERT_EQ(1, matrix(1, 0));
-	ASSERT_EQ(2, matrix(0, 1));
-	ASSERT_EQ(3, matrix(1, 1));
+	ASSERT_EQ(1, matrix(0, 1));
+	ASSERT_EQ(2, matrix(0, 2));
+	ASSERT_EQ(3, matrix(1, 0));
+	ASSERT_EQ(4, matrix(1, 1));
+	ASSERT_EQ(5, matrix(1, 2));
 
-	matrix(0, 0) = 4;
-	ASSERT_EQ(4, matrix(0, 0));
+	auto const mod = 6;
+	matrix(0, 0) = mod;
+	ASSERT_EQ(mod, matrix(0, 0));
 	ASSERT_EQ(0, grid(0, 0));  // grid is unchanged
+
+	// Matrix is convertible to grid
+	grid = Grid<char>(matrix);
+	ASSERT_EQ(mod, grid(0, 0));
+	ASSERT_EQ(1, grid(0, 1));
+	ASSERT_EQ(2, grid(0, 2));
+	ASSERT_EQ(3, grid(1, 0));
+	ASSERT_EQ(4, grid(1, 1));
+	ASSERT_EQ(5, grid(1, 2));
 }
 #endif  // SUPPORT_EIGEN

@@ -83,8 +83,11 @@ public:
 	friend std::ostream& operator<< <>(std::ostream& os, Grid<value_type> const& grid);
 
 #if SUPPORT_EIGEN
-	template <size_t U, size_t V>
-	Eigen::Matrix<T, U, V> as_matrix() const;
+	template <int... Args>
+	explicit Grid(Eigen::Matrix<value_type, Args...> matrix);
+
+	template <int... Args>
+	Eigen::Matrix<T, Args...> as_matrix() const;
 #endif
 
 private:
@@ -261,15 +264,24 @@ auto Grid<T>::element_index(size_t row, size_t column) const -> size_t
 }
 
 #if SUPPORT_EIGEN
+
 template <typename T>
-template <size_t U, size_t V>
-Eigen::Matrix<T, U, V> Grid<T>::as_matrix() const
+template <int... Args>
+Grid<T>::Grid(Eigen::Matrix<value_type, Args...> matrix)
+    : _data(std::vector<value_type>(matrix.data(), matrix.data() + matrix.size()))
+    , _width(matrix.cols())
+    , _height(matrix.rows())
+{}
+
+template <typename T>
+template <int... Args>
+Eigen::Matrix<T, Args...> Grid<T>::as_matrix() const
 {
-	Eigen::Matrix<T, U, V> matrix(data());
+	Eigen::Matrix<T, Args...> matrix(data());
 	return matrix;
 }
 
-#endif
+#endif  // SUPPORT_EIGEN
 
 }  // namespace project
 
