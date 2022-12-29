@@ -6,10 +6,11 @@
 class placeholder_t
 {
 public:
+	virtual ~placeholder_t() = default;
+
 	template <typename... Args>
 	constexpr explicit placeholder_t([[maybe_unused]] Args&&... args) noexcept
 	{}
-	virtual ~placeholder_t() = default;
 
 	constexpr placeholder_t(placeholder_t const& copy) noexcept = default;
 	constexpr placeholder_t(placeholder_t&& move) noexcept = default;

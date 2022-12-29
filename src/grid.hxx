@@ -47,8 +47,8 @@ public:
 	using iterator = typename container_type::iterator;
 	using const_iterator = typename container_type::const_iterator;
 
-	explicit Grid(size_t width = 0, size_t height = 0, container_type data = {});
 	virtual ~Grid() = default;
+	explicit Grid(size_t width = 0, size_t height = 0, container_type data = {});
 
 	Grid(Grid const& copy) = default;
 	Grid(Grid&& move) noexcept = default;
