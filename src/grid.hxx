@@ -84,7 +84,10 @@ public:
 
 #if SUPPORT_EIGEN
 	template <int rows, int cols, int options = 0, int max_rows = rows, int max_cols = cols>
-	explicit Grid(Eigen::Matrix<value_type, rows, cols, options, max_rows, max_cols> matrix);
+	explicit Grid(Eigen::Matrix<value_type, rows, cols, options | Eigen::RowMajor, max_rows, max_cols> matrix);
+
+	template <int rows, int cols, int options = 0, int max_rows = rows, int max_cols = cols>
+	explicit Grid(Eigen::Matrix<value_type, rows, cols, options | Eigen::ColMajor, max_rows, max_cols> matrix);
 
 	template <int rows, int cols, int options = 0, int max_rows = rows, int max_cols = cols>
 	Eigen::Matrix<T, rows, cols, options | Eigen::RowMajor, max_rows, max_cols> as_matrix() const;
@@ -267,18 +270,23 @@ auto Grid<T>::element_index(size_t row, size_t column) const -> size_t
 
 template <typename T>
 template <int rows, int cols, int options, int max_rows, int max_cols>
-Grid<T>::Grid(Eigen::Matrix<value_type, rows, cols, options, max_rows, max_cols> matrix)
+Grid<T>::Grid(Eigen::Matrix<value_type, rows, cols, options | Eigen::RowMajor, max_rows, max_cols> matrix)
     : _data()
     , _width(matrix.cols())
     , _height(matrix.rows())
 {
-	if (matrix.IsRowMajor) {
-		_data = std::vector<value_type>(matrix.data(), matrix.data() + matrix.size());
-	}
-	else {
-		Eigen::Matrix<value_type, rows, cols, options | Eigen::RowMajor, max_rows, max_cols> row_matrix(matrix);
-		_data = std::vector<value_type>(row_matrix.data(), row_matrix.data() + row_matrix.size());
-	}
+	_data = std::vector<value_type>(matrix.data(), matrix.data() + matrix.size());
+}
+
+template <typename T>
+template <int rows, int cols, int options, int max_rows, int max_cols>
+Grid<T>::Grid(Eigen::Matrix<value_type, rows, cols, options | Eigen::ColMajor, max_rows, max_cols> matrix)
+    : _data()
+    , _width(matrix.cols())
+    , _height(matrix.rows())
+{
+	Eigen::Matrix<value_type, rows, cols, options | Eigen::RowMajor, max_rows, max_cols> row_matrix(matrix);
+	_data = std::vector<value_type>(row_matrix.data(), row_matrix.data() + row_matrix.size());
 }
 
 template <typename T>
