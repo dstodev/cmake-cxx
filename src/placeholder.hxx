@@ -9,7 +9,7 @@ public:
 	virtual ~placeholder_t() = default;
 
 	template <typename... Args>
-	constexpr explicit placeholder_t([[maybe_unused]] Args&&... args) noexcept
+	explicit constexpr placeholder_t([[maybe_unused]] Args&&... args) noexcept
 	{}
 
 	constexpr placeholder_t(placeholder_t const& copy) noexcept = default;

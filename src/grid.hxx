@@ -11,6 +11,17 @@
 
 #if SUPPORT_EIGEN
 #include <Eigen/Dense>
+
+namespace detail {
+
+template <typename T, int rows, int cols, int options, int max_rows, int max_cols>
+using RowMajor = Eigen::Matrix<T, rows, cols, options | Eigen::RowMajor, max_rows, max_cols>;
+
+template <typename T, int rows, int cols, int options, int max_rows, int max_cols>
+using ColMajor = Eigen::Matrix<T, rows, cols, options | Eigen::ColMajor, max_rows, max_cols>;
+
+}  // namespace detail
+
 #endif
 
 namespace project {
@@ -84,13 +95,13 @@ public:
 
 #if SUPPORT_EIGEN
 	template <int rows, int cols, int options = 0, int max_rows = rows, int max_cols = cols>
-	explicit Grid(Eigen::Matrix<value_type, rows, cols, options | Eigen::RowMajor, max_rows, max_cols> matrix);
+	explicit Grid(detail::RowMajor<value_type, rows, cols, options, max_rows, max_cols> matrix);
 
 	template <int rows, int cols, int options = 0, int max_rows = rows, int max_cols = cols>
-	explicit Grid(Eigen::Matrix<value_type, rows, cols, options | Eigen::ColMajor, max_rows, max_cols> matrix);
+	explicit Grid(detail::ColMajor<value_type, rows, cols, options, max_rows, max_cols> matrix);
 
 	template <int rows, int cols, int options = 0, int max_rows = rows, int max_cols = cols>
-	Eigen::Matrix<T, rows, cols, options | Eigen::RowMajor, max_rows, max_cols> as_matrix() const;
+	detail::RowMajor<value_type, rows, cols, options, max_rows, max_cols> as_matrix() const;
 #endif
 
 private:
@@ -270,7 +281,7 @@ auto Grid<T>::element_index(size_t row, size_t column) const -> size_t
 
 template <typename T>
 template <int rows, int cols, int options, int max_rows, int max_cols>
-Grid<T>::Grid(Eigen::Matrix<value_type, rows, cols, options | Eigen::RowMajor, max_rows, max_cols> matrix)
+Grid<T>::Grid(detail::RowMajor<value_type, rows, cols, options, max_rows, max_cols> matrix)
     : _data()
     , _width(matrix.cols())
     , _height(matrix.rows())
@@ -280,20 +291,20 @@ Grid<T>::Grid(Eigen::Matrix<value_type, rows, cols, options | Eigen::RowMajor, m
 
 template <typename T>
 template <int rows, int cols, int options, int max_rows, int max_cols>
-Grid<T>::Grid(Eigen::Matrix<value_type, rows, cols, options | Eigen::ColMajor, max_rows, max_cols> matrix)
+Grid<T>::Grid(detail::ColMajor<value_type, rows, cols, options, max_rows, max_cols> matrix)
     : _data()
     , _width(matrix.cols())
     , _height(matrix.rows())
 {
-	Eigen::Matrix<value_type, rows, cols, options | Eigen::RowMajor, max_rows, max_cols> row_matrix(matrix);
+	detail::RowMajor<value_type, rows, cols, options, max_rows, max_cols> row_matrix(matrix);
 	_data = std::vector<value_type>(row_matrix.data(), row_matrix.data() + row_matrix.size());
 }
 
 template <typename T>
 template <int rows, int cols, int options, int max_rows, int max_cols>
-Eigen::Matrix<T, rows, cols, options | Eigen::RowMajor, max_rows, max_cols> Grid<T>::as_matrix() const
+detail::RowMajor<T, rows, cols, options, max_rows, max_cols> Grid<T>::as_matrix() const
 {
-	return Eigen::Matrix<value_type, rows, cols, options | Eigen::RowMajor, max_rows, max_cols>(data());
+	return detail::RowMajor<value_type, rows, cols, options, max_rows, max_cols>(data());
 }
 
 #endif  // SUPPORT_EIGEN
