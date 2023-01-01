@@ -21,20 +21,20 @@ public:
 	auto operator<=>(placeholder_t const& rhs) const = default;
 
 	template <typename T>
-	placeholder_t const& operator[](T _) const
+	placeholder_t const& operator[](T) const
 	{
 		return *this;
 	}
 
 	template <typename... Ts>
-	placeholder_t const& operator()(Ts... _) const
+	placeholder_t const& operator()(Ts...) const
 	{
 		return *this;
 	}
 
 #define generic_operator(symbol) \
 	template <typename... Args> \
-	[[maybe_unused]] auto& operator symbol([[maybe_unused]] Args... args) \
+	[[maybe_unused]] auto& operator symbol(Args...) \
 	{ \
 		return *this; \
 	}

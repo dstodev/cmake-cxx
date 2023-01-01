@@ -6,7 +6,6 @@
 #include <ostream>
 #include <vector>
 
-#include "utilities.hxx"
 #include <project-api.h>
 
 #if SUPPORT_EIGEN
@@ -109,6 +108,21 @@ private:
 	size_t _height;
 	container_type _data;
 
+	/** @brief Translate (row, column) coordinate to 1-dimensional ordinal index
+	 *
+	 * @code
+	 *                 inputs, width=2 | output
+	 *      | 0 1       | row | column | index
+	 *    --+----    a: | 0   | 0      | 0
+	 *    0 | a b    b: | 0   | 1      | 1
+	 *    1 | c d    c: | 1   | 0      | 2
+	 *               d: | 1   | 1      | 3
+	 * @endcode
+	 *
+	 * @param row Row of target
+	 * @param column Column of target
+	 * @return 1-dimensional array index corresponding to (row, column) coordinate
+	 */
 	[[nodiscard]] auto element_index(size_t row, size_t column) const -> size_t;
 };
 
@@ -273,8 +287,7 @@ auto Grid<T>::element_index(size_t row, size_t column) const -> size_t
 	if (column >= _width) {
 		throw std::domain_error("Column out of bounds");
 	}
-	auto index = index_2d_to_1d(_width, row, column);
-	return index;
+	return row * _width + column;
 }
 
 #if SUPPORT_EIGEN

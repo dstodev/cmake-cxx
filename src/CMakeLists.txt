@@ -14,8 +14,6 @@ add_library(${target_name}
 	placeholder.hxx
 	shear.cxx
 	shear.hxx
-	utilities.cxx
-	utilities.hxx
 )
 set_target_properties(${target_name}
 	PROPERTIES

@@ -9,7 +9,6 @@ add_google_executable(test_project TEST
 		grid.cxx
 		placeholder.cxx
 		shear.cxx
-		utilities.cxx
 
 	LIBRARIES
 		project
