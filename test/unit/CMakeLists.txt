@@ -8,6 +8,7 @@ add_google_executable(test_project TEST
 		assertions.hxx
 		grid.cxx
 		placeholder.cxx
+		point_t.cxx
 		shear.cxx
 
 	LIBRARIES

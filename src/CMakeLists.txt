@@ -12,6 +12,8 @@ set(dll_export_macro PROJECT_API)
 add_library(${target_name}
 	grid.hxx
 	placeholder.hxx
+	point_t.cxx
+	point_t.hxx
 	shear.cxx
 	shear.hxx
 )

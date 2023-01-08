@@ -1,5 +1,6 @@
 #include <benchmark/benchmark.h>
 
+#include <point_t.hxx>
 #include <shear.hxx>
 
 using namespace project;
@@ -8,7 +9,7 @@ static void run_shear(benchmark::State& state, float x, float y, float x_mag, fl
 {
 	point_t point {x, y};
 
-	for (auto : state) {
+	for (auto _ : state) {
 		shear(point, x_mag, y_mag);
 	}
 }
