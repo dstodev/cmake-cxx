@@ -1,10 +1,8 @@
 #ifndef GRID_HXX
 #define GRID_HXX
 
-#include <algorithm>
-#include <exception>
 #include <ostream>
-#include <vector>
+#include <type_traits>
 
 #include <project-api.h>
 
@@ -52,10 +50,10 @@ public:
 	using value_type = T;  // stl often names this specific member 'value_type'
 	using container_type = detail::ColMajor<value_type, Eigen::Dynamic, Eigen::Dynamic>;
 
-	template <typename Tvalue, typename Tcontainer>
+	template <typename Tvalue, typename Tcontainer, bool const_access = true>
 	struct iterator_impl;
 
-	using iterator = iterator_impl<value_type, container_type>;
+	using iterator = iterator_impl<value_type, container_type, false>;
 	using const_iterator = iterator_impl<value_type const, container_type const>;
 
 	virtual ~Grid() = default;
@@ -264,7 +262,7 @@ std::ostream& operator<<(std::ostream& os, Grid<T> const& grid)
 }
 
 template <typename T>
-template <typename Tvalue, typename Tcontainer>
+template <typename Tvalue, typename Tcontainer, bool const_access>
 struct Grid<T>::iterator_impl
 {
 	// 5 iterator-standard member types
@@ -308,12 +306,14 @@ struct Grid<T>::iterator_impl
 		return !equal;
 	}
 
-	auto operator*() const -> value_type const&
+	template <bool _const_access = const_access>
+	auto operator*() const -> std::enable_if_t<_const_access, value_type const&>
 	{
 		return (*this)[position];
 	}
 
-	auto operator*() -> reference
+	template <bool _const_access = const_access>
+	auto operator*() -> std::enable_if_t<!_const_access, reference>
 	{
 		return (*this)[position];
 	}
@@ -327,7 +327,8 @@ struct Grid<T>::iterator_impl
 		return container(row, column);
 	}
 
-	auto operator[](difference_type index) -> reference
+	template <bool _const_access = const_access>
+	auto operator[](difference_type index) -> std::enable_if_t<!_const_access, reference>
 	{
 		auto const* const_this = this;
 		return const_cast<value_type&>((*const_this)[index]);
