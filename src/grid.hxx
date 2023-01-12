@@ -308,18 +308,29 @@ struct Grid<T>::iterator_impl
 		return !equal;
 	}
 
+	auto operator*() const -> value_type const&
+	{
+		return (*this)[position];
+	}
+
 	auto operator*() -> reference
 	{
 		return (*this)[position];
 	}
 
-	auto operator[](difference_type index) -> reference
+	auto operator[](difference_type index) const -> value_type const&
 	{
 		// https://eigen.tuxfamily.org/dox/group__TutorialSTL.html
 		auto columns = container.cols();
 		int row = index / columns;
 		int column = index % columns;
 		return container(row, column);
+	}
+
+	auto operator[](difference_type index) -> reference
+	{
+		auto const* const_this = this;
+		return const_cast<value_type&>((*const_this)[index]);
 	}
 };
 
