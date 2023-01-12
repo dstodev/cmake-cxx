@@ -8,20 +8,19 @@
 
 #include <project-api.h>
 
-#if SUPPORT_EIGEN
 #include <Eigen/Dense>
 
 namespace detail {
 
-template <typename T, int rows, int cols, int options, int max_rows, int max_cols>
+// https://eigen.tuxfamily.org/dox/classEigen_1_1Matrix.html
+
+template <typename T, int rows, int cols, int options = 0, int max_rows = rows, int max_cols = cols>
 using RowMajor = Eigen::Matrix<T, rows, cols, options | Eigen::RowMajor, max_rows, max_cols>;
 
-template <typename T, int rows, int cols, int options, int max_rows, int max_cols>
+template <typename T, int rows, int cols, int options = 0, int max_rows = rows, int max_cols = cols>
 using ColMajor = Eigen::Matrix<T, rows, cols, options | Eigen::ColMajor, max_rows, max_cols>;
 
 }  // namespace detail
-
-#endif  // SUPPORT_EIGEN
 
 namespace project {
 
@@ -51,14 +50,21 @@ class Grid
 {
 public:
 	using value_type = T;  // stl often names this specific member 'value_type'
-	using container_type = std::vector<value_type>;
+	using container_type = detail::ColMajor<value_type, Eigen::Dynamic, Eigen::Dynamic>;
 
-	// Defer iterators to container
-	using iterator = typename container_type::iterator;
-	using const_iterator = typename container_type::const_iterator;
+	template <typename Tvalue, typename Tcontainer>
+	struct iterator_impl;
+
+	using iterator = iterator_impl<value_type, container_type>;
+	using const_iterator = iterator_impl<value_type const, container_type const>;
 
 	virtual ~Grid() = default;
-	explicit Grid(size_t width = 0, size_t height = 0, container_type data = {});
+
+	explicit Grid();
+	explicit Grid(size_t width, size_t height, std::initializer_list<value_type> init = {});
+
+	template <typename M>
+	explicit Grid(M const& matrix);
 
 	Grid(Grid const& copy) = default;
 	Grid(Grid&& move) noexcept = default;
@@ -72,17 +78,17 @@ public:
 	[[nodiscard]] auto height() const -> size_t;
 	void height(size_t height);
 
-	auto data() const -> value_type const*;
-	auto data() -> value_type*;
-	void data(container_type data);  // Uses copy-swap idiom
-
 	auto at(size_t row, size_t column) const -> value_type const&;
 	auto at(size_t row, size_t column) -> value_type&;
 
-	auto operator()(size_t row, size_t column) const -> value_type const&;  // Forwards to at()
-	auto operator()(size_t row, size_t column) -> value_type&;  // Forwards to at()
+	// operator() forwards to at()
+	auto operator()(size_t row, size_t column) const -> value_type const&;
+	auto operator()(size_t row, size_t column) -> value_type&;
 
 	[[nodiscard]] auto size() const -> size_t;
+
+	operator container_type const&() const;
+	operator container_type&();
 
 	auto begin() -> iterator;
 	auto begin() const -> const_iterator;
@@ -92,135 +98,101 @@ public:
 	// The '<>' after the operator name indicates that this friend is a template prototype
 	friend std::ostream& operator<< <>(std::ostream& os, Grid<value_type> const& grid);
 
-#if SUPPORT_EIGEN
-	template <int rows, int cols, int options = 0, int max_rows = rows, int max_cols = cols>
-	explicit Grid(detail::RowMajor<value_type, rows, cols, options, max_rows, max_cols> matrix);
-
-	template <int rows, int cols, int options = 0, int max_rows = rows, int max_cols = cols>
-	explicit Grid(detail::ColMajor<value_type, rows, cols, options, max_rows, max_cols> matrix);
-
-	template <int rows, int cols, int options = 0, int max_rows = rows, int max_cols = cols>
-	detail::RowMajor<value_type, rows, cols, options, max_rows, max_cols> as_matrix() const;
-#endif
-
 private:
-	size_t _width;
-	size_t _height;
 	container_type _data;
-
-	/** @brief Translate (row, column) coordinate to 1-dimensional ordinal index
-	 *
-	 * @code
-	 *                 inputs, width=2 | output
-	 *      | 0 1       | row | column | index
-	 *    --+----    a: | 0   | 0      | 0
-	 *    0 | a b    b: | 0   | 1      | 1
-	 *    1 | c d    c: | 1   | 0      | 2
-	 *               d: | 1   | 1      | 3
-	 * @endcode
-	 *
-	 * @param row Row of target
-	 * @param column Column of target
-	 * @return 1-dimensional array index corresponding to (row, column) coordinate
-	 */
-	[[nodiscard]] auto element_index(size_t row, size_t column) const -> size_t;
 };
 
 template <typename T>
-Grid<T>::Grid(size_t width, size_t height, container_type data)
-    : _width(width)
-    , _height(height)
-    , _data(data)
+Grid<T>::Grid()
+    : _data {}
+{}
+
+template <typename T>
+Grid<T>::Grid(size_t width, size_t height, std::initializer_list<value_type> init)
+    : _data(height, width)
 {
-	bool data_matches_size = size() == data.size();
+	auto const default_value = value_type {};
+	_data.fill(default_value);
 
-	if (!data_matches_size) {
-		bool data_is_default = data.empty();
-
-		if (data_is_default) {
-			_data.resize(size());
+	if (!std::empty(init)) {
+		if (_data.size() != init.size()) {
+			throw std::domain_error("Dimensions do not match number of provided data");
 		}
-		else {
-			throw std::domain_error("Dimensions do not match size of provided data");
+		for (auto row {0}; row < height; ++row) {
+			for (auto col {0}; col < width; ++col) {
+				_data(row, col) = init.begin()[row * width + col];
+			}
 		}
 	}
 }
 
 template <typename T>
+template <typename M>
+Grid<T>::Grid(M const& matrix)
+    : _data(matrix)
+{}
+
+template <typename T>
 auto Grid<T>::width() const -> size_t
 {
-	return _width;
+	return _data.cols();
 }
 
 template <typename T>
 void Grid<T>::width(size_t width)
 {
-	// iterators in this function start from size() and iterate backwards
-	// to preserve data-index continuity.
+	auto const previous_width = this->width();
+	_data.conservativeResize(Eigen::NoChange, width);
 
-	if (width > _width) {
-		// make me bigger
-		_data.reserve(width * _height);
-		auto const size_delta = width - _width;
-		for (auto i {size()}; i > 0; i -= _width) {
-			_data.insert(_data.begin() + i, size_delta, {});
-		}
+	if (width > previous_width) {
+		auto const default_value = value_type {};
+		auto const num_added_columns = width - previous_width;
+		_data.rightCols(num_added_columns).setConstant(default_value);
 	}
-	else if (width < _width) {
-		// make me smaller
-		auto const size_delta = _width - width;
-		for (auto i {size()}; i > 0; i -= _width) {
-			auto current_pos = _data.begin() + i;
-			_data.erase(current_pos - size_delta, current_pos);
-		}
-	}
-
-	_width = width;
 }
 
 template <typename T>
 auto Grid<T>::height() const -> size_t
 {
-	return _height;
+	return _data.rows();
 }
 
 template <typename T>
 void Grid<T>::height(size_t height)
 {
-	_height = height;
-	_data.resize(size());
-}
+	auto const previous_height = this->height();
+	_data.conservativeResize(height, Eigen::NoChange);
 
-template <typename T>
-auto Grid<T>::data() const -> value_type const*
-{
-	return _data.data();
-}
-
-template <typename T>
-auto Grid<T>::data() -> value_type*
-{
-	return _data.data();
-}
-
-template <typename T>
-void Grid<T>::data(container_type data)
-{
-	std::swap(_data, data);
+	if (height > previous_height) {
+		auto const default_value = value_type {};
+		auto const num_added_rows = height - previous_height;
+		_data.bottomRows(num_added_rows).setConstant(default_value);
+	}
 }
 
 template <typename T>
 auto Grid<T>::at(size_t row, size_t column) const -> value_type const&
 {
-	auto index = element_index(row, column);
-	return _data[index];
+	if (row >= _data.rows()) {
+		throw std::domain_error("Row out of bounds");
+	}
+	if (column >= _data.cols()) {
+		throw std::domain_error("Column out of bounds");
+	}
+	return _data(row, column);
 }
 
 template <typename T>
 auto Grid<T>::at(size_t row, size_t column) -> value_type&
 {
-	auto index = element_index(row, column);
-	return _data[index];
+	// To reduce code duplication between `at()` and `at() const`,
+	// add const to `this` pointer to unambiguously call `at() const`,
+	// call it, then const_cast<> away the const.
+	// This is safe because this function is not const (`at()` not `at() const`):
+	// the only way to call `at()` is via non-const instance or reference,
+	// guaranteeing that calling const_cast<> to remove const here is safe.
+	auto const* const_this = this;
+	return const_cast<value_type&>(const_this->at(row, column));
 }
 
 template <typename T>
@@ -238,89 +210,116 @@ auto Grid<T>::operator()(size_t row, size_t column) -> value_type&
 template <typename T>
 auto Grid<T>::size() const -> size_t
 {
-	return _width * _height;
+	return _data.size();
+}
+
+template <typename T>
+Grid<T>::operator container_type const&() const
+{
+	return _data;
+}
+
+template <typename T>
+Grid<T>::operator container_type&()
+{
+	return _data;
 }
 
 template <typename T>
 auto Grid<T>::begin() -> iterator
 {
-	return _data.begin();
+	return iterator(_data);
 }
 
 template <typename T>
 auto Grid<T>::begin() const -> const_iterator
 {
-	return _data.begin();
+	return const_iterator(_data);
 }
 
 template <typename T>
 auto Grid<T>::end() -> iterator
 {
-	return _data.end();
+	return iterator(_data, _data.size());
 }
 
 template <typename T>
 auto Grid<T>::end() const -> const_iterator
 {
-	return _data.end();
+	return const_iterator(_data, _data.size());
 }
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, Grid<T> const& grid)
 {
-	for (auto i {0}; i < grid._width * grid._height; ++i) {
-		if (i % grid._width == 0) {
+	for (auto i {0}; i < grid.width() * grid.height(); ++i) {
+		if (i % grid.width() == 0) {
 			os << '\n';
 		}
-		os << grid._data[i];
+		os << grid.begin()[i];
 	}
 	os << std::endl;
 	return os;
 }
 
 template <typename T>
-auto Grid<T>::element_index(size_t row, size_t column) const -> size_t
+template <typename Tvalue, typename Tcontainer>
+struct Grid<T>::iterator_impl
 {
-	if (row >= _height) {
-		throw std::domain_error("Row out of bounds");
+	// 5 iterator-standard member types
+	using iterator_category = std::forward_iterator_tag;
+	using value_type = Tvalue;
+	using difference_type = std::ptrdiff_t;
+	using pointer = value_type*;
+	using reference = value_type&;
+
+	using container_type = Tcontainer;
+
+	container_type& container;
+	difference_type position;
+
+	explicit iterator_impl(container_type& container, difference_type position = {})
+	    : container {container}
+	    , position {position}
+	{}
+
+	auto operator++() -> iterator_impl&  // ++prefix
+	{
+		++position;
+		return *this;
 	}
-	if (column >= _width) {
-		throw std::domain_error("Column out of bounds");
+
+	auto operator++(int) -> iterator_impl  // postfix++
+	{
+		auto const value = *this;
+		++(*this);
+		return value;
 	}
-	return row * _width + column;
-}
 
-#if SUPPORT_EIGEN
+	bool operator==(iterator_impl const& other) const
+	{
+		return (&container == &other.container) && (position == other.position);
+	}
 
-template <typename T>
-template <int rows, int cols, int options, int max_rows, int max_cols>
-Grid<T>::Grid(detail::RowMajor<value_type, rows, cols, options, max_rows, max_cols> matrix)
-    : _data()
-    , _width(matrix.cols())
-    , _height(matrix.rows())
-{
-	_data = std::vector<value_type>(matrix.data(), matrix.data() + matrix.size());
-}
+	bool operator!=(iterator_impl const& other) const
+	{
+		return !(*this == other);
+	}
 
-template <typename T>
-template <int rows, int cols, int options, int max_rows, int max_cols>
-Grid<T>::Grid(detail::ColMajor<value_type, rows, cols, options, max_rows, max_cols> matrix)
-    : _data()
-    , _width(matrix.cols())
-    , _height(matrix.rows())
-{
-	detail::RowMajor<value_type, rows, cols, options, max_rows, max_cols> row_matrix(matrix);
-	_data = std::vector<value_type>(row_matrix.data(), row_matrix.data() + row_matrix.size());
-}
+	auto operator*() -> reference
+	{
+		return (*this)[position];
+	}
 
-template <typename T>
-template <int rows, int cols, int options, int max_rows, int max_cols>
-detail::RowMajor<T, rows, cols, options, max_rows, max_cols> Grid<T>::as_matrix() const
-{
-	return detail::RowMajor<value_type, rows, cols, options, max_rows, max_cols>(data());
-}
-
-#endif  // SUPPORT_EIGEN
+	auto operator[](difference_type index) -> reference
+	{
+		// https://eigen.tuxfamily.org/dox/group__TutorialSTL.html
+		auto columns = container.cols();
+		int row = index / columns;
+		int column = index % columns;
+		return container(row, column);
+	}
+};
 
 }  // namespace project
 

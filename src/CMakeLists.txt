@@ -30,10 +30,6 @@ target_compile_features(${target_name}
 	PUBLIC
 		cxx_std_20  # for helpful features like [[nodiscard]] and operator<=>
 )
-target_compile_definitions(${target_name}
-	PUBLIC
-		SUPPORT_EIGEN
-)
 #[[
 	This call to target_precompile_headers() affects development builds
 	(i.e. not sources in an install() context) by prepending

@@ -5,9 +5,7 @@
 
 using namespace project;
 
-#if SUPPORT_EIGEN
 using namespace Eigen;
-#endif
 
 TEST(Grid, construct)
 {
@@ -38,12 +36,6 @@ TEST(Grid, setters)
 	o.height(2);
 	ASSERT_EQ(1, o.width());
 	ASSERT_EQ(2, o.height());
-
-	o.data(decltype(o)::container_type {3, 4});
-
-	auto const& data = o.data();
-	ASSERT_EQ(3, data[0]);
-	ASSERT_EQ(4, data[1]);
 }
 
 TEST(Grid, size)
@@ -60,17 +52,8 @@ TEST(Grid, construct_with_invalid_data_dimensions)
 TEST(Grid, construct_with_data)
 {
 	Grid<char> o(1, 2, {3, 4});
-	auto* data = o.data();
-	ASSERT_EQ(3, data[0]);
-	ASSERT_EQ(4, data[1]);
-}
-
-TEST(Grid, data_const)
-{
-	Grid<char> const o(1, 2, {3, 4});
-	auto const* data = o.data();
-	ASSERT_EQ(3, data[0]);
-	ASSERT_EQ(4, data[1]);
+	ASSERT_EQ(3, o.at(0, 0));
+	ASSERT_EQ(4, o.at(1, 0));
 }
 
 TEST(Grid, at_horizontal_rectangle)
@@ -110,7 +93,7 @@ TEST(Grid, at_column_out_of_bounds)
 
 TEST(Grid, at_set)
 {
-	Grid<char> o(1, 2, {3, 4});
+	Grid<char> o(1, 2);
 	o.at(1, 0) = 5;
 	ASSERT_EQ(5, o.at(1, 0)) << o;
 }
@@ -164,18 +147,19 @@ TEST(Grid, iterator)
 	MY_ASSERT_SAME_TYPE(grid_type::iterator, decltype(std::declval<grid_type>().begin()));
 	MY_ASSERT_SAME_TYPE(grid_type::iterator, decltype(std::declval<grid_type>().end()));
 
-	for (auto i : o) {
-		ASSERT_EQ(i, o.data()[i]);
+	for (int i {}; auto it : o) {
+		EXPECT_EQ(i++, it);
 	}
 }
 
 TEST(Grid, iterator_mutates)
 {
 	Grid<char> o(2, 2, {0, 1, 2, 3});
+
 	for (auto& i : o) {
 		auto index = i;
 		i += 1;
-		ASSERT_EQ(index + 1, o.data()[index]);
+		EXPECT_EQ(index + 1, o.begin()[index]);
 	}
 }
 
@@ -189,7 +173,7 @@ TEST(Grid, const_iterator)
 	MY_ASSERT_SAME_TYPE(grid_type::const_iterator, decltype(std::declval<grid_type>().end()));
 
 	for (auto i : o) {
-		ASSERT_EQ(i, o.data()[i]);
+		EXPECT_EQ(i, o.begin()[i]);
 	}
 }
 
@@ -275,8 +259,6 @@ TEST(Grid, change_width_maintains_data_consistency)
 	ASSERT_EQ(3, o.at(1, 1));
 }
 
-#if SUPPORT_EIGEN
-
 // https://github.com/google/googletest/blob/main/docs/primer.md#test-fixtures-using-the-same-data-configuration-for-multiple-tests-same-data-multiple-tests
 class GridToFromEigenMatrix : public ::testing::Test
 {
@@ -285,24 +267,25 @@ protected:
 
 	void SetUp() override
 	{
-		_grid = Grid<char>(3, 2, {0, 1, 2, 3, 4, 5});
+		Grid<char> grid(3, 2, {0, 1, 2, 3, 4, 5});
 
 		/*     x=0  x=1  x=2 x=column
 		  y=0  0    1    2   y=row
 		  y=1  3    4    5         */
-		ASSERT_EQ(0, _grid(0, 0));
-		ASSERT_EQ(1, _grid(0, 1));
-		ASSERT_EQ(2, _grid(0, 2));
-		ASSERT_EQ(3, _grid(1, 0));
-		ASSERT_EQ(4, _grid(1, 1));
-		ASSERT_EQ(5, _grid(1, 2));
+		ASSERT_EQ(0, grid(0, 0));
+		ASSERT_EQ(1, grid(0, 1));
+		ASSERT_EQ(2, grid(0, 2));
+		ASSERT_EQ(3, grid(1, 0));
+		ASSERT_EQ(4, grid(1, 1));
+		ASSERT_EQ(5, grid(1, 2));
+
+		_grid = grid;
 	}
 };
 
-TEST_F(GridToFromEigenMatrix, grid_convertible_to_matrix_and_forces_row_major)
+TEST_F(GridToFromEigenMatrix, grid_convertible_to_matrix)
 {
-	auto matrix = _grid.as_matrix<2, 3, ColMajor>();
-	ASSERT_TRUE(matrix.IsRowMajor);
+	auto matrix = static_cast<Grid<char>::container_type&>(_grid);
 	ASSERT_EQ(0, matrix(0, 0));
 	ASSERT_EQ(1, matrix(0, 1));
 	ASSERT_EQ(2, matrix(0, 2));
@@ -353,7 +336,7 @@ TEST_F(GridToFromEigenMatrix, col_major_matrix_convertible_to_grid)
 
 TEST_F(GridToFromEigenMatrix, matrix_is_a_copy_not_a_mutable_view)
 {
-	auto matrix = _grid.as_matrix<2, 3>();
+	auto matrix = static_cast<Grid<char>::container_type&>(_grid);
 
 	auto constexpr mod = 6;
 	matrix(0, 0) = mod;
@@ -372,5 +355,3 @@ TEST_F(GridToFromEigenMatrix, grid_is_a_copy_not_a_mutable_view)
 	ASSERT_EQ(mod, _grid(0, 0));
 	ASSERT_EQ(0, matrix(0, 0));  // matrix is unchanged
 }
-
-#endif  // SUPPORT_EIGEN
