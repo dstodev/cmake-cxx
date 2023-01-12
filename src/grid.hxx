@@ -31,19 +31,19 @@ template <typename T>
 std::ostream& operator<<(std::ostream& os, Grid<T> const& grid);
 
 /**
- * @brief A Grid is a two-dimensional arrangement of elements.
- *
- * This class arranges elements in a rectangle:
- *    number-of-elements = width (number of columns) * height (number of rows)
- *
- * @code
- * Elements are accessed by row, column:
- *      | 0 1       row  column
- *    --+----    a: 0    0
- *    0 | a b    b: 0    1
- *    1 | c d    c: 1    0
- *               d: 1    1
- * @endcode
+   @brief A Grid is a two-dimensional arrangement of elements.
+
+   This class arranges elements in a rectangle:
+      number-of-elements = width (number of columns) * height (number of rows)
+
+   @code
+   Elements are accessed by row, column:
+        | 0 1       row  column
+      --+----    a: 0    0
+      0 | a b    b: 0    1
+      1 | c d    c: 1    0
+                 d: 1    1
+   @endcode
  */
 template <typename T>
 class Grid
@@ -61,7 +61,7 @@ public:
 	virtual ~Grid() = default;
 
 	explicit Grid();
-	explicit Grid(size_t width, size_t height, std::initializer_list<value_type> init = {});
+	explicit Grid(size_t height, size_t width, std::initializer_list<value_type> init = {});
 
 	template <typename M>
 	explicit Grid(M const& matrix);
@@ -87,13 +87,13 @@ public:
 
 	[[nodiscard]] auto size() const -> size_t;
 
-	operator container_type const&() const;
-	operator container_type&();
+	explicit operator container_type const&() const;
+	explicit operator container_type&();
 
-	auto begin() -> iterator;
 	auto begin() const -> const_iterator;
-	auto end() -> iterator;
+	auto begin() -> iterator;
 	auto end() const -> const_iterator;
+	auto end() -> iterator;
 
 	// The '<>' after the operator name indicates that this friend is a template prototype
 	friend std::ostream& operator<< <>(std::ostream& os, Grid<value_type> const& grid);
@@ -108,7 +108,7 @@ Grid<T>::Grid()
 {}
 
 template <typename T>
-Grid<T>::Grid(size_t width, size_t height, std::initializer_list<value_type> init)
+Grid<T>::Grid(size_t height, size_t width, std::initializer_list<value_type> init)
     : _data(height, width)
 {
 	auto const default_value = value_type {};
@@ -185,12 +185,13 @@ auto Grid<T>::at(size_t row, size_t column) const -> value_type const&
 template <typename T>
 auto Grid<T>::at(size_t row, size_t column) -> value_type&
 {
-	// To reduce code duplication between `at()` and `at() const`,
-	// add const to `this` pointer to unambiguously call `at() const`,
-	// call it, then const_cast<> away the const.
-	// This is safe because this function is not const (`at()` not `at() const`):
-	// the only way to call `at()` is via non-const instance or reference,
-	// guaranteeing that calling const_cast<> to remove const here is safe.
+	/* To reduce code duplication between `at()` and `at() const`,
+	   add const to `this` pointer to unambiguously call `at() const`,
+	   call it, then const_cast<> away the const.
+	   This is safe because this function is not const (`at()` not `at() const`):
+	   the only way to call `at()` is via non-const instance or reference,
+	   guaranteeing that calling const_cast<> to remove const here is safe.
+	 */
 	auto const* const_this = this;
 	return const_cast<value_type&>(const_this->at(row, column));
 }
@@ -226,27 +227,27 @@ Grid<T>::operator container_type&()
 }
 
 template <typename T>
-auto Grid<T>::begin() -> iterator
-{
-	return iterator(_data);
-}
-
-template <typename T>
 auto Grid<T>::begin() const -> const_iterator
 {
 	return const_iterator(_data);
 }
 
 template <typename T>
-auto Grid<T>::end() -> iterator
+auto Grid<T>::begin() -> iterator
 {
-	return iterator(_data, _data.size());
+	return iterator(_data);
 }
 
 template <typename T>
 auto Grid<T>::end() const -> const_iterator
 {
 	return const_iterator(_data, _data.size());
+}
+
+template <typename T>
+auto Grid<T>::end() -> iterator
+{
+	return iterator(_data, _data.size());
 }
 
 template <typename T>
@@ -303,7 +304,8 @@ struct Grid<T>::iterator_impl
 
 	bool operator!=(iterator_impl const& other) const
 	{
-		return !(*this == other);
+		bool const equal = *this == other;
+		return !equal;
 	}
 
 	auto operator*() -> reference

@@ -16,14 +16,14 @@ TEST(Grid, construct)
 
 TEST(Grid, construct_non_default)
 {
-	Grid<char> o(0, 1);
+	Grid<char> o(1, 0);
 	ASSERT_EQ(0, o.width());
 	ASSERT_EQ(1, o.height());
 }
 
 TEST(Grid, construct_copy)
 {
-	Grid<char> o(0, 1);
+	Grid<char> o(1, 0);
 	Grid<char> copy(o);
 	ASSERT_EQ(0, copy.width());
 	ASSERT_EQ(1, copy.height());
@@ -40,7 +40,7 @@ TEST(Grid, setters)
 
 TEST(Grid, size)
 {
-	Grid<char> o(2, 3);
+	Grid<char> o(3, 2);
 	ASSERT_EQ(6, o.size());
 }
 
@@ -51,7 +51,7 @@ TEST(Grid, construct_with_invalid_data_dimensions)
 
 TEST(Grid, construct_with_data)
 {
-	Grid<char> o(1, 2, {3, 4});
+	Grid<char> o(2, 1, {3, 4});
 	ASSERT_EQ(3, o.at(0, 0));
 	ASSERT_EQ(4, o.at(1, 0));
 }
@@ -61,7 +61,7 @@ TEST(Grid, at_horizontal_rectangle)
 	/*  0 1 2 3 4   a b c d e f g h i j
 	  0 a b c d e   0 1 2 3 4 5 6 7 8 9
 	  1 f g h i j  */
-	Grid<char> o(5, 2, {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'});
+	Grid<char> o(2, 5, {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'});
 	ASSERT_EQ('h', o.at(1, 2)) << o;
 }
 
@@ -73,7 +73,7 @@ TEST(Grid, at_vertical_rectangle)
 	  2 e f
 	  3 g h
 	  4 i j  */
-	Grid<char> o(2, 5, {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'});
+	Grid<char> o(5, 2, {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'});
 	ASSERT_EQ('f', o.at(2, 1)) << o;
 }
 
@@ -93,7 +93,7 @@ TEST(Grid, at_column_out_of_bounds)
 
 TEST(Grid, at_set)
 {
-	Grid<char> o(1, 2);
+	Grid<char> o(2, 1);
 	o.at(1, 0) = 5;
 	ASSERT_EQ(5, o.at(1, 0)) << o;
 }
@@ -147,9 +147,12 @@ TEST(Grid, iterator)
 	MY_ASSERT_SAME_TYPE(grid_type::iterator, decltype(std::declval<grid_type>().begin()));
 	MY_ASSERT_SAME_TYPE(grid_type::iterator, decltype(std::declval<grid_type>().end()));
 
-	for (int i {}; auto it : o) {
+	int i {};
+
+	for (auto it : o) {
 		EXPECT_EQ(i++, it);
 	}
+	ASSERT_EQ(o.size(), i);
 }
 
 TEST(Grid, iterator_mutates)
@@ -157,7 +160,7 @@ TEST(Grid, iterator_mutates)
 	Grid<char> o(2, 2, {0, 1, 2, 3});
 
 	for (auto& i : o) {
-		auto index = i;
+		auto index = i;  // copy; value is also value's index
 		i += 1;
 		EXPECT_EQ(index + 1, o.begin()[index]);
 	}
@@ -267,7 +270,7 @@ protected:
 
 	void SetUp() override
 	{
-		Grid<char> grid(3, 2, {0, 1, 2, 3, 4, 5});
+		Grid<char> grid(2, 3, {0, 1, 2, 3, 4, 5});
 
 		/*     x=0  x=1  x=2 x=column
 		  y=0  0    1    2   y=row
