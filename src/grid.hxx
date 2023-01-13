@@ -28,20 +28,20 @@ class Grid;
 template <typename T>
 std::ostream& operator<<(std::ostream& os, Grid<T> const& grid);
 
-/**
-   @brief A Grid is a two-dimensional arrangement of elements.
+/** @brief A Grid is a two-dimensional arrangement of elements.
 
-   This class arranges elements in a rectangle:
-      number-of-elements = width (number of columns) * height (number of rows)
+    This class arranges elements in a rectangle:
+       number-of-elements = width (number of columns) * height (number of rows)
 
-   @code
-   Elements are accessed by row, column:
-        | 0 1       row  column
-      --+----    a: 0    0
-      0 | a b    b: 0    1
-      1 | c d    c: 1    0
-                 d: 1    1
-   @endcode
+    @code
+    Elements are accessed by row, column:
+
+         | 0 1       row  column
+       --+----    a: 0    0
+       0 | a b    b: 0    1
+       1 | c d    c: 1    0
+                  d: 1    1
+    @endcode
  */
 template <typename T>
 class Grid
@@ -53,12 +53,18 @@ public:
 	template <typename Tvalue, typename Tcontainer, bool const_access = true>
 	struct iterator_impl;
 
-	using iterator = iterator_impl<value_type, container_type, false>;
 	using const_iterator = iterator_impl<value_type const, container_type const>;
+	using iterator = iterator_impl<value_type, container_type, false>;
 
 	virtual ~Grid() = default;
+	explicit Grid() = default;
 
-	explicit Grid();
+	/** @brief Grid constructor
+	    @param height Number of grid rows
+	    @param width Number of grid columns
+	    @param init One-dimensional list of data to initialize with, interpreted
+	                in row-major order. Must have at least width * height elements.
+	 */
 	explicit Grid(size_t height, size_t width, std::initializer_list<value_type> init = {});
 
 	template <typename M>
@@ -99,11 +105,6 @@ public:
 private:
 	container_type _data;
 };
-
-template <typename T>
-Grid<T>::Grid()
-    : _data {}
-{}
 
 template <typename T>
 Grid<T>::Grid(size_t height, size_t width, std::initializer_list<value_type> init)
