@@ -11,7 +11,7 @@ set(dll_export_macro PROJECT_API)
 # Configure the library
 add_library(${target_name}
 	grid.hxx
-	placeholder.hxx
+	placeholder_t.hxx
 	point_t.cxx
 	point_t.hxx
 	shear.cxx
@@ -49,7 +49,7 @@ target_compile_features(${target_name}
 ]]
 target_precompile_headers(${target_name}
 	PUBLIC
-		$<BUILD_INTERFACE:placeholder.hxx>
+		$<BUILD_INTERFACE:placeholder_t.hxx>
 )
 
 # Link dependencies

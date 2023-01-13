@@ -15,7 +15,7 @@ public:
 	using container_type = Eigen::Vector2f;
 	using value_type = container_type::value_type;
 
-	explicit point_t(value_type x_val = 0.0f, value_type y_val = 0.0f)
+	explicit point_t(value_type x_val = {}, value_type y_val = {})
 	    : _vec {x_val, y_val}
 	    , x {_vec[0]}
 	    , y {_vec[1]}

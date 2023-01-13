@@ -1,5 +1,5 @@
-#ifndef PLACEHOLDER_HXX
-#define PLACEHOLDER_HXX
+#ifndef PLACEHOLDER_T_HXX
+#define PLACEHOLDER_T_HXX
 
 #include <compare>
 
@@ -51,4 +51,4 @@ public:
 	generic_operator(%=);
 };
 
-#endif  // PLACEHOLDER_HXX
+#endif  // PLACEHOLDER_T_HXX

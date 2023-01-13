@@ -57,7 +57,7 @@ public:
 	using iterator = iterator_impl<value_type, container_type, false>;
 
 	virtual ~Grid() = default;
-	explicit Grid() = default;
+	Grid() = default;
 
 	/** @brief Grid constructor
 	    @param height Number of grid rows
