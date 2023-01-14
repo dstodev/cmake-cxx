@@ -1,7 +1,7 @@
 set(target_name "project")
 
 set(header_files_to_package
-	grid.hxx
+	grid_t.hxx
 	shear.hxx
 )
 
@@ -10,7 +10,7 @@ set(dll_export_macro PROJECT_API)
 
 # Configure the library
 add_library(${target_name}
-	grid.hxx
+	grid_t.hxx
 	placeholder_t.hxx
 	point_t.cxx
 	point_t.hxx

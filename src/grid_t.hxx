@@ -1,5 +1,5 @@
-#ifndef GRID_HXX
-#define GRID_HXX
+#ifndef GRID_T_HXX
+#define GRID_T_HXX
 
 #include <ostream>
 #include <type_traits>
@@ -23,10 +23,10 @@ using ColMajor = Eigen::Matrix<T, rows, cols, options | Eigen::ColMajor, max_row
 namespace project {
 
 template <typename T>
-class Grid;
+class grid_t;
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os, Grid<T> const& grid);
+std::ostream& operator<<(std::ostream& os, grid_t<T> const& grid);
 
 /** @brief A Grid is a two-dimensional arrangement of elements.
 
@@ -44,7 +44,7 @@ std::ostream& operator<<(std::ostream& os, Grid<T> const& grid);
     @endcode
  */
 template <typename T>
-class Grid
+class grid_t
 {
 public:
 	using value_type = T;  // stl often names this specific member 'value_type'
@@ -56,8 +56,8 @@ public:
 	using const_iterator = iterator_impl<value_type const, container_type const>;
 	using iterator = iterator_impl<value_type, container_type, false>;
 
-	virtual ~Grid() = default;
-	Grid() = default;
+	virtual ~grid_t() = default;
+	grid_t() = default;
 
 	/** @brief Grid constructor
 	    @param height Number of grid rows
@@ -65,22 +65,24 @@ public:
 	    @param init One-dimensional list of data to initialize with, interpreted
 	                in row-major order. Must have at least width * height elements.
 	 */
-	explicit Grid(size_t height, size_t width, std::initializer_list<value_type> init = {});
+	explicit grid_t(size_t height, size_t width, std::initializer_list<value_type> init = {});
 
 	template <typename M>
-	explicit Grid(M const& matrix);
+	explicit grid_t(M const& matrix);
 
-	Grid(Grid const& copy) = default;
-	Grid(Grid&& move) noexcept = default;
+	grid_t(grid_t const& copy) = default;
+	grid_t(grid_t&& move) noexcept = default;
 
-	Grid& operator=(Grid const& copy) = default;
-	Grid& operator=(Grid&& move) noexcept = default;
+	grid_t& operator=(grid_t const& copy) = default;
+	grid_t& operator=(grid_t&& move) noexcept = default;
 
-	[[nodiscard]] auto width() const -> size_t;
-	void width(size_t width);
-
+	/// Number of grid rows
 	[[nodiscard]] auto height() const -> size_t;
 	void height(size_t height);
+
+	/// Number of grid columns
+	[[nodiscard]] auto width() const -> size_t;
+	void width(size_t width);
 
 	auto at(size_t row, size_t column) const -> value_type const&;
 	auto at(size_t row, size_t column) -> value_type&;
@@ -100,14 +102,14 @@ public:
 	auto end() -> iterator;
 
 	// The '<>' after the operator name indicates that this friend is a template prototype
-	friend std::ostream& operator<< <>(std::ostream& os, Grid<value_type> const& grid);
+	friend std::ostream& operator<< <>(std::ostream& os, grid_t<value_type> const& grid);
 
 private:
 	container_type _data;
 };
 
 template <typename T>
-Grid<T>::Grid(size_t height, size_t width, std::initializer_list<value_type> init)
+grid_t<T>::grid_t(size_t height, size_t width, std::initializer_list<value_type> init)
     : _data(height, width)
 {
 	auto const default_value = value_type {};
@@ -127,37 +129,18 @@ Grid<T>::Grid(size_t height, size_t width, std::initializer_list<value_type> ini
 
 template <typename T>
 template <typename M>
-Grid<T>::Grid(M const& matrix)
+grid_t<T>::grid_t(M const& matrix)
     : _data(matrix)
 {}
 
 template <typename T>
-auto Grid<T>::width() const -> size_t
-{
-	return _data.cols();
-}
-
-template <typename T>
-void Grid<T>::width(size_t width)
-{
-	auto const previous_width = this->width();
-	_data.conservativeResize(Eigen::NoChange, width);
-
-	if (width > previous_width) {
-		auto const default_value = value_type {};
-		auto const num_added_columns = width - previous_width;
-		_data.rightCols(num_added_columns).setConstant(default_value);
-	}
-}
-
-template <typename T>
-auto Grid<T>::height() const -> size_t
+auto grid_t<T>::height() const -> size_t
 {
 	return _data.rows();
 }
 
 template <typename T>
-void Grid<T>::height(size_t height)
+void grid_t<T>::height(size_t height)
 {
 	auto const previous_height = this->height();
 	_data.conservativeResize(height, Eigen::NoChange);
@@ -170,7 +153,26 @@ void Grid<T>::height(size_t height)
 }
 
 template <typename T>
-auto Grid<T>::at(size_t row, size_t column) const -> value_type const&
+auto grid_t<T>::width() const -> size_t
+{
+	return _data.cols();
+}
+
+template <typename T>
+void grid_t<T>::width(size_t width)
+{
+	auto const previous_width = this->width();
+	_data.conservativeResize(Eigen::NoChange, width);
+
+	if (width > previous_width) {
+		auto const default_value = value_type {};
+		auto const num_added_columns = width - previous_width;
+		_data.rightCols(num_added_columns).setConstant(default_value);
+	}
+}
+
+template <typename T>
+auto grid_t<T>::at(size_t row, size_t column) const -> value_type const&
 {
 	if (row >= _data.rows()) {
 		throw std::domain_error("Row out of bounds");
@@ -182,7 +184,7 @@ auto Grid<T>::at(size_t row, size_t column) const -> value_type const&
 }
 
 template <typename T>
-auto Grid<T>::at(size_t row, size_t column) -> value_type&
+auto grid_t<T>::at(size_t row, size_t column) -> value_type&
 {
 	/* To reduce code duplication between `at()` and `at() const`,
 	   add const to `this` pointer to unambiguously call `at() const`,
@@ -196,61 +198,61 @@ auto Grid<T>::at(size_t row, size_t column) -> value_type&
 }
 
 template <typename T>
-auto Grid<T>::operator()(size_t row, size_t column) const -> value_type const&
+auto grid_t<T>::operator()(size_t row, size_t column) const -> value_type const&
 {
 	return at(row, column);
 }
 
 template <typename T>
-auto Grid<T>::operator()(size_t row, size_t column) -> value_type&
+auto grid_t<T>::operator()(size_t row, size_t column) -> value_type&
 {
 	return at(row, column);
 }
 
 template <typename T>
-auto Grid<T>::size() const -> size_t
+auto grid_t<T>::size() const -> size_t
 {
 	return _data.size();
 }
 
 template <typename T>
-Grid<T>::operator container_type const&() const
+grid_t<T>::operator container_type const&() const
 {
 	return _data;
 }
 
 template <typename T>
-Grid<T>::operator container_type&()
+grid_t<T>::operator container_type&()
 {
 	return _data;
 }
 
 template <typename T>
-auto Grid<T>::begin() const -> const_iterator
+auto grid_t<T>::begin() const -> const_iterator
 {
 	return const_iterator(_data);
 }
 
 template <typename T>
-auto Grid<T>::begin() -> iterator
+auto grid_t<T>::begin() -> iterator
 {
 	return iterator(_data);
 }
 
 template <typename T>
-auto Grid<T>::end() const -> const_iterator
+auto grid_t<T>::end() const -> const_iterator
 {
 	return const_iterator(_data, _data.size());
 }
 
 template <typename T>
-auto Grid<T>::end() -> iterator
+auto grid_t<T>::end() -> iterator
 {
 	return iterator(_data, _data.size());
 }
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os, Grid<T> const& grid)
+std::ostream& operator<<(std::ostream& os, grid_t<T> const& grid)
 {
 	for (auto i {0}; i < grid.width() * grid.height(); ++i) {
 		if (i % grid.width() == 0) {
@@ -264,7 +266,7 @@ std::ostream& operator<<(std::ostream& os, Grid<T> const& grid)
 
 template <typename T>
 template <typename Tvalue, typename Tcontainer, bool const_access>
-struct Grid<T>::iterator_impl
+struct grid_t<T>::iterator_impl
 {
 	// 5 iterator-standard member types
 	using iterator_category = std::forward_iterator_tag;
@@ -338,4 +340,4 @@ struct Grid<T>::iterator_impl
 
 }  // namespace project
 
-#endif  // GRID_HXX
+#endif  // GRID_T_HXX

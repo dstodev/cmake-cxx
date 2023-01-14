@@ -6,7 +6,7 @@ namespace project {
 
 point_t& point_t::operator=(container_type const& copy)
 {
-	_vec = copy;
+	_data = copy;
 	return *this;
 }
 
@@ -31,12 +31,12 @@ std::ostream& operator<<(std::ostream& os, point_t const& point)
 
 point_t::operator container_type&()
 {
-	return _vec;
+	return _data;
 }
 
 point_t::operator container_type const&() const
 {
-	return _vec;
+	return _data;
 }
 
 }  // namespace project

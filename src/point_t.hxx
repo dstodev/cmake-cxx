@@ -16,9 +16,9 @@ public:
 	using value_type = container_type::value_type;
 
 	explicit point_t(value_type x_val = {}, value_type y_val = {})
-	    : _vec {x_val, y_val}
-	    , x {_vec[0]}
-	    , y {_vec[1]}
+	    : _data {x_val, y_val}
+	    , x {_data[0]}
+	    , y {_data[1]}
 	{}
 
 	virtual ~point_t() = default;
@@ -29,11 +29,11 @@ public:
 
 	PROJECT_API friend std::ostream& operator<<(std::ostream& os, point_t const& point);
 
-	operator container_type&();
-	operator container_type const&() const;
+	explicit operator container_type&();
+	explicit operator container_type const&() const;
 
 private:
-	container_type _vec;
+	container_type _data;
 
 public:
 	value_type& x;
