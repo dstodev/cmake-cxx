@@ -339,8 +339,7 @@ TEST_F(GridToFromEigenMatrix, col_major_matrix_convertible_to_grid)
 
 TEST_F(GridToFromEigenMatrix, matrix_is_a_copy_not_a_mutable_view)
 {
-	// not auto&
-	auto matrix = static_cast<grid_t<char>::container_type&>(_grid);
+	auto matrix = _grid.as_matrix();  // not auto&
 
 	auto constexpr mod = 6;
 	matrix(0, 0) = mod;
@@ -350,7 +349,7 @@ TEST_F(GridToFromEigenMatrix, matrix_is_a_copy_not_a_mutable_view)
 
 TEST_F(GridToFromEigenMatrix, matrix_is_a_mutable_view)
 {
-	auto& matrix = static_cast<grid_t<char>::container_type&>(_grid);
+	auto& matrix = _grid.as_matrix();
 
 	auto constexpr mod = 6;
 	matrix(0, 0) = mod;

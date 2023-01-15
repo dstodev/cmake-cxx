@@ -93,6 +93,9 @@ public:
 
 	[[nodiscard]] auto size() const -> size_t;
 
+	auto as_matrix() const -> container_type const&;
+	auto as_matrix() -> container_type&;
+
 	explicit operator container_type const&() const;
 	explicit operator container_type&();
 
@@ -213,6 +216,18 @@ template <typename T>
 auto grid_t<T>::size() const -> size_t
 {
 	return _data.size();
+}
+
+template <typename T>
+auto grid_t<T>::as_matrix() const -> container_type const&
+{
+	return _data;
+}
+
+template <typename T>
+auto grid_t<T>::as_matrix() -> container_type&
+{
+	return _data;
 }
 
 template <typename T>
