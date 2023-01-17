@@ -340,8 +340,8 @@ struct grid_t<T>::iterator_impl
 	{
 		// https://eigen.tuxfamily.org/dox/group__TutorialSTL.html
 		auto columns = container.cols();
-		int row = index / columns;
-		int column = index % columns;
+		auto row = index / columns;
+		auto column = index % columns;
 		return container(row, column);
 	}
 

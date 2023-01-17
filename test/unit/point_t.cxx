@@ -26,3 +26,13 @@ TEST(Point, assign_fields)
 	ASSERT_EQ(1, o.x);
 	ASSERT_EQ(2, o.y);
 }
+
+TEST(Point, iterate_semantics)
+{
+	point_t o {0, 1};
+
+	// iterate over an in-place initializer list
+	for (auto i {0}; auto const& it : {o.x, o.y}) {
+		ASSERT_EQ(i++, it);
+	}
+}

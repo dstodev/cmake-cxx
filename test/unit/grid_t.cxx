@@ -147,7 +147,7 @@ TEST(Grid, iterator)
 	MY_ASSERT_SAME_TYPE(grid_type::iterator, decltype(std::declval<grid_type>().begin()));
 	MY_ASSERT_SAME_TYPE(grid_type::iterator, decltype(std::declval<grid_type>().end()));
 
-	int i {};
+	auto i {0};
 
 	for (auto it : o) {
 		EXPECT_EQ(i++, it);
