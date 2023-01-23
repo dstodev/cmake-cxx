@@ -9,10 +9,6 @@
 		/* ~~~~~~~~~~~~~~~~~~~~~~~
 		     Vanilla Settings
 		~~~~~~~~~~~~~~~~~~~~~~~ */
-		"files.exclude": {
-			".vscode/ipch": true,
-			"**/googletest/*": true,
-		},
 
 		/* ~~~~~~~~~~~~~~~~~~~~~~~~~
 		     Extension Settings
