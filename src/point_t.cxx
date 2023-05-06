@@ -4,6 +4,26 @@ using namespace Eigen;
 
 namespace project {
 
+auto point_t::x() -> value_type&
+{
+	return _data[0];
+}
+
+auto point_t::x() const -> value_type const&
+{
+	return _data[0];
+}
+
+auto point_t::y() -> value_type&
+{
+	return _data[1];
+}
+
+auto point_t::y() const -> value_type const&
+{
+	return _data[1];
+}
+
 point_t& point_t::operator=(container_type const& copy)
 {
 	_data = copy;
@@ -12,7 +32,7 @@ point_t& point_t::operator=(container_type const& copy)
 
 bool operator==(point_t const& lhs, point_t const& rhs)
 {
-	return (lhs.x == rhs.x) && (lhs.y == rhs.y);
+	return lhs._data == rhs._data;
 }
 
 std::ostream& operator<<(std::ostream& os, point_t const& point)
@@ -23,7 +43,7 @@ std::ostream& operator<<(std::ostream& os, point_t const& point)
 	auto vector = static_cast<point_t::container_type const&>(point);
 
 	// Eigen defaults to column-major containers, so transpose to a row-major
-	// vector for more compact printing.
+	// vector for more-compact printing.
 	os << vector.transpose().format(format);
 
 	return os;

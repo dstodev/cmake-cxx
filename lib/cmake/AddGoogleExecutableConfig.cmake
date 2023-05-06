@@ -5,13 +5,17 @@ find_package(HelpParseArguments CONFIG REQUIRED)
 function(add_google_executable target)
 	help_parse_arguments(args
 		"TEST;BENCHMARK"
-		""
+		"MAIN"
 		"SOURCES;LIBRARIES"
 	)
 
 	if (args_TEST)
 		find_package(GTest REQUIRED)
-		list(APPEND google_links "GTest::gtest_main")
+		if (args_MAIN)
+			list(APPEND google_links "GTest::gtest")
+		else()
+			list(APPEND google_links "GTest::gtest_main")
+		endif()
 	endif()
 
 	if (args_BENCHMARK)
@@ -25,6 +29,7 @@ function(add_google_executable target)
 
 	add_executable(${target}
 		${args_SOURCES}
+		${args_MAIN}
 	)
 	target_link_libraries(${target}
 		PRIVATE
@@ -33,8 +38,7 @@ function(add_google_executable target)
 	)
 	target_compile_features(${target}
 		PRIVATE
-			cxx_std_11  # GoogleTest requires at least C++11 after version 1.8.1
-			            # https://github.com/google/googletest/releases/tag/release-1.8.1
+			cxx_std_14  # GoogleTest requires at least C++14 after version 1.13
 	)
 
 	if (args_TEST)

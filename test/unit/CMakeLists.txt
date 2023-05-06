@@ -15,9 +15,5 @@ add_google_executable(test_project TEST
 		project
 		Eigen3::Eigen
 )
-target_compile_features(test_project
-	PRIVATE
-		cxx_std_17
-)
 
 add_local_all_target(_all_unit)

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <shear.hxx>
 #include <point_t.hxx>
+#include <shear.hxx>
 
 using namespace project;
 
@@ -20,7 +20,7 @@ TEST(Shear, x_magnitude_2)
 	// x' = x + shear[x] * y
 	//    = 1 + 2        * 2
 	//    = 5
-	point_t const expected {5.0f, point.y};
+	point_t const expected {5.0f, point.y()};
 	shear(point, 2, 0);
 	ASSERT_EQ(expected, point);
 }
@@ -32,7 +32,7 @@ TEST(Shear, y_magnitude_2)
 	// y' = y + shear[y] * x
 	//    = 2 + 2        * 1
 	//    = 4
-	point_t const expected {point.x, 4.0f};
+	point_t const expected {point.x(), 4.0f};
 	shear(point, 0, 2);
 	ASSERT_EQ(expected, point);
 }

@@ -1,4 +1,5 @@
 find_package(AddGoogleExecutable CONFIG REQUIRED)
+find_package(AddLocalAllTarget CONFIG REQUIRED)
 
 add_google_executable(performance BENCHMARK
 	SOURCES
@@ -7,7 +8,5 @@ add_google_executable(performance BENCHMARK
 	LIBRARIES
 		project
 )
-target_compile_features(performance
-	PRIVATE
-		cxx_std_17
-)
+
+add_local_all_target(all_perf)

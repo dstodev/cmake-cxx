@@ -24,7 +24,7 @@ The following scripts have been tested on MacOS Monterey and Windows 10.
     Run `script/run-docker-tests.bash`
 
   - on Windows  
-    Run `script/run-docker-tests.bat`
+    Run `script\run-docker-tests.bat`
   
   - with [Compose](https://docs.docker.com/compose/)  
     Run `docker compose -f docker/compose.yaml run ubuntu`, or  

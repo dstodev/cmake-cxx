@@ -17,11 +17,15 @@ public:
 
 	explicit point_t(value_type x_val = {}, value_type y_val = {})
 	    : _data {x_val, y_val}
-	    , x {_data[0]}
-	    , y {_data[1]}
 	{}
 
 	virtual ~point_t() = default;
+
+	auto x() -> value_type&;
+	auto x() const -> value_type const&;
+
+	auto y() -> value_type&;
+	auto y() const -> value_type const&;
 
 	point_t& operator=(container_type const& copy);
 
@@ -29,15 +33,11 @@ public:
 
 	PROJECT_API friend std::ostream& operator<<(std::ostream& os, point_t const& point);
 
-	explicit operator container_type&();
-	explicit operator container_type const&() const;
+	operator container_type&();
+	operator container_type const&() const;
 
 private:
 	container_type _data;
-
-public:
-	value_type& x;
-	value_type& y;
 };
 
 PROJECT_API bool operator==(point_t const& lhs, point_t const& rhs);

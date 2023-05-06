@@ -5,7 +5,7 @@
 
 using namespace project;
 
-static void run_shear(benchmark::State& state, float x, float y, float x_mag, float y_mag)
+void static run_shear(benchmark::State& state, float x, float y, float x_mag, float y_mag)
 {
 	point_t point {x, y};
 

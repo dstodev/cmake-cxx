@@ -2,6 +2,7 @@ set(target_name "project")
 
 set(header_files_to_package
 	grid_t.hxx
+	point_t.hxx
 	shear.hxx
 )
 
@@ -30,6 +31,7 @@ target_compile_features(${target_name}
 	PUBLIC
 		cxx_std_20  # for helpful features like [[nodiscard]] and operator<=>
 )
+
 #[[
 	This call to target_precompile_headers() affects development builds
 	(i.e. not sources in an install() context) by prepending
