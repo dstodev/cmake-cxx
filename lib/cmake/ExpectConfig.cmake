@@ -117,19 +117,18 @@ function(${fn_name})
 	if(msg)
 		set(pretty_message "${msg}")
 	else()
-		get_filename_component(file ${CMAKE_CURRENT_LIST_FILE} NAME)
 		string(REPLACE "\"" "\\\"" expr "${argv}")  # double-escape quotes for message
-		set(pretty_message "${fn_name}(${expr}) failed in file ${file}:0")
+		set(pretty_message "${fn_name}(${expr}) failed!\nSearch call stack for: (${fn_name})")
 	endif()
 
 	#[[
 		If called like expect("" IN_LIST mylist), then "${argv}" is ";IN_LIST;mylist"
-		Evaluating argv like this is invalid because it becomes if(NOT (IN_LIST mylist)
-		So, replace empty strings with literal quotes to become if(NOT ("" IN_LIST mylist)
+		Evaluating argv like this is invalid because it becomes if(NOT (IN_LIST mylist))
+		So, replace empty strings with literal quotes to become if(NOT ("" IN_LIST mylist))
 		when evaluated by cmake_language(EVAL CODE)  https://cmake.org/cmake/help/latest/command/cmake_language.html#evaluating-code
 
 		Cannot use if(NOT ("${argv}")) instead, as it becomes if(NOT (";IN_LIST;mylist"))
-		which evaluates like if(FALSE).
+		which evaluates like if(NOT (TRUE)).
 	]]
 	set(code "
 		if(NOT (${argv}))
