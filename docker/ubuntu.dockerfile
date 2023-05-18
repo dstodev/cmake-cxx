@@ -1,9 +1,10 @@
-FROM ubuntu:22.04
+FROM ubuntu:latest
 
 RUN apt update && apt install -y \
 	build-essential \
-    clang \
+	clang \
+	git \
 	python3-pip
 
 RUN pip3 install \
-		cmake
+	cmake

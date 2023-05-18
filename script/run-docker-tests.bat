@@ -13,6 +13,6 @@ if not exist "%build_dir%\NUL" mkdir "%build_dir%"
 
 docker run --mount "type=bind,readonly,src=%source_dir%,dst=/project"^
            --mount "type=bind,src=%build_dir%,dst=/build"^
-           "%image_name%" sh /project/script/run-tests.sh /build
+           "%image_name%" bash -c "/project/script/run-tests.bash /build"
 
 :: TODO: Abstract with e.g. Python instead of these scripts?
