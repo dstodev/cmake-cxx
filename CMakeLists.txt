@@ -26,11 +26,11 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")  # .so, .dylib, 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")  # .exe, .dll, ...
 
 # When building the `install` target, put artifacts in this directory.
-set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/package_stage")  # https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html
+set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/package-stage")  # https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html
 
 include(CPack)
 
-set(CPM_SOURCE_CACHE "${PROJECT_BINARY_DIR}/../dependency_cache")
+set(CPM_SOURCE_CACHE "${PROJECT_BINARY_DIR}/../dependency-cache")
 
 include(lib/third-party/cpm.cmake)
 
