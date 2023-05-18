@@ -108,19 +108,6 @@ function(${fn_name})
 	# Avoid string(JOIN " " argv ${argv}) because it un-escapes passed-in lists
 	string(REGEX REPLACE "([^\\]);" "\\1 " argv "${argv}")
 
-	if(${${prefix}_REQUIRED})
-		set(message_mode FATAL_ERROR)
-	else()
-		set(message_mode AUTHOR_WARNING)
-	endif()
-
-	if(msg)
-		set(pretty_message "${msg}")
-	else()
-		string(REPLACE "\"" "\\\"" expr "${argv}")  # double-escape quotes for message
-		set(pretty_message "${fn_name}(${expr}) failed!\nSearch call stack for: (${fn_name})")
-	endif()
-
 	#[[
 		If called like expect("" IN_LIST mylist), then "${argv}" is ";IN_LIST;mylist"
 		Evaluating argv like this is invalid because it becomes if(NOT (IN_LIST mylist))
@@ -135,10 +122,27 @@ function(${fn_name})
 			if(NOT ${safe})
 				_increment_fails()
 			endif()
-			message(${message_mode} \"${pretty_message}\")
+			set(print TRUE)
 		endif()
 	")
 	cmake_language(EVAL CODE "${code}")
+	if(print)
+		if(${${prefix}_REQUIRED})
+			set(message_mode FATAL_ERROR)
+		else()
+			set(message_mode AUTHOR_WARNING)
+		endif()
+
+		if(msg)
+			set(pretty_message "${msg}")
+		else()
+			string(REPLACE "\"" "\\\"" expr "${argv}")  # double-escape quotes for message
+			set(pretty_message
+				" ${fn_name}(${expr}) failed!\n"
+				" Search call stack for: (${fn_name})")
+		endif()
+		message(${message_mode} ${pretty_message})
+	endif()
 endfunction()
 
 function(_increment_calls)
