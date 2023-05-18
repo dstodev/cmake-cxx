@@ -4,11 +4,11 @@ This project serves as an opinionated template project which includes:
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page) \([repo](https://gitlab.com/libeigen/eigen)\)
 - [GoogleTest](https://github.com/google/googletest)
 - [Google Benchmark](https://github.com/google/benchmark)
+- [CMake Package Manager "CPM"](https://github.com/cpm-cmake/CPM.cmake)
 
 ## Build dependencies
 
 - [CMake 3.14+](https://cmake.org/)
-- [Conan](https://conan.io/)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop) (to run Docker tests)
 
 ## Running tests

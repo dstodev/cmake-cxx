@@ -10,17 +10,19 @@ function(add_google_executable target)
 	)
 
 	if (args_TEST)
-		find_package(GTest REQUIRED)
 		if (args_MAIN)
-			list(APPEND google_links "GTest::gtest")
+			list(APPEND google_links "gtest")
 		else()
-			list(APPEND google_links "GTest::gtest_main")
+			list(APPEND google_links "gtest_main")
 		endif()
 	endif()
 
 	if (args_BENCHMARK)
-		find_package(benchmark REQUIRED)
-		list(APPEND google_links "benchmark::benchmark")
+		if (args_MAIN)
+			list(APPEND google_links "benchmark")
+		else()
+			list(APPEND google_links "benchmark_main")
+		endif()
 	endif()
 
 	if (NOT google_links)
@@ -38,7 +40,7 @@ function(add_google_executable target)
 	)
 	target_compile_features(${target}
 		PRIVATE
-			cxx_std_14  # GoogleTest requires at least C++14 after version 1.13
+			cxx_std_14  # GoogleTest requires at least C++14 as of version 1.13
 	)
 
 	if (args_TEST)

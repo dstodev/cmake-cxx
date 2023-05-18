@@ -30,20 +30,22 @@ set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/package_stage")  # https://cmake
 
 include(CPack)
 
-# Using Conan integration approach from: https://github.com/conan-io/cmake-conan
-include(lib/third-party/conan.cmake)
+set(CPM_SOURCE_CACHE "${PROJECT_BINARY_DIR}/../dependency_cache")
 
-set(conan_build_dir "${PROJECT_BINARY_DIR}/conan")
-list(APPEND CMAKE_MODULE_PATH "${conan_build_dir}")
+include(lib/third-party/cpm.cmake)
 
-conan_cmake_autodetect(conan_settings)  # https://github.com/conan-io/cmake-conan#conan_cmake_autodetect
-message(STATUS "Autodetected Conan settings: ${conan_settings}")
+CPMAddPackage(NAME googletest
+	GITHUB_REPOSITORY google/googletest
+	VERSION 1.13.0
+	OPTIONS "INSTALL_GTEST OFF" "gtest_force_shared_crt"
+)
 
-conan_cmake_install(PATH_OR_REFERENCE "${CMAKE_CURRENT_LIST_DIR}/conanfile.txt"  # https://github.com/conan-io/cmake-conan#conan_cmake_install
-	BUILD missing
-	INSTALL_FOLDER ${conan_build_dir}
-	REMOTE conancenter
-	SETTINGS ${conan_settings}
+CPMAddPackage("gh:google/benchmark@1.8.0")  # Must come after googletest
+
+CPMAddPackage(NAME eigen
+	GITLAB_REPOSITORY libeigen/eigen
+	GIT_TAG 3.4.0
+	OPTIONS "BUILD_TESTING OFF" "EIGEN_BUILD_DOC OFF"
 )
 
 add_subdirectory(src)
