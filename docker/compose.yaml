@@ -1,10 +1,12 @@
-services: # https://docs.docker.com/compose/compose-file/
+version: '3.9' # https://docs.docker.com/compose/compose-file/
+
+services:
   ubuntu:
     build:
       context: .
       dockerfile: ubuntu.dockerfile
-    volumes: # https://docs.docker.com/storage/volumes/#use-a-volume-with-docker-compose
-      - type: bind  # https://docs.docker.com/storage/bind-mounts/#use-a-bind-mount-with-compose
+    volumes:
+      - type: bind
         source: ..
         target: /project
     entrypoint: bash /project/script/run-tests.sh
