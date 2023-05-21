@@ -9,6 +9,7 @@ function(setup_build_mode default_mode)
 	endif()
 
 	get_cmake_property(is_multi_config GENERATOR_IS_MULTI_CONFIG)  # https://cmake.org/cmake/help/latest/prop_gbl/GENERATOR_IS_MULTI_CONFIG.html
+
 	if (is_multi_config)
 		_multi_config()
 	else()
@@ -24,7 +25,7 @@ endfunction()
 function(_single_config default_mode)
 	if (NOT CMAKE_BUILD_TYPE)  # if not set or if empty string
 		string_capitalize(${default_mode} default_mode)
-		message(WARNING "CMAKE_BUILD_TYPE unset or evaluated FALSE. Forcing CMAKE_BUILD_TYPE to: ${default_mode}")
+		message(WARNING "CMAKE_BUILD_TYPE unset or empty. Forcing CMAKE_BUILD_TYPE to: ${default_mode}")
 		# Variable may already exist in cache (as e.g. empty string), so FORCE
 		set(CMAKE_BUILD_TYPE "${default_mode}" CACHE STRING "Build mode" FORCE)
 	endif()

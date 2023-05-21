@@ -3,36 +3,40 @@
 This project serves as an opinionated template project which includes:
 
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page) \([repo](https://gitlab.com/libeigen/eigen)\)
-- [GoogleTest](https://github.com/google/googletest)
-- [Google Benchmark](https://github.com/google/benchmark)
+- [GoogleTest](https://github.com/google/googletest/)
+- [Google Benchmark](https://github.com/google/benchmark/)
 - [CMake Package Manager "CPM"](https://github.com/cpm-cmake/CPM.cmake)
 
 ## Build dependencies
 
-- [CMake 3.14+](https://cmake.org/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop) (to run
-  Docker tests)
+- [CMake](https://cmake.org/)
+- [Docker](https://www.docker.com/) (to run Docker tests)
 
 ## Running tests
 
 The following scripts have been tested on MacOS Monterey and Windows 11.
 
 - Natively
-  - on Mac, Linux, or Windows with WSL  
-    Run `script/run-tests.bash`
+    - on Mac, Linux, or Windows with WSL  
+      Run `script/run-tests.bash`
 
 - through Docker
-  - on Mac/Linux  
-    Run `script/run-docker-tests.bash`
+    - on Mac/Linux  
+      Run `script/run-docker-tests.bash`
 
-  - on Windows  
-    Run `script\run-docker-tests.bat`
-  
-  - with [Compose](https://docs.docker.com/compose/)  
-    Run `docker compose -f docker/compose.yaml run ubuntu`, or  
-    Run `docker compose -f docker/compose.yaml run ubuntu-clang`
+    - on Windows  
+      Run `script\run-docker-tests.bat`
 
-### Helpers
+    - with [Compose](https://docs.docker.com/compose/)  
+      Run `docker compose -f docker/compose.yaml run ubuntu`, or  
+      Run `docker compose -f docker/compose.yaml run ubuntu-clang`
+
+## Build Package
+
+- with CMake  
+  `cmake -B build/package && cmake --build build/package --target package --parallel`
+
+## Helper Commands
 
 Open terminal in docker build environment  
 `docker compose -f docker/compose.yaml run --entrypoint=/bin/bash ubuntu`
@@ -59,3 +63,5 @@ Notes:
   On other platforms, make sure that you use a Makefile generator.  
   This is to [generate `compile_commands.json`](https://cmake.org/cmake/help/latest/variable/CMAKE_EXPORT_COMPILE_COMMANDS.html)
   for automatic intellisense.
+- If CPM complains that a dependency's cache is dirty, you should delete the
+  corresponding directory in `build/dependency-cache/` and reconfigure.

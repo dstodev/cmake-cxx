@@ -1,17 +1,17 @@
 find_package(AddGoogleExecutable CONFIG REQUIRED)
 find_package(AddLocalAllTarget CONFIG REQUIRED)
 
-add_google_executable(link_gtest TEST
+add_google_executable(link-gtest TEST
 	SOURCES
 		gtest.cxx
 )
 
-add_google_executable(link_benchmark TEST BENCHMARK
+add_google_executable(link-benchmark TEST BENCHMARK
 	SOURCES
 		benchmark.cxx
 )
 
-add_google_executable(link_dependencies TEST
+add_google_executable(link-dependencies TEST
 	SOURCES
 		eigen.cxx
 
@@ -19,4 +19,4 @@ add_google_executable(link_dependencies TEST
 		Eigen3::Eigen
 )
 
-add_local_all_target(_all_link)
+add_local_all_target(_all-link)

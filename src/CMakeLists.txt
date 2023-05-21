@@ -55,7 +55,6 @@ target_precompile_headers(${target_name}
 )
 
 # Link dependencies
-find_package(Eigen3 REQUIRED)
 target_link_libraries(${target_name}
 	PUBLIC
 		Eigen3::Eigen

@@ -9,4 +9,4 @@ add_google_executable(performance BENCHMARK
 		project
 )
 
-add_local_all_target(all_perf)
+add_local_all_target(all-perf)
