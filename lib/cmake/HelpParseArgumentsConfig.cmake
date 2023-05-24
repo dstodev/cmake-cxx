@@ -58,10 +58,6 @@ macro(help_parse_arguments prefix options one_value_keywords multi_value_keyword
 	list(LENGTH ARGN _num_argn)  # Number of arguments past the last expected parameter
 	math(EXPR _expected_args_offset "${_num_argv} - ${_num_argn}")  # Calculated number of positional args
 
-	#set(_argn ARGN)
-	#set(_argv ARGV)
-	#message("\nargc ${${_argc}}\nargn ${${_argn}}\nargv ${${_argv}}\n")
-
 	# Skip past the expected args.
 	cmake_parse_arguments(PARSE_ARGV "${_expected_args_offset}" "${prefix}"
 		"${options}"

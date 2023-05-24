@@ -6,6 +6,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/lib/cmake")  # mostly f
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/lib/cmake")  # mostly for find_package()
 
 find_package(Expect CONFIG REQUIRED)  # so modules may use expect() as a 'builtin' without find_package()
+find_package(LogVars CONFIG REQUIRED)  # For developer utility
 
 find_package(SetupBuildMode CONFIG REQUIRED)
 setup_build_mode("Release")
@@ -37,7 +38,7 @@ set(CPACK_GENERATOR "ZIP")
 include(CPack)
 add_custom_target(build-package cpack)
 
-include(Dependencies) # lib/cmake/Dependencies.cmake
+include(dependencies.cmake)
 
 add_subdirectory(src)
 add_subdirectory(test)

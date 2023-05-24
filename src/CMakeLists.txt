@@ -1,11 +1,5 @@
 set(target_name "project")
 
-set(header_files_to_package
-	grid_t.hxx
-	point_t.hxx
-	shear.hxx
-)
-
 set(dll_export_file "${target_name}-api.h")
 set(dll_export_macro PROJECT_API)
 
@@ -18,14 +12,22 @@ add_library(${target_name}
 	shear.cxx
 	shear.hxx
 )
-set_target_properties(${target_name}
-	PROPERTIES
-		PUBLIC_HEADER "${header_files_to_package}"
-)
 target_include_directories(${target_name}
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 		$<INSTALL_INTERFACE:include>
+)
+target_link_libraries(${target_name}
+	PUBLIC
+		Eigen3::Eigen
+)
+set(header_files_to_package
+	grid_t.hxx
+	point_t.hxx
+	shear.hxx
+)
+set_target_properties(${target_name} PROPERTIES
+	PUBLIC_HEADER "${header_files_to_package}"
 )
 target_compile_features(${target_name}
 	PUBLIC
@@ -54,12 +56,6 @@ target_precompile_headers(${target_name}
 		$<BUILD_INTERFACE:placeholder_t.hxx>
 )
 
-# Link dependencies
-target_link_libraries(${target_name}
-	PUBLIC
-		Eigen3::Eigen
-)
-
 # Generate header for DLL export macro
 include(GenerateExportHeader)
 generate_export_header(${target_name}
@@ -72,25 +68,15 @@ target_include_directories(${target_name}
 		$<INSTALL_INTERFACE:include>
 )
 set_property(TARGET ${target_name}
-	APPEND PROPERTY PUBLIC_HEADER
-		"${CMAKE_CURRENT_BINARY_DIR}/${dll_export_file}"
+	APPEND PROPERTY PUBLIC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/${dll_export_file}"
 )
 
 # Package the library
+set(export_name "${target_name}")
 install(TARGETS ${target_name}
-	EXPORT ${target_name}
+	EXPORT ${export_name}
 )
-install(EXPORT ${target_name}
+install(EXPORT ${export_name}
 	DESTINATION cmake
 	NAMESPACE project::
-)
-
-# Configure sample executable
-set(target_name "main")
-add_executable(${target_name}
-	main.cxx
-)
-target_link_libraries(${target_name}
-	PRIVATE
-		project
 )
