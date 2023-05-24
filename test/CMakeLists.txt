@@ -15,3 +15,5 @@ add_custom_target(sample-app
 add_dependencies(sample-app
 	build-package
 )
+
+add_subdirectory(flags)
