@@ -1,5 +1,3 @@
-set(fn_name "expect")
-
 #[[
 	expect(expr) asserts that expr evaluates TRUE. If expr instead evaluates FALSE, then
 	the expect() call "fails", and a warning message is immediately emitted.
@@ -25,7 +23,7 @@ set(fn_name "expect")
 
 	Description
 	-----------
-	expect() is useful to assert that the project is "working as intended", and notify
+	expect() is useful to assert that the project is "working as expected", and notify
 	developers when it is not:
 
 		expect(CMAKE_BUILD_TYPE MATCHES "Debug|Release")
@@ -39,9 +37,10 @@ set(fn_name "expect")
 
 	If any expect() call fails, emits message(FATAL_ERROR) once the CMake directory
 	which first includes this module finishes configuring. For this reason, developers
-	should include this module only once near the top of the top-level CMakeLists.txt,
-	and all CMake files in the project may assume that expect() exists, almost as if
-	it were a built-in command.
+	should include this module only once near the top of the top-level CMakeLists.txt.
+	This way, the message emits when the project finishes configuring, conveying the
+	total number of expect() failures. Additionally, this allows subsequent modules
+	to assume that expect() exists, almost as if it were a built-in command.
 
 	Once the CMake directory which first includes this module finishes configuring,
 	emits a message conveying the total number of expect() calls.
@@ -88,10 +87,10 @@ set(fn_name "expect")
 		function(expect)
 		endfunction()
 ]]
-function(${fn_name})
+function(expect)
 	_increment_calls()
 
-	set(prefix "__${fn_name}_args")
+	set(prefix "__expect_args")
 	# cmake_parse_arguments() will escape list semicolons, etc.
 	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "SAFE;REQUIRED" "MESSAGE" "")
 	set(argv "${${prefix}_UNPARSED_ARGUMENTS}")
@@ -138,40 +137,40 @@ function(${fn_name})
 		else()
 			string(REPLACE "\"" "\\\"" expr "${argv}")  # double-escape quotes for message
 			set(pretty_message
-				" ${fn_name}(${expr}) failed!\n"
-				" Search call stack for: (${fn_name})")
+				" expect(${expr}) failed!\n"
+				" Search call stack for: (expect)")
 		endif()
 		message(${message_mode} ${pretty_message})
 	endif()
 endfunction()
 
 function(_increment_calls)
-	math(EXPR calls "${${fn_name}_calls} + 1")
+	math(EXPR calls "${expect_calls} + 1")
 	_set_calls(${calls})
 endfunction()
 
 function(_set_calls value)
-	set(doc "Number of ${fn_name}() calls")
-	set(${fn_name}_calls ${value} CACHE INTERNAL "${doc}")
+	set(doc "Number of expect() calls")
+	set(expect_calls ${value} CACHE INTERNAL "${doc}")
 endfunction()
 
-function(report_${fn_name}_calls)
-	message(STATUS "${fn_name}() performed ${${fn_name}_calls} assertion(s)!")
+function(report_expect_calls)
+	message(STATUS "expect() performed ${expect_calls} assertion(s)!")
 endfunction()
 
 function(_increment_fails)
-	math(EXPR fails "${${fn_name}_fails} + 1")
+	math(EXPR fails "${expect_fails} + 1")
 	_set_fails(${fails})
 endfunction()
 
 function(_set_fails value)
-	set(doc "Number of times ${fn_name}() evaluated FALSE")
-	set(${fn_name}_fails ${value} CACHE INTERNAL "${doc}")
+	set(doc "Number of times expect() evaluated FALSE")
+	set(expect_fails ${value} CACHE INTERNAL "${doc}")
 endfunction()
 
-function(error_if_any_${fn_name}_fail)
-	if(${fn_name}_fails GREATER 0)
-		message(FATAL_ERROR "${fn_name}() failed ${${fn_name}_fails} time(s)!")
+function(error_if_any_expect_fail)
+	if(expect_fails GREATER 0)
+		message(FATAL_ERROR "expect() failed ${expect_fails} time(s)!")
 	endif()
 endfunction()
 
@@ -180,8 +179,8 @@ include_guard(GLOBAL)  # Always put this before expect() tests to run them only 
 _set_fails(0)
 _set_calls(0)
 
-cmake_language(DEFER CALL report_${fn_name}_calls)  # https://cmake.org/cmake/help/latest/command/cmake_language.html#defer
-cmake_language(DEFER CALL error_if_any_${fn_name}_fail)
+cmake_language(DEFER CALL report_expect_calls)  # https://cmake.org/cmake/help/latest/command/cmake_language.html#defer
+cmake_language(DEFER CALL error_if_any_expect_fail)
 
 function(test_expect)
 	expect("" STREQUAL "")

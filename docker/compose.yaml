@@ -9,10 +9,11 @@ services:
       - type: bind
         source: ..
         target: /project
-    entrypoint: bash /project/script/run-tests.sh
+    entrypoint: bash /project/script/run-tests.bash
 
   ubuntu-clang:
-    extends: ubuntu
+    extends:
+      service: ubuntu
     environment:
       CC: /usr/bin/clang
       CXX: /usr/bin/clang++

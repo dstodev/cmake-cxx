@@ -11,7 +11,6 @@ add_google_executable(test-project TEST
 
 	LIBRARIES
 		project
-		Eigen3::Eigen
 )
 
 add_local_all_target(_all-unit)

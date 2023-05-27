@@ -30,7 +30,6 @@ public:
 	point_t& operator=(container_type const& copy);
 
 	PROJECT_API friend bool operator==(point_t const& lhs, point_t const& rhs);
-
 	PROJECT_API friend std::ostream& operator<<(std::ostream& os, point_t const& point);
 
 	operator container_type&();

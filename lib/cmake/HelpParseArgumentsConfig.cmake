@@ -1,5 +1,7 @@
 #[[
-	Parses function arguments past the last required function argument.
+	Parses function arguments past the last required function argument:
+
+		help_parse_arguments(prefix options one_value_keywords multi_value_keywords)
 
 	Helps parse arguments by abstracting technical details of CMake's builtin (>= CMake 3.5)
 	cmake_parse_arguments(). Automatically uses the more intuitive but harder to use PARSE_ARGV
@@ -8,25 +10,25 @@
 	Parameters
 	----------
 	prefix
-		String prefixed to each parsed argument variable delimited by an underscore,
-		e.g. myprefix_MYOPTION.
+		String prefixed to each parsed argument variable delimited with '_',
+		e.g. myprefix_MYARG.
 
 	options
-		List of option flags to parse for, e.g. "DO_THING;DO_EXTRA_THING"
-		For more information, view docs for cmake_parse_arguments(... <options> ...)
+		List of option flags to parse for, e.g. "DO_STUFF;USE_THING"
+		For more information, view docs for cmake_parse_arguments(<options>)
 
 	one_value_keywords
-		List of keywords to parse for which expect a single value, e.g. "MY_TARGET;MY_LIB_TYPE"
+		List of keywords to parse for which expect a single value, e.g. "TARGET;LIB_TYPE"
 		Supports stringified lists as the single value.
-		For more information, view docs for cmake_parse_arguments(... <one_value_keywords> ...)
+		For more information, view docs for cmake_parse_arguments(<one_value_keywords>)
 
 	multi_value_keywords
-		List of keywords to parse for which expect multiple values, e.g. "MY_EXTRA_CXX_FLAGS"
-		For more information, view docs for cmake_parse_arguments(... <multi_value_keywords> ...)
+		List of keywords to parse for which expect multiple values, e.g. "EXTRA_CXX_FLAGS"
+		For more information, view docs for cmake_parse_arguments(<multi_value_keywords>)
 
 	Example
 	-------
-	find_package(HelpParseArguments REQUIRED)
+	find_package(HelpParseArguments CONFIG REQUIRED)
 
 	function(my_function target)
 		help_parse_arguments(args "PRINT_VALUES" "VALUE1;VALUE2" "OTHER_VALUES")
@@ -50,6 +52,10 @@
 		[cmake] Other value: f
 		[cmake] Other value: g
 	]=]
+
+	References
+	----------
+	- https://cmake.org/cmake/help/latest/command/cmake_parse_arguments.html
 ]]
 macro(help_parse_arguments prefix options one_value_keywords multi_value_keywords)
 	# Variables are prefixed with _ to avoid name collisions in parent scope

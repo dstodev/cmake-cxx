@@ -6,13 +6,11 @@ list(APPEND CMAKE_MODULE_PATH ${output_root})
 list(APPEND CMAKE_PREFIX_PATH ${output_root})
 
 set(output_path ${output_root}/CPM.cmake)
-set(cpm_version 0.34.0)
 
 if(NOT EXISTS ${output_path})
 	message(STATUS "Downloading CPM.cmake to ${output_path}")
-	file(DOWNLOAD https://github.com/TheLartians/CPM.cmake/releases/download/v0.38.1/CPM.cmake
+	file(DOWNLOAD https://github.com/TheLartians/CPM.cmake/releases/latest/download/CPM.cmake
 		${output_path}
-		TLS_VERIFY ON
 	)
 endif()
 

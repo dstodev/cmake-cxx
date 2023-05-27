@@ -21,6 +21,7 @@ check_pie_supported()
 option(BUILD_SHARED_LIBS "Build a shared artifact (.dll, .so, .dylib)?" TRUE)
 option(CMAKE_EXPORT_COMPILE_COMMANDS "Generate compile_commands.json?" TRUE)
 option(CMAKE_POSITION_INDEPENDENT_CODE "Build position-independent code?" TRUE)
+option(CMAKE_TLS_VERIFY "Verify HTTPS server certificates?" TRUE)
 option(CMAKE_VERBOSE_MAKEFILE "Emit verbose build output?" FALSE)
 
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
