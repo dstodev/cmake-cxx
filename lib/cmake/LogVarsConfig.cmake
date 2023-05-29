@@ -9,12 +9,23 @@
 
 	MODE mode
 		Message mode; defaults to STATUS
+
+	SPLIT_LISTS
+		If provided, list values are printed on separate lines
 ]]
 function(log_vars)
-	cmake_parse_arguments(PARSE_ARGV 0 args "" "MODE" "")
+	cmake_parse_arguments(PARSE_ARGV 0 args "SPLIT_LISTS" "MODE" "")
+	set(list_line "")
 	foreach(var IN LISTS args_UNPARSED_ARGUMENTS)
 		if("${${var}}" STREQUAL "")
 			set(${var} "(empty)")  # value replacement lost outside function scope
+		endif()
+		if(args_SPLIT_LISTS)
+			list(LENGTH ${var} length)
+			if(length GREATER 1)
+				string(PREPEND ${var} ";")
+				string(REPLACE ";" "\n    - " ${var} "${${var}}")
+			endif()
 		endif()
 		set(message "${message} <> ${var} : ${${var}}\n")
 	endforeach()
