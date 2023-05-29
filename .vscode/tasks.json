@@ -10,9 +10,9 @@
 		},
 		{
 			"label": "Run tests",
-			"detail": "Docker (Ubuntu)",
+			"detail": "Docker",
 			"type": "shell",
-			"command": "${workspaceFolder}/script/run-docker-tests.sh",
+			"command": "${workspaceFolder}/script/run-docker-tests.bash",
 			"windows": {
 				"command": "${workspaceFolder}/script/run-docker-tests.bat"
 			},

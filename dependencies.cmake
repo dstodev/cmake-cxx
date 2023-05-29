@@ -1,4 +1,5 @@
-set(CPM_SOURCE_CACHE "${PROJECT_BINARY_DIR}/../dependency-cache")
+# Look for dependency root adjacent to the build directory
+set(CPM_SOURCE_CACHE "${PROJECT_BINARY_DIR}/../_dependency-cache")
 
 include(lib/third-party/cpm.cmake)
 

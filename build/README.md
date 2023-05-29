@@ -8,10 +8,10 @@ build
  ┼ clion-debug
  ├ clion-default
  ├ clion-release
+ ├ compose-build  
+ ├ compose-build-clang  
  ├ run-docker-tests-bash
  ├ run-docker-tests-bat
- ├ run-tests-bash
- ├ vscode
- │
- └ dependency-cache
+ ├ run-tests-sh
+ └ vscode
 ```

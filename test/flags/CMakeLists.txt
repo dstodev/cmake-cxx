@@ -9,8 +9,8 @@ foreach(lang c cxx)
 	add_library(${lib} lib.${lang})
 	add_executable(${exe} main.${lang})
 	target_link_libraries(${exe} PRIVATE ${lib})
-
 	add_dependencies(_flags ${lib} ${exe})
+	set_target_properties(${lib} ${exe} PROPERTIES OUTPUT_NAME flags-${lang})
 endforeach()
 
 if(CMAKE_GENERATOR MATCHES "NMake Makefiles")

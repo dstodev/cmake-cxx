@@ -18,7 +18,7 @@ The following scripts have been tested on MacOS Monterey and Windows 11.
 
 - Natively
     - on Mac, Linux, or Windows with WSL  
-      Run `script/run-tests.bash`
+      Run `script/run-tests.sh`
 
 - through Docker
     - on Mac/Linux  
@@ -28,8 +28,8 @@ The following scripts have been tested on MacOS Monterey and Windows 11.
       Run `script\run-docker-tests.bat`
 
     - with [Compose](https://docs.docker.com/compose/)  
-      Run `docker compose -f docker/compose.yaml run ubuntu`, or  
-      Run `docker compose -f docker/compose.yaml run ubuntu-clang`
+      Run `docker compose -f docker/compose.yaml run build`, or  
+      Run `docker compose -f docker/compose.yaml run build-clang`
 
 ## Build Package
 
@@ -39,10 +39,10 @@ The following scripts have been tested on MacOS Monterey and Windows 11.
 ## Helper Commands
 
 Open terminal in docker build environment  
-`docker compose -f docker/compose.yaml run --entrypoint=/bin/bash ubuntu`
+`docker compose -f docker/compose.yaml run shell`
 
 Rebuild Docker image  
-`docker compose -f docker/compose.yaml build ubuntu`
+`docker compose -f docker/compose.yaml build --no-cache build`
 
 ## Visual Studio Code integration
 
@@ -64,4 +64,5 @@ Notes:
   This is to [generate `compile_commands.json`](https://cmake.org/cmake/help/latest/variable/CMAKE_EXPORT_COMPILE_COMMANDS.html)
   for automatic intellisense.
 - If CPM complains that a dependency's cache is dirty, you should delete the
-  corresponding directory in `build/dependency-cache/` and reconfigure.
+  corresponding directory in `build/_dependency-cache/` and reconfigure.
+  The Docker builds may complain anyway.
