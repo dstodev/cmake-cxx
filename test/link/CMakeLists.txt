@@ -11,12 +11,20 @@ add_google_executable(link-benchmark TEST BENCHMARK
 		benchmark.cxx
 )
 
-add_google_executable(link-dependencies TEST
+add_google_executable(link-eigen TEST
 	SOURCES
 		eigen.cxx
 
 	LIBRARIES
 		Eigen3::Eigen
+)
+
+add_google_executable(link-sdl TEST
+	SOURCES
+		sdl.cxx
+
+	LIBRARIES
+		SDL2::SDL2
 )
 
 add_local_all_target(_all-link)

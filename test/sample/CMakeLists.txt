@@ -36,4 +36,8 @@ set(CMAKE_MSVCIDE_RUN_PATH "${package_root}/bin")
 add_executable(main main.cxx)
 add_custom_target(run main)
 
-target_link_libraries(main PRIVATE project::project)
+target_link_libraries(main
+	PRIVATE
+		project::project
+		project::SDL2
+)

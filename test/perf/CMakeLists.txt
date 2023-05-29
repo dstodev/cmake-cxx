@@ -7,6 +7,7 @@ add_google_executable(performance BENCHMARK
 
 	LIBRARIES
 		project
+		Eigen3::Eigen
 )
 
 add_local_all_target(all-perf)

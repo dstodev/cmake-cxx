@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.21)
 
 cmake_policy(SET CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0091.html
 
@@ -43,3 +43,15 @@ include(dependencies.cmake)
 
 add_subdirectory(src)
 add_subdirectory(test)
+
+# Configure executable
+set(target_name "main")
+add_executable(${target_name}
+	${SAMPLE_MAIN}
+)
+target_link_libraries(${target_name}
+	PRIVATE
+		project
+		SDL2::SDL2
+)
+install(TARGETS ${target_name})

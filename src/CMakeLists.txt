@@ -1,14 +1,27 @@
 set(target_name "project")
+set(export_name "project")
 
 set(dll_export_file "${target_name}-api.h")
 set(dll_export_macro PROJECT_API)
 
 # Configure the library
 add_library(${target_name}
+	application-impl.cxx
+	application-impl.hxx
+	application-state.hxx
+	application.cxx
+	application.hxx
+	game.cxx
+	game.hxx
 	grid_t.hxx
+	log.hxx
 	placeholder_t.hxx
+	player.cxx
+	player.hxx
 	point_t.cxx
 	point_t.hxx
+	render-specs.cxx
+	render-specs.hxx
 	shear.cxx
 	shear.hxx
 )
@@ -22,9 +35,8 @@ target_link_libraries(${target_name}
 		Eigen3::Eigen
 )
 set(header_files_to_package
-	grid_t.hxx
-	point_t.hxx
-	shear.hxx
+	application.hxx
+	log.hxx
 )
 set_target_properties(${target_name} PROPERTIES
 	PUBLIC_HEADER "${header_files_to_package}"
@@ -56,6 +68,13 @@ target_precompile_headers(${target_name}
 		$<BUILD_INTERFACE:placeholder_t.hxx>
 )
 
+# Link dependencies
+target_link_libraries(${target_name}
+	PRIVATE
+		Eigen3::Eigen
+		SDL2::SDL2
+)
+
 # Generate header for DLL export macro
 include(GenerateExportHeader)
 generate_export_header(${target_name}
@@ -71,11 +90,16 @@ set_property(TARGET ${target_name}
 	APPEND PROPERTY PUBLIC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/${dll_export_file}"
 )
 
-# Package the library
-set(export_name "${target_name}")
-install(TARGETS ${target_name}
+# Package the application
+install(TARGETS project eigen SDL2
 	EXPORT ${export_name}
 )
+install(DIRECTORY "${eigen_SOURCE_DIR}/Eigen" DESTINATION include)
+install(DIRECTORY "${SDL2_SOURCE_DIR}/include/" DESTINATION include/SDL2)
+
+set(CMAKE_INSTALL_DEBUG_LIBRARIES TRUE)  # TODO: Only for debug builds
+include(InstallRequiredSystemLibraries)
+
 install(EXPORT ${export_name}
 	DESTINATION cmake
 	NAMESPACE project::

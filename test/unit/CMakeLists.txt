@@ -3,14 +3,23 @@ find_package(AddLocalAllTarget CONFIG REQUIRED)
 
 add_google_executable(test-project TEST
 	SOURCES
+		application.cxx
 		assertions.hxx
+		game.cxx
 		grid_t.cxx
+		log.cxx
 		placeholder_t.cxx
+		player.cxx
 		point_t.cxx
 		shear.cxx
 
 	LIBRARIES
 		project
+
+		Eigen3::Eigen
+		SDL2::SDL2
+
+	MAIN sdl-main.cxx
 )
 
 add_local_all_target(_all-unit)

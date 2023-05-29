@@ -3,6 +3,7 @@
 This project serves as an opinionated template project which includes:
 
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page) \([repo](https://gitlab.com/libeigen/eigen)\)
+- [SDL2](https://www.libsdl.org/) \([repo](https://github.com/libsdl-org/SDL)\)
 - [GoogleTest](https://github.com/google/googletest/)
 - [Google Benchmark](https://github.com/google/benchmark/)
 - [CMake Package Manager "CPM"](https://github.com/cpm-cmake/CPM.cmake)
@@ -29,7 +30,8 @@ The following scripts have been tested on MacOS Monterey and Windows 11.
 
     - with [Compose](https://docs.docker.com/compose/)  
       Run `docker compose -f docker/compose.yaml run build`, or  
-      Run `docker compose -f docker/compose.yaml run build-clang`
+      Run `docker compose -f docker/compose.yaml run build-clang`, or  
+      Run `docker compose -f docker/compose.yaml up`
 
 ## Build Package
 

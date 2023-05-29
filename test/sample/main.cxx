@@ -1,18 +1,18 @@
-#include <iostream>
+#include <application.hxx>
+#include <log.hxx>
 
-#include <point_t.hxx>
-#include <shear.hxx>
-
-using namespace Eigen;
 using namespace project;
 
-int main()
+int main(int argc, char* args[])
 {
-	point_t point {1, 1};
+	auto& app = Application::instance();
 
-	shear(point, 1, 0);
-
-	std::cout << "Point after shear: " << point << std::endl;
+	try {
+		app.init();
+		app.app_main(argc, args);
+	} catch (std::exception& e) {
+		log::error("Application failed: %s\n", e.what());
+	}
 
 	return 0;
 }
