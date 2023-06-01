@@ -30,6 +30,15 @@ TEST(Game, player_moves)
 
 struct PlayerMoveTestParams
 {
+	PlayerMoveTestParams(int delta_ms, bool up, bool down, bool left, bool right, point_t const& expected)
+	    : delta_ms(delta_ms)
+	    , up(up)
+	    , down(down)
+	    , left(left)
+	    , right(right)
+	    , expected(expected)
+	{}
+
 	int delta_ms;
 	bool up;
 	bool down;
