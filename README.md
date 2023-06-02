@@ -1,6 +1,7 @@
 # Project
 
-This project serves as an opinionated template project which includes:
+This project serves as an opinionated template for C++ developers.
+It includes:
 
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page) \([repo](https://gitlab.com/libeigen/eigen)\)
 - [SDL2](https://www.libsdl.org/) \([repo](https://github.com/libsdl-org/SDL)\)
