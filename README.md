@@ -39,6 +39,10 @@ The following scripts have been tested on MacOS Monterey and Windows 11.
 - with CMake  
   `cmake -B build/package && cmake --build build/package --target package --parallel`
 
+> **NOTE:**  
+> Building the package requires CPack, normally included with CMake.  
+> If CMake is installed by an IDE, such as CLion, CPack may not be included.
+
 ## Helper Commands
 
 Open terminal in docker build environment  
