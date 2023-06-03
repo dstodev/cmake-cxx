@@ -1,5 +1,4 @@
 set(target_name "project")
-set(export_name "project")
 
 set(dll_export_file "project-api.h")
 set(dll_export_macro "PROJECT_API")
@@ -38,6 +37,7 @@ set(header_files_to_package
 	application.hxx
 	log.hxx
 )
+list(TRANSFORM header_files_to_package PREPEND "${CMAKE_CURRENT_LIST_DIR}/")
 set_target_properties(${target_name} PROPERTIES
 	PUBLIC_HEADER "${header_files_to_package}"
 )
@@ -88,33 +88,4 @@ target_include_directories(${target_name}
 )
 set_property(TARGET ${target_name}
 	APPEND PROPERTY PUBLIC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/${dll_export_file}"
-)
-
-# Package the application
-install(TARGETS project eigen SDL2
-	EXPORT ${export_name}
-)
-install(DIRECTORY "${eigen_SOURCE_DIR}/Eigen" DESTINATION include)
-install(DIRECTORY "${SDL2_SOURCE_DIR}/include/" DESTINATION include/SDL2)
-
-# Redistribute system runtimes
-set(CMAKE_INSTALL_DEBUG_LIBRARIES TRUE)
-set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP TRUE)
-include(InstallRequiredSystemLibraries)
-
-set(release_runtimes ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS})
-list(FILTER release_runtimes EXCLUDE REGEX "Debug")
-
-set(debug_runtimes ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS})
-list(FILTER debug_runtimes INCLUDE REGEX "Debug")
-
-install(PROGRAMS ${release_runtimes} DESTINATION bin CONFIGURATIONS Release)
-install(PROGRAMS ${debug_runtimes} DESTINATION bin CONFIGURATIONS Debug)
-
-log_vars(release_runtimes debug_runtimes SPLIT_LISTS MODE DEBUG)
-
-# Export CMake targets
-install(EXPORT ${export_name}
-	DESTINATION cmake
-	NAMESPACE project::
 )

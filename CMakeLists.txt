@@ -44,14 +44,15 @@ include(dependencies.cmake)
 add_subdirectory(src)
 add_subdirectory(test)
 
-# Configure executable
+# Configure sample executable
 set(target_name "main")
 add_executable(${target_name}
-	${SAMPLE_MAIN}
+	${SAMPLE_MAIN}  # Defined under `test` subdirectory
 )
 target_link_libraries(${target_name}
 	PRIVATE
 		project
 		SDL2::SDL2
 )
-install(TARGETS ${target_name})
+
+include(export.cmake)
