@@ -23,6 +23,8 @@ add_library(${target_name}
 	render-specs.hxx
 	shear.cxx
 	shear.hxx
+	textures/player.cxx
+	textures/textures.hxx
 )
 target_include_directories(${target_name}
 	PUBLIC

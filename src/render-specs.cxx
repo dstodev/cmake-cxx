@@ -8,6 +8,7 @@
 #include <game.hxx>
 #include <player.hxx>
 #include <point_t.hxx>
+#include <textures/textures.hxx>
 
 using namespace project;
 
@@ -24,39 +25,11 @@ void draw(SDL_Renderer* renderer, Game const& game)
 
 void draw(SDL_Renderer* renderer, Player const& player)
 {
-	SDL_Texture static* player_texture = nullptr;
-
-	if (player_texture == nullptr) {
-		// Initialize the player texture
-		player_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 9, 9);
-
-		if (player_texture == nullptr) {
-			log::warn("Failed to create player texture because: %s\n", SDL_GetError());
-			return;
-		}
-
-		SDL_SetRenderTarget(renderer, player_texture);
-
-		SDL_SetRenderDrawColor(renderer, 0x80, 0xff, 0xa0, 0xff);
-		SDL_Rect square {2, 2, 5, 5};
-		SDL_RenderFillRect(renderer, &square);
-
-		SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
-		square = {1, 1, 7, 7};
-		SDL_RenderDrawRect(renderer, &square);
-
-		SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
-		square = {0, 0, 9, 9};
-		SDL_RenderDrawRect(renderer, &square);
-
-		SDL_SetRenderTarget(renderer, nullptr);
-	}
-
 	int width, height;
 	SDL_GetRendererOutputSize(renderer, &width, &height);
 
 	SDL_Rect center {width / 2 - 4, height / 2 - 4, 9, 9};
-	SDL_RenderCopy(renderer, player_texture, nullptr, &center);
+	SDL_RenderCopy(renderer, textures::player, nullptr, &center);
 
 	auto position = player.position();
 	position.x() += static_cast<float>(width) / 2;

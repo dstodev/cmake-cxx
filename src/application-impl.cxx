@@ -7,6 +7,7 @@
 
 #include <log.hxx>
 #include <render-specs.hxx>
+#include <textures/textures.hxx>
 
 namespace project {
 
@@ -56,6 +57,8 @@ void ApplicationImpl::init()
 		log::error("SDL_CreateRenderer() failed because: %s\n", SDL_GetError());
 		throw std::runtime_error("Application failed to create renderer!");
 	}
+
+	textures::init(_renderer);
 
 	_state = ApplicationState::INITIALIZED;
 
