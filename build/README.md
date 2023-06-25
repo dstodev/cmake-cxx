@@ -15,3 +15,6 @@ build
  ├ run-tests-sh
  └ vscode
 ```
+
+The `_dependency-cache` directory contains dependency repositories managed by
+[CPM](https://github.com/cpm-cmake/CPM.cmake)

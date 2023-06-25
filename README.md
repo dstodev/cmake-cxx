@@ -11,6 +11,7 @@ It includes:
 
 ## Build dependencies
 
+- [Git](https://git-scm.com/)
 - [CMake](https://cmake.org/)
 - [Docker](https://www.docker.com/) (to run Docker tests)
 
