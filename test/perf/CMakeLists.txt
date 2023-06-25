@@ -1,7 +1,7 @@
 find_package(AddGoogleExecutable CONFIG REQUIRED)
 find_package(AddLocalAllTarget CONFIG REQUIRED)
 
-add_google_executable(performance BENCHMARK
+add_google_executable(_benchmark BENCHMARK
 	SOURCES
 		shear.cxx
 

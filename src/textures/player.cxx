@@ -7,14 +7,14 @@ namespace project::textures {
 SDL_Texture* player = nullptr;
 
 // functions are static so they are private to this file
-static void init_player(SDL_Renderer* renderer);
+void static init_player(SDL_Renderer* renderer);
 
 void init(SDL_Renderer* renderer)
 {
 	init_player(renderer);
 }
 
-static void init_player(SDL_Renderer* renderer)
+void init_player(SDL_Renderer* renderer)
 {
 	if (player == nullptr) {
 		player = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 9, 9);

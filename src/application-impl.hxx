@@ -27,7 +27,7 @@ public:
 	ApplicationState& state();
 
 protected:
-	bool set_log_level(char const* level);
+	bool static set_log_level(char const* level);
 
 	ApplicationState _state;
 	Game _game;

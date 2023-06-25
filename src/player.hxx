@@ -10,13 +10,13 @@ namespace project {
 class PROJECT_API Player
 {
 public:
-	int constexpr static base_speed_pps = 200;  // pps = pixels per second
+	int static constexpr base_speed_pps = 200;  // pps = pixels per second
 
 	Player()
 	    : _position()
 	{}
 
-	[[nodiscard]]  point_t const& position() const;
+	[[nodiscard]] point_t const& position() const;
 	point_t& position();
 
 	bool operator==(Player const&) const = default;
