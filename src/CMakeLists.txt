@@ -13,6 +13,7 @@ add_library(${target_name}
 	game.cxx
 	game.hxx
 	grid_t.hxx
+	log.cxx
 	log.hxx
 	placeholder_t.hxx
 	player.cxx

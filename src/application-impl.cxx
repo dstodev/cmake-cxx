@@ -26,9 +26,7 @@ void ApplicationImpl::init()
 	}
 
 	if (char const* level = std::getenv("LOG_LEVEL")) {
-		if (!set_log_level(level)) {
-			log::warn("Unrecognized log level: %s. Supported options are: error warn info debug trace\n", level);
-		}
+		log::set_level(log::level_from(level));
 	}
 
 	if (int status; (status = SDL_Init(SDL_INIT_VIDEO)) < 0) {
@@ -67,32 +65,6 @@ void ApplicationImpl::init()
 	log::info("Info messages enabled\n");
 	log::debug("Debug messages enabled\n");
 	log::trace("Trace messages enabled\n");
-}
-
-bool ApplicationImpl::set_log_level(char const* level)
-{
-	bool success = true;
-
-	if (std::strcmp(level, "error") == 0) {
-		SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR);
-	}
-	else if (std::strcmp(level, "warn") == 0) {
-		SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_WARN);
-	}
-	else if (std::strcmp(level, "info") == 0) {
-		SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
-	}
-	else if (std::strcmp(level, "debug") == 0) {
-		SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_DEBUG);
-	}
-	else if (std::strcmp(level, "trace") == 0) {
-		SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_VERBOSE);
-	}
-	else {
-		success = false;
-	}
-
-	return success;
 }
 
 int ApplicationImpl::app_main(int argc, char* argv[])

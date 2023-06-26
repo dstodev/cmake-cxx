@@ -27,8 +27,6 @@ public:
 	ApplicationState& state();
 
 protected:
-	bool static set_log_level(char const* level);
-
 	ApplicationState _state;
 	Game _game;
 	uint64_t _last_tick_ms;

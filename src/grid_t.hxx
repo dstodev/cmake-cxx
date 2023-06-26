@@ -33,7 +33,7 @@ std::ostream& operator<<(std::ostream& os, grid_t<T> const& grid);
     This class arranges elements in a rectangle:
        number-of-elements = width (number of columns) * height (number of rows)
 
-    @code
+@code
     Elements are accessed by row, column:
 
          | 0 1       row  column
@@ -41,7 +41,7 @@ std::ostream& operator<<(std::ostream& os, grid_t<T> const& grid);
        0 | a b    b: 0    1
        1 | c d    c: 1    0
                   d: 1    1
-    @endcode
+@endcode
  */
 template <typename T>
 class grid_t
