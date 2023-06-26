@@ -10,7 +10,7 @@ namespace project {
 class PROJECT_API Player
 {
 public:
-	int static constexpr base_speed_pps = 200;  // pps = pixels per second
+	int static constexpr base_speed_pps = 200;  ///< pps = pixels per second
 
 	Player()
 	    : _position()

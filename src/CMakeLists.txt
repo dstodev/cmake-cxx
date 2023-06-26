@@ -47,6 +47,10 @@ target_compile_features(${target_name}
 	PUBLIC
 		cxx_std_20  # for helpful features like [[nodiscard]] and operator<=>
 )
+target_compile_definitions(${target_name}
+	PRIVATE
+		$<$<CONFIG:Debug>:ENABLE_LOGGING>
+)
 
 #[[
 	This call to target_precompile_headers() affects development builds

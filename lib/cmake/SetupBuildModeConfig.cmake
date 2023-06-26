@@ -1,19 +1,12 @@
-find_package(StringCapitalize CONFIG REQUIRED)
+set(__default_build_mode "Release" CACHE STRING "Default single-config-generator build mode")
 
-function(setup_build_mode default_mode)
-	if (NOT default_mode)
-		if ("${default_mode}" STREQUAL "")
-			set(hint " (empty string)")
-		endif()
-		message(FATAL_ERROR "Invalid value for default_mode must evaluate TRUE: \"${default_mode}\"${hint}")
-	endif()
-
+function(setup_build_mode)
 	get_cmake_property(is_multi_config GENERATOR_IS_MULTI_CONFIG)  # https://cmake.org/cmake/help/latest/prop_gbl/GENERATOR_IS_MULTI_CONFIG.html
 
 	if (is_multi_config)
 		_multi_config()
 	else()
-		_single_config("${default_mode}")
+		_single_config()
 	endif()
 endfunction()
 
@@ -22,11 +15,10 @@ function(_multi_config)
 	# Nothing to do; configure for all modes!
 endfunction()
 
-function(_single_config default_mode)
+function(_single_config)
 	if (NOT CMAKE_BUILD_TYPE)  # if not set or if empty string
-		string_capitalize(${default_mode} default_mode)
-		message(WARNING "CMAKE_BUILD_TYPE unset or empty. Forcing CMAKE_BUILD_TYPE to: ${default_mode}")
+		message(WARNING "CMAKE_BUILD_TYPE unset or empty. Forcing CMAKE_BUILD_TYPE to: ${__default_build_mode}")
 		# Variable may already exist in cache (as e.g. empty string), so FORCE
-		set(CMAKE_BUILD_TYPE "${default_mode}" CACHE STRING "Build mode" FORCE)
+		set(CMAKE_BUILD_TYPE "${__default_build_mode}" CACHE STRING "Build mode" FORCE)
 	endif()
 endfunction()

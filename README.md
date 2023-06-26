@@ -30,7 +30,7 @@ The following scripts have been tested on MacOS Monterey and Windows 11.
     - on Windows  
       Run `script\run-docker-tests.bat`
 
-    - with [Compose](https://docs.docker.com/compose/)  
+    - with [Docker Compose](https://docs.docker.com/compose/)  
       Run `docker compose -f docker/compose.yaml run build`, or  
       Run `docker compose -f docker/compose.yaml run build-clang`, or  
       Run `docker compose -f docker/compose.yaml up`

@@ -9,7 +9,7 @@ find_package(Expect CONFIG REQUIRED)  # so modules may use expect() as a 'builti
 find_package(LogVars CONFIG REQUIRED)  # For developer utility
 
 find_package(SetupBuildMode CONFIG REQUIRED)
-setup_build_mode("Release")
+setup_build_mode()
 
 project(Project)
 

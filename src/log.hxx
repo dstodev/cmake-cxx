@@ -8,7 +8,9 @@ namespace project::log {
 template <typename... Args>
 inline void error(char const* format, Args... args)
 {
+#if ENABLE_LOGGING
 	SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, format, args...);
+#endif
 }
 
 inline void error(char const* message)
@@ -19,7 +21,9 @@ inline void error(char const* message)
 template <typename... Args>
 inline void warn(char const* format, Args... args)
 {
+#if ENABLE_LOGGING
 	SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, format, args...);
+#endif
 }
 
 inline void warn(char const* message)
@@ -30,7 +34,9 @@ inline void warn(char const* message)
 template <typename... Args>
 inline void info(char const* format, Args... args)
 {
+#if ENABLE_LOGGING
 	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, format, args...);
+#endif
 }
 
 inline void info(char const* message)
@@ -41,7 +47,9 @@ inline void info(char const* message)
 template <typename... Args>
 inline void debug(char const* format, Args... args)
 {
+#if ENABLE_LOGGING
 	SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, format, args...);
+#endif
 }
 
 inline void debug(char const* message)
@@ -52,7 +60,9 @@ inline void debug(char const* message)
 template <typename... Args>
 inline void trace(char const* format, Args... args)
 {
+#if ENABLE_LOGGING
 	SDL_LogVerbose(SDL_LOG_CATEGORY_APPLICATION, format, args...);
+#endif
 }
 
 inline void trace(char const* message)
