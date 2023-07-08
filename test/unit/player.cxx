@@ -6,29 +6,29 @@ using namespace project;
 
 TEST(Player, construct)
 {
-	Player o;
-	(void) o;
+	Player player;
+	(void) player;
 }
 
 TEST(Player, position)
 {
-	Player o;
-	ASSERT_EQ(0, o.position().x());
-	ASSERT_EQ(0, o.position().y());
+	Player player;
+	ASSERT_EQ(0, player.position().x());
+	ASSERT_EQ(0, player.position().y());
 }
 
 TEST(Player, position_assign_fields)
 {
-	Player o;
-	o.position().x() = 1;
-	o.position().y() = 2;
-	ASSERT_EQ(1, o.position().x());
-	ASSERT_EQ(2, o.position().y());
+	Player player;
+	player.position().x() = 1;
+	player.position().y() = 2;
+	ASSERT_EQ(1, player.position().x());
+	ASSERT_EQ(2, player.position().y());
 }
 
 TEST(Player, const_player_position)
 {
-	Player const o;
-	ASSERT_EQ(0, o.position().x());
-	ASSERT_EQ(0, o.position().y());
+	Player const player;
+	ASSERT_EQ(0, player.position().x());
+	ASSERT_EQ(0, player.position().y());
 }

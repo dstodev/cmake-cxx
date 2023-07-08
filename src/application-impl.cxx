@@ -3,11 +3,15 @@
 #include <cstdlib>
 #include <stdexcept>
 
+#include <thread>
+
 #include <SDL.h>
 
 #include <log.hxx>
+#include <reader.hxx>
 #include <render-specs.hxx>
-#include <textures/textures.hxx>
+#include <state.hxx>
+#include <textures.hxx>
 
 namespace project {
 
@@ -30,7 +34,7 @@ void ApplicationImpl::init()
 	}
 
 	if (int status; (status = SDL_Init(SDL_INIT_VIDEO)) < 0) {
-		log::error("SDL_Init() failed with status: %d, because: %s\n", status, SDL_GetError());
+		log::error("SDL_Init() returned %d because: %s\n", status, SDL_GetError());
 		throw std::runtime_error("Application failed to initialize!");
 	}
 
@@ -72,50 +76,27 @@ int ApplicationImpl::app_main(int argc, char* argv[])
 	init();
 	_state = ApplicationState::RUNNING;
 
-	while (_state == ApplicationState::RUNNING) {
-		SDL_Event event;
+	input::start_reader_thread();
 
-		while (SDL_PollEvent(&event) != 0) {
-			if (event.type == SDL_QUIT) {
-				_state = ApplicationState::QUITTING;
-			}
-			else if (event.type == SDL_KEYDOWN) {
-				if (event.key.repeat != 0) {
-					continue;
-				}
-				switch (event.key.keysym.scancode) {
-				case SDL_SCANCODE_ESCAPE: _state = ApplicationState::QUITTING; break;
-				case SDL_SCANCODE_UP:
-				case SDL_SCANCODE_W: _game.control.up = true; break;
-				case SDL_SCANCODE_DOWN:
-				case SDL_SCANCODE_S: _game.control.down = true; break;
-				case SDL_SCANCODE_LEFT:
-				case SDL_SCANCODE_A: _game.control.left = true; break;
-				case SDL_SCANCODE_RIGHT:
-				case SDL_SCANCODE_D: _game.control.right = true; break;
-				default: break;
-				}
-			}
-			else if (event.type == SDL_KEYUP) {
-				switch (event.key.keysym.scancode) {
-				case SDL_SCANCODE_UP:
-				case SDL_SCANCODE_W: _game.control.up = false; break;
-				case SDL_SCANCODE_DOWN:
-				case SDL_SCANCODE_S: _game.control.down = false; break;
-				case SDL_SCANCODE_LEFT:
-				case SDL_SCANCODE_A: _game.control.left = false; break;
-				case SDL_SCANCODE_RIGHT:
-				case SDL_SCANCODE_D: _game.control.right = false; break;
-				default: break;
-				}
-			}
+	while (_state == ApplicationState::RUNNING) {
+		auto input = input::clone();
+
+		if (input.esc) {
+			_state = ApplicationState::QUITTING;
 		}
+
+		_game.control.up = input.up;
+		_game.control.down = input.down;
+		_game.control.left = input.left;
+		_game.control.right = input.right;
 
 		tick();
 		render();
 
 		SDL_Delay(1);
 	}
+
+	input::stop_reader_thread();
 
 	quit();
 	return 0;
@@ -154,7 +135,7 @@ void ApplicationImpl::quit()
 	_state = ApplicationState::DONE;
 }
 
-ApplicationState& ApplicationImpl::state()
+ApplicationState const& ApplicationImpl::state() const
 {
 	return _state;
 }

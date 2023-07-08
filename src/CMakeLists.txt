@@ -24,8 +24,6 @@ add_library(${target_name}
 	render-specs.hxx
 	shear.cxx
 	shear.hxx
-	textures/player.cxx
-	textures/textures.hxx
 )
 target_include_directories(${target_name}
 	PUBLIC
@@ -81,6 +79,9 @@ target_link_libraries(${target_name}
 		Eigen3::Eigen
 		SDL2::SDL2
 )
+
+add_subdirectory(textures)
+add_subdirectory(input)
 
 # Generate header for DLL export macro
 include(GenerateExportHeader)

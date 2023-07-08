@@ -127,8 +127,8 @@ TEST(Log, level_from_case_insensitive)
 
 TEST(Log, level_default_none)
 {
-	log::Level o {};
-	EXPECT_EQ(log::Level::None, o);
+	log::Level level {};
+	EXPECT_EQ(log::Level::None, level);
 }
 
 TEST(Log, level_from_empty)

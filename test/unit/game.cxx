@@ -7,14 +7,14 @@ using namespace project;
 
 TEST(Game, construct)
 {
-	Game o;
-	(void) o;
+	Game game;
+	(void) game;
 }
 
 TEST(Game, player)
 {
-	Game o;
-	ASSERT_EQ(Player(), o.player());
+	Game game;
+	ASSERT_EQ(Player(), game.player());
 }
 
 TEST(Game, player_moves)

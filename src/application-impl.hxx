@@ -24,7 +24,7 @@ public:
 	void render();
 	void quit();
 
-	ApplicationState& state();
+	ApplicationState const& state() const;
 
 protected:
 	ApplicationState _state;

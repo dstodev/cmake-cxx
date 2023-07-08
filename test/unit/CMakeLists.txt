@@ -7,6 +7,7 @@ add_google_executable(test-project TEST
 		assertions.hxx
 		game.cxx
 		grid_t.cxx
+		input-state.cxx
 		log.cxx
 		placeholder_t.cxx
 		player.cxx

@@ -6,54 +6,54 @@ using namespace project;
 
 TEST(Point, construct)
 {
-	point_t o;
-	ASSERT_EQ(0, o.x());
-	ASSERT_EQ(0, o.y());
+	point_t point;
+	ASSERT_EQ(0, point.x());
+	ASSERT_EQ(0, point.y());
 }
 
 TEST(Point, construct_with_values)
 {
-	point_t o {1, 2};
-	ASSERT_EQ(1, o.x());
-	ASSERT_EQ(2, o.y());
+	point_t point {1, 2};
+	ASSERT_EQ(1, point.x());
+	ASSERT_EQ(2, point.y());
 }
 
 TEST(Point, assign_fields)
 {
-	point_t o;
-	o.x() = 1;
-	o.y() = 2;
-	ASSERT_EQ(1, o.x());
-	ASSERT_EQ(2, o.y());
+	point_t point;
+	point.x() = 1;
+	point.y() = 2;
+	ASSERT_EQ(1, point.x());
+	ASSERT_EQ(2, point.y());
 }
 
 TEST(Point, iterate_semantics)
 {
-	point_t o {0, 1};
+	point_t point {0, 1};
 
 	// iterate over an in-place initializer list
-	for (auto i {0}; auto const& it : {o.x(), o.y()}) {
+	for (auto i {0}; auto const& it : {point.x(), point.y()}) {
 		ASSERT_EQ(i++, it);
 	}
 }
 
 TEST(Point, equality)
 {
-	point_t o1 {1.0f, 2};
-	point_t o2 {1, 2.0f};
-	ASSERT_EQ(o1, o2);
+	point_t point_1 {1.0f, 2};
+	point_t point_2 {1, 2.0f};
+	ASSERT_EQ(point_1, point_2);
 }
 
 TEST(Point, inequality)
 {
-	point_t o1 {1.0f, 2};
-	point_t o2 {1, 3.0f};
-	ASSERT_NE(o1, o2);
+	point_t point_1 {1.0f, 2};
+	point_t point_2 {1, 3.0f};
+	ASSERT_NE(point_1, point_2);
 }
 
 TEST(Point, copy)
 {
-	point_t o1 {1.0f, 2};
-	point_t o2 {o1};
-	ASSERT_EQ(o1, o2);
+	point_t point_1 {1.0f, 2};
+	point_t point_2 {point_1};
+	ASSERT_EQ(point_1, point_2);
 }
