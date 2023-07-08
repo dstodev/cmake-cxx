@@ -13,12 +13,7 @@ foreach(lang c cxx)
 	set_target_properties(${lib} ${exe} PROPERTIES OUTPUT_NAME flags-${lang})
 endforeach()
 
-if(CMAKE_GENERATOR MATCHES "NMake Makefiles")
-	set(verbose /nologo /p)
-else()
-	set(verbose VERBOSE=1)
-endif()
-
 add_custom_target(check-flags
-	${CMAKE_COMMAND} --build ${PROJECT_BINARY_DIR} --clean-first --target _flags -- ${verbose}
+	${CMAKE_COMMAND} -DCOMPILE_COMMANDS_JSON=${CMAKE_BINARY_DIR}/compile_commands.json -P ${CMAKE_CURRENT_LIST_DIR}/check-flags.cmake
 )
+#add_dependencies(check-flags _flags)

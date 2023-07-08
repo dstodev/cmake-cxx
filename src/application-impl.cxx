@@ -3,14 +3,10 @@
 #include <cstdlib>
 #include <stdexcept>
 
-#include <thread>
-
 #include <SDL.h>
 
 #include <log.hxx>
-#include <reader.hxx>
 #include <render-specs.hxx>
-#include <state.hxx>
 #include <textures.hxx>
 
 namespace project {
@@ -76,27 +72,49 @@ int ApplicationImpl::app_main(int argc, char* argv[])
 	init();
 	_state = ApplicationState::RUNNING;
 
-	input::start_reader_thread();
-
 	while (_state == ApplicationState::RUNNING) {
-		auto input = input::clone();
+		auto& control = _game.control;
+		SDL_Event event;
 
-		if (input.esc) {
-			_state = ApplicationState::QUITTING;
+		while (SDL_PollEvent(&event) != 0) {
+			if (event.type == SDL_QUIT) {
+				_state = ApplicationState::QUITTING;
+			}
+			else if (event.type == SDL_KEYDOWN) {
+				if (event.key.repeat != 0) {
+					continue;
+				}
+				switch (event.key.keysym.scancode) {
+				case SDL_SCANCODE_ESCAPE: _state = ApplicationState::QUITTING; break;
+				case SDL_SCANCODE_UP:
+				case SDL_SCANCODE_W: control.up = true; break;
+				case SDL_SCANCODE_DOWN:
+				case SDL_SCANCODE_S: control.down = true; break;
+				case SDL_SCANCODE_LEFT:
+				case SDL_SCANCODE_A: control.left = true; break;
+				case SDL_SCANCODE_RIGHT:
+				case SDL_SCANCODE_D: control.right = true; break;
+				default: break;
+				}
+			}
+			else if (event.type == SDL_KEYUP) {
+				switch (event.key.keysym.scancode) {
+				case SDL_SCANCODE_UP:
+				case SDL_SCANCODE_W: control.up = false; break;
+				case SDL_SCANCODE_DOWN:
+				case SDL_SCANCODE_S: control.down = false; break;
+				case SDL_SCANCODE_LEFT:
+				case SDL_SCANCODE_A: control.left = false; break;
+				case SDL_SCANCODE_RIGHT:
+				case SDL_SCANCODE_D: control.right = false; break;
+				default: break;
+				}
+			}
 		}
-
-		_game.control.up = input.up;
-		_game.control.down = input.down;
-		_game.control.left = input.left;
-		_game.control.right = input.right;
 
 		tick();
 		render();
-
-		SDL_Delay(1);
 	}
-
-	input::stop_reader_thread();
 
 	quit();
 	return 0;

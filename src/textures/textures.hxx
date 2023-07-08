@@ -9,6 +9,6 @@ extern SDL_Texture* player;
 
 void init(SDL_Renderer* renderer);
 
-}
+}  // namespace project::textures
 
 #endif  // TEXTURES_HXX

@@ -81,7 +81,6 @@ target_link_libraries(${target_name}
 )
 
 add_subdirectory(textures)
-add_subdirectory(input)
 
 # Generate header for DLL export macro
 include(GenerateExportHeader)
