@@ -1,3 +1,5 @@
+#include <SDL_main.h>
+
 #include <application.hxx>
 #include <log.hxx>
 

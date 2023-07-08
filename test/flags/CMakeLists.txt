@@ -16,4 +16,4 @@ endforeach()
 add_custom_target(check-flags
 	${CMAKE_COMMAND} -DCOMPILE_COMMANDS_JSON=${CMAKE_BINARY_DIR}/compile_commands.json -P ${CMAKE_CURRENT_LIST_DIR}/check-flags.cmake
 )
-#add_dependencies(check-flags _flags)
+#add_dependencies(check-flags _flags)  # Targets do not need to build to see their compile flags

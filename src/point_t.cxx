@@ -38,7 +38,7 @@ bool operator==(point_t const& lhs, point_t const& rhs)
 std::ostream& operator<<(std::ostream& os, point_t const& point)
 {
 	// https://eigen.tuxfamily.org/dox/structEigen_1_1IOFormat.html
-	IOFormat static const format(4, 0, ", ", "\n", "[", "]");
+	static IOFormat const format(4, 0, ", ", "\n", "[", "]");
 
 	auto vector = static_cast<point_t::container_type const&>(point);
 

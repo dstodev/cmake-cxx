@@ -13,7 +13,9 @@ setup_build_mode()
 
 project(Project)
 
-enable_testing()
+set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)  # Do not populate CTest/CDash targets
+include(CTest)  # This is used instead of `enable_testing()` for better IDE compatibility
+#enable_testing()
 
 include(CheckPIESupported)  # https://cmake.org/cmake/help/latest/module/CheckPIESupported.html
 check_pie_supported()
@@ -46,13 +48,14 @@ add_subdirectory(test)
 
 # Configure sample executable
 set(target_name "main")
-add_executable(${target_name}
+add_executable(${target_name} WIN32 MACOSX_BUNDLE
 	${SAMPLE_MAIN}  # Defined under `test` subdirectory
 )
 target_link_libraries(${target_name}
 	PRIVATE
 		project
 		SDL2::SDL2
+		SDL2::SDL2main
 )
 
 include(export.cmake)

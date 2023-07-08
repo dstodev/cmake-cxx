@@ -5,11 +5,12 @@
 #include <string>
 
 #if ENABLE_LOGGING
-SDL_LogOutputFunction static printer = nullptr;
-void static* userdata = nullptr;
-
-static void dummy(void*, int, SDL_LogPriority, char const*)
+namespace {
+SDL_LogOutputFunction printer = nullptr;
+void* userdata = nullptr;
+void dummy(void*, int, SDL_LogPriority, char const*)
 {}
+}  // namespace
 #endif
 
 namespace project::log {

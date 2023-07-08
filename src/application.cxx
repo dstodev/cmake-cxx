@@ -10,7 +10,7 @@ Application::Application()
 
 Application& Application::instance()
 {
-	Application static instance;
+	static Application instance;
 	return instance;
 }
 

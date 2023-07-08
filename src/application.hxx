@@ -12,7 +12,7 @@ class ApplicationImpl;
 class PROJECT_API Application
 {
 public:
-	Application static& instance();
+	static Application& instance();
 
 	void init();
 	int app_main(int argc, char* argv[]);

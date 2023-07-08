@@ -6,14 +6,16 @@ namespace project::textures {
 
 SDL_Texture* player = nullptr;
 
-// functions are static so they are private to this file
-void static init_player(SDL_Renderer* renderer);
+namespace {
+void init_player(SDL_Renderer* renderer);
+}
 
 void init(SDL_Renderer* renderer)
 {
 	init_player(renderer);
 }
 
+namespace {
 void init_player(SDL_Renderer* renderer)
 {
 	if (player == nullptr) {
@@ -41,5 +43,6 @@ void init_player(SDL_Renderer* renderer)
 		SDL_SetRenderTarget(renderer, nullptr);
 	}
 }
+}  // namespace
 
 }  // namespace project::textures

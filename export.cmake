@@ -9,6 +9,7 @@ install(TARGETS
 	# Dependency targets
 	eigen
 	SDL2
+	SDL2main
 
 	EXPORT ${export_name}
 )
