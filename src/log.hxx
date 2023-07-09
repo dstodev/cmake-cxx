@@ -43,6 +43,8 @@ PROJECT_API Level level_from(char const* level);
 /// Ignore messages less-severe than \p level.
 PROJECT_API void set_level(Level level);
 
+PROJECT_API Level get_level();
+
 /// Emit an error message.
 template <typename... Args>
 void constexpr error(char const* format, Args&&... args)

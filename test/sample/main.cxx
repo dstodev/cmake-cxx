@@ -18,13 +18,14 @@ int main(int argc, char* args[])
 
 #ifdef _WIN32
 	// If there is no console allocated, writing to stdout will crash the application.
-	if (GetStdHandle(STD_OUTPUT_HANDLE) != nullptr) {
+	if (GetStdHandle(STD_OUTPUT_HANDLE) == nullptr) {
+		log::set_level(log::Level::None);
+	}
+	else {
 #endif
-
 		if (char const* level = std::getenv("LOG_LEVEL")) {
 			log::set_level(log::level_from(level));
 		}
-
 #ifdef _WIN32
 	}
 #endif

@@ -8,6 +8,7 @@ using namespace project;
 TEST(Log, error)
 {
 	log::set_level(log::Level::Error);
+	ASSERT_EQ(log::Level::Error, log::get_level());
 	log::error("Error: {}\n", "message");
 }
 
@@ -26,6 +27,7 @@ TEST(Log, error_varargs)
 TEST(Log, warn)
 {
 	log::set_level(log::Level::Warn);
+	ASSERT_EQ(log::Level::Warn, log::get_level());
 	log::warn("Warning: {}\n", "message");
 }
 
@@ -44,6 +46,7 @@ TEST(Log, warn_varargs)
 TEST(Log, info)
 {
 	log::set_level(log::Level::Info);
+	ASSERT_EQ(log::Level::Info, log::get_level());
 	log::info("Info: {}\n", "message");
 }
 
@@ -62,6 +65,7 @@ TEST(Log, info_varargs)
 TEST(Log, debug)
 {
 	log::set_level(log::Level::Debug);
+	ASSERT_EQ(log::Level::Debug, log::get_level());
 	log::debug("Debug: {}\n", "message");
 }
 
@@ -80,6 +84,7 @@ TEST(Log, debug_varargs)
 TEST(Log, trace)
 {
 	log::set_level(log::Level::Trace);
+	ASSERT_EQ(log::Level::Trace, log::get_level());
 	log::trace("Trace: {}\n", "message");
 }
 
@@ -100,6 +105,7 @@ TEST(Log, none)
 	log::set_level(log::Level::Trace);
 	log::trace("Before none\n");
 	log::set_level(log::Level::None);
+	ASSERT_EQ(log::Level::None, log::get_level());
 	log::trace("During none\n");
 	log::set_level(log::Level::Trace);
 	log::trace("After none\n");

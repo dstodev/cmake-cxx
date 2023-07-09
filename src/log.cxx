@@ -42,4 +42,9 @@ void set_level(Level level)
 	detail::LogLevel = level;
 }
 
+Level get_level()
+{
+	return detail::LogLevel;
+}
+
 }  // namespace project::log
