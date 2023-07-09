@@ -1,6 +1,5 @@
 #include "application-impl.hxx"
 
-#include <cstdlib>
 #include <stdexcept>
 
 #include <SDL.h>
@@ -25,12 +24,8 @@ void ApplicationImpl::init()
 		return;
 	}
 
-	if (char const* level = std::getenv("LOG_LEVEL")) {
-		log::set_level(log::level_from(level));
-	}
-
 	if (int status; (status = SDL_Init(SDL_INIT_VIDEO)) < 0) {
-		log::error("SDL_Init() returned %d because: %s\n", status, SDL_GetError());
+		log::error("SDL_Init() returned {} because: {}\n", status, SDL_GetError());
 		throw std::runtime_error("Application failed to initialize!");
 	}
 
@@ -46,25 +41,19 @@ void ApplicationImpl::init()
 	                                480,
 	                                SDL_WINDOW_SHOWN))
 	    == nullptr) {
-		log::error("SDL_CreateWindow() failed because: %s\n", SDL_GetError());
+		log::error("SDL_CreateWindow() failed because: {}\n", SDL_GetError());
 		throw std::runtime_error("Application failed to create window!");
 	}
 
 	if ((_renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC))
 	    == nullptr) {
-		log::error("SDL_CreateRenderer() failed because: %s\n", SDL_GetError());
+		log::error("SDL_CreateRenderer() failed because: {}\n", SDL_GetError());
 		throw std::runtime_error("Application failed to create renderer!");
 	}
 
 	textures::init(_renderer);
 
 	_state = ApplicationState::INITIALIZED;
-
-	log::error("Error messages enabled\n");
-	log::warn("Warning messages enabled\n");
-	log::info("Info messages enabled\n");
-	log::debug("Debug messages enabled\n");
-	log::trace("Trace messages enabled\n");
 }
 
 int ApplicationImpl::app_main(int argc, char* argv[])

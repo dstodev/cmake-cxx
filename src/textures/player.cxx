@@ -22,7 +22,7 @@ void init_player(SDL_Renderer* renderer)
 		player = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 9, 9);
 
 		if (player == nullptr) {
-			log::warn("Failed to create player texture because: %s\n", SDL_GetError());
+			log::warn("Failed to create player texture because: {}\n", SDL_GetError());
 			return;
 		}
 

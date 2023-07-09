@@ -3,11 +3,10 @@
 This project serves as an opinionated template for C++ developers.
 It includes:
 
-- [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page) \([repo](https://gitlab.com/libeigen/eigen)\)
-- [SDL2](https://www.libsdl.org/) \([repo](https://github.com/libsdl-org/SDL)\)
 - [GoogleTest](https://github.com/google/googletest/)
 - [Google Benchmark](https://github.com/google/benchmark/)
 - [CMake Package Manager "CPM"](https://github.com/cpm-cmake/CPM.cmake)
+- See [dependencies.cmake](dependencies.cmake) for more!
 
 ## Build dependencies
 

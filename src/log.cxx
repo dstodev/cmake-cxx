@@ -4,16 +4,11 @@
 #include <iterator>
 #include <string>
 
-#if ENABLE_LOGGING
-namespace {
-SDL_LogOutputFunction printer = nullptr;
-void* userdata = nullptr;
-void dummy(void*, int, SDL_LogPriority, char const*)
-{}
-}  // namespace
-#endif
-
 namespace project::log {
+
+namespace detail {
+Level LogLevel = Level::Info;
+}  // namespace detail
 
 Level level_from(char const* level)
 {
@@ -44,18 +39,7 @@ Level level_from(char const* level)
 
 void set_level(Level level)
 {
-#if ENABLE_LOGGING
-	if (printer == nullptr) {
-		SDL_LogGetOutputFunction(&printer, &userdata);
-	}
-	if (level == Level::None) {
-		SDL_LogSetOutputFunction(dummy, nullptr);
-	}
-	else {
-		SDL_LogSetOutputFunction(printer, userdata);
-		SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, static_cast<SDL_LogPriority>(level));
-	}
-#endif
+	detail::LogLevel = level;
 }
 
 }  // namespace project::log

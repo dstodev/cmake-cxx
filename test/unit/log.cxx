@@ -8,7 +8,7 @@ using namespace project;
 TEST(Log, error)
 {
 	log::set_level(log::Level::Error);
-	log::error("Error: %s\n", "message");
+	log::error("Error: {}\n", "message");
 }
 
 TEST(Log, error_one_arg)
@@ -20,13 +20,13 @@ TEST(Log, error_one_arg)
 TEST(Log, error_varargs)
 {
 	log::set_level(log::Level::Error);
-	log::error("Error: %s %d\n", "message", 1);
+	log::error("Error: {} {}\n", "message", 1);
 }
 
 TEST(Log, warn)
 {
 	log::set_level(log::Level::Warn);
-	log::warn("Warning: %s\n", "message");
+	log::warn("Warning: {}\n", "message");
 }
 
 TEST(Log, warn_one_arg)
@@ -38,13 +38,13 @@ TEST(Log, warn_one_arg)
 TEST(Log, warn_varargs)
 {
 	log::set_level(log::Level::Warn);
-	log::warn("Warning: %s %d\n", "message", 1);
+	log::warn("Warning: {} {}\n", "message", 1);
 }
 
 TEST(Log, info)
 {
 	log::set_level(log::Level::Info);
-	log::info("Info: %s\n", "message");
+	log::info("Info: {}\n", "message");
 }
 
 TEST(Log, info_one_arg)
@@ -56,13 +56,13 @@ TEST(Log, info_one_arg)
 TEST(Log, info_varargs)
 {
 	log::set_level(log::Level::Info);
-	log::info("Info: %s %d\n", "message", 1);
+	log::info("Info: {} {}\n", "message", 1);
 }
 
 TEST(Log, debug)
 {
 	log::set_level(log::Level::Debug);
-	log::debug("Debug: %s\n", "message");
+	log::debug("Debug: {}\n", "message");
 }
 
 TEST(Log, debug_one_arg)
@@ -74,13 +74,13 @@ TEST(Log, debug_one_arg)
 TEST(Log, debug_varargs)
 {
 	log::set_level(log::Level::Debug);
-	log::debug("Debug: %s %d\n", "message", 1);
+	log::debug("Debug: {} {}\n", "message", 1);
 }
 
 TEST(Log, trace)
 {
 	log::set_level(log::Level::Trace);
-	log::trace("Trace: %s\n", "message");
+	log::trace("Trace: {}\n", "message");
 }
 
 TEST(Log, trace_one_arg)
@@ -92,7 +92,7 @@ TEST(Log, trace_one_arg)
 TEST(Log, trace_varargs)
 {
 	log::set_level(log::Level::Trace);
-	log::trace("Trace: %s %d\n", "message", 1);
+	log::trace("Trace: {} {}\n", "message", 1);
 }
 
 TEST(Log, none)

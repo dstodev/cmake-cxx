@@ -5,9 +5,11 @@ install(TARGETS
 	# Project targets
 	project
 	main
+	mainc
 
 	# Dependency targets
 	eigen
+	fmt
 	SDL2
 	SDL2main
 
@@ -15,6 +17,7 @@ install(TARGETS
 )
 install(DIRECTORY "${eigen_SOURCE_DIR}/Eigen" DESTINATION include)
 install(DIRECTORY "${SDL2_SOURCE_DIR}/include/" DESTINATION include/SDL2)
+install(DIRECTORY "${fmt_SOURCE_DIR}/include/" DESTINATION include)
 
 # Redistribute system runtimes
 set(CMAKE_INSTALL_DEBUG_LIBRARIES TRUE)

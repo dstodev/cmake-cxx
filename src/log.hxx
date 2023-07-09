@@ -1,7 +1,9 @@
 #ifndef LOG_HXX
 #define LOG_HXX
 
-#include <SDL_log.h>
+#include <utility>
+
+#include <fmt/core.h>
 
 #include <project-api.h>
 
@@ -21,12 +23,16 @@ namespace project::log {
 enum class Level
 {
 	None = 0,
-	Error = SDL_LOG_PRIORITY_CRITICAL,
-	Warn = SDL_LOG_PRIORITY_WARN,
-	Info = SDL_LOG_PRIORITY_INFO,
-	Debug = SDL_LOG_PRIORITY_DEBUG,
-	Trace = SDL_LOG_PRIORITY_VERBOSE,
+	Error,
+	Warn,
+	Info,
+	Debug,
+	Trace,
 };
+
+namespace detail {
+PROJECT_API extern Level LogLevel;
+}  // namespace detail
 
 /** @brief Convert a string to a logging severity level.
     @param level Options are: error warn info debug trace.
@@ -39,77 +45,57 @@ PROJECT_API void set_level(Level level);
 
 /// Emit an error message.
 template <typename... Args>
-void constexpr error(char const* format, Args... args)
+void constexpr error(char const* format, Args&&... args)
 {
 #if ENABLE_LOGGING
-	SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, format, args...);
-#endif
-}
-
-/// Emit an error message.
-void constexpr error(char const* message)
-{
-	error("%s", message);
-}
-
-/// Emit a warning message.
-template <typename... Args>
-void constexpr warn(char const* format, Args... args)
-{
-#if ENABLE_LOGGING
-	SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, format, args...);
+	if (detail::LogLevel >= Level::Error) {
+		fmt::print("Error: {}", fmt::format(fmt::runtime(format), std::forward<Args>(args)...));
+	}
 #endif
 }
 
 /// Emit a warning message.
-void constexpr warn(char const* message)
-{
-	warn("%s", message);
-}
-
-/// Emit an informational message.
 template <typename... Args>
-void constexpr info(char const* format, Args... args)
+void constexpr warn(char const* format, Args&&... args)
 {
 #if ENABLE_LOGGING
-	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, format, args...);
+	if (detail::LogLevel >= Level::Warn) {
+		fmt::print("Warn:  {}", fmt::format(fmt::runtime(format), std::forward<Args>(args)...));
+	}
 #endif
 }
 
 /// Emit an informational message.
-void constexpr info(char const* message)
-{
-	info("%s", message);
-}
-
-/// Emit a debugging message.
 template <typename... Args>
-void constexpr debug(char const* format, Args... args)
+void constexpr info(char const* format, Args&&... args)
 {
 #if ENABLE_LOGGING
-	SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, format, args...);
+	if (detail::LogLevel >= Level::Info) {
+		fmt::print("Info:  {}", fmt::format(fmt::runtime(format), std::forward<Args>(args)...));
+	}
 #endif
 }
 
 /// Emit a debugging message.
-void constexpr debug(char const* message)
-{
-	debug("%s", message);
-}
-
-/// Emit a trace message.
 template <typename... Args>
-void constexpr trace(char const* format, Args... args)
+void constexpr debug(char const* format, Args&&... args)
 {
 #if ENABLE_LOGGING
-	SDL_LogVerbose(SDL_LOG_CATEGORY_APPLICATION, format, args...);
+	if (detail::LogLevel >= Level::Debug) {
+		fmt::print("Debug: {}", fmt::format(fmt::runtime(format), std::forward<Args>(args)...));
+	}
 #endif
 }
 
 /// Emit a trace message.
-void constexpr trace(char const* message)
+template <typename... Args>
+void constexpr trace(char const* format, Args&&... args)
 {
-	trace("%s", message);
+#if ENABLE_LOGGING
+	if (detail::LogLevel >= Level::Trace) {
+		fmt::print("Trace: {}", fmt::format(fmt::runtime(format), std::forward<Args>(args)...));
+	}
+#endif
 }
 
 }  // namespace project::log

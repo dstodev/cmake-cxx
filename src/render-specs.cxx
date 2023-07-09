@@ -44,6 +44,6 @@ void draw(SDL_Renderer* renderer, point_t const& point)
 	SDL_Rect square {static_cast<int>(point.x() - 1), static_cast<int>(point.y() - 1), 3, 3};
 
 	if (SDL_RenderDrawRect(renderer, &square) < 0) {
-		log::warn("Failed to draw type point_t because: %s\n", SDL_GetError());
+		log::warn("Failed to draw type point_t because: {}\n", SDL_GetError());
 	}
 }

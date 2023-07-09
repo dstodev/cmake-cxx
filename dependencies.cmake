@@ -29,7 +29,6 @@ target_include_directories(eigen
 		$<BUILD_INTERFACE:${eigen_SOURCE_DIR}>
 		$<INSTALL_INTERFACE:include>
 )
-
 CPMAddPackage(NAME sdl
 	GITHUB_REPOSITORY libsdl-org/SDL
 	GIT_TAG release-2.26.5
@@ -37,3 +36,11 @@ CPMAddPackage(NAME sdl
 	EXCLUDE_FROM_ALL TRUE
 	SYSTEM TRUE
 )
+CPMAddPackage(NAME fmt
+	GITHUB_REPOSITORY fmtlib/fmt
+	GIT_TAG 10.0.0
+	OPTIONS "FMT_TEST OFF" "FMT_DOC OFF" "FMT_INSTALL OFF"
+	EXCLUDE_FROM_ALL TRUE
+	SYSTEM TRUE
+)
+set_target_properties(fmt PROPERTIES PUBLIC_HEADER "")

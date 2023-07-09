@@ -27,4 +27,12 @@ add_google_executable(link-sdl TEST
 		SDL2::SDL2
 )
 
+add_google_executable(link-fmt TEST
+	SOURCES
+		fmt.cxx
+
+	LIBRARIES
+		fmt::fmt
+)
+
 add_local_all_target(_all-link)

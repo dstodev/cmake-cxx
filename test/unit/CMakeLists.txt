@@ -16,7 +16,6 @@ add_google_executable(test-project TEST
 	LIBRARIES
 		project
 
-		Eigen3::Eigen
 		SDL2::SDL2
 
 	MAIN sdl-main.cxx

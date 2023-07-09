@@ -39,6 +39,6 @@ add_custom_target(run main)
 target_link_libraries(main
 	PRIVATE
 		project::project
-		project::SDL2
 		project::SDL2main
+		project::SDL2  # only for SDL2main
 )

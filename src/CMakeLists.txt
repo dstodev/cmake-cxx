@@ -33,6 +33,10 @@ target_include_directories(${target_name}
 target_link_libraries(${target_name}
 	PUBLIC
 		Eigen3::Eigen
+		fmt::fmt
+
+	PRIVATE
+		SDL2::SDL2
 )
 set(header_files_to_package
 	application.hxx
@@ -71,13 +75,6 @@ target_compile_definitions(${target_name}
 target_precompile_headers(${target_name}
 	PUBLIC
 		$<BUILD_INTERFACE:placeholder_t.hxx>
-)
-
-# Link dependencies
-target_link_libraries(${target_name}
-	PRIVATE
-		Eigen3::Eigen
-		SDL2::SDL2
 )
 
 add_subdirectory(textures)

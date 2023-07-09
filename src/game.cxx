@@ -12,7 +12,7 @@ Game::Game()
 
 void Game::tick(uint64_t delta_ms)
 {
-	log::trace("Game::tick(delta_ms=%llu)\n", delta_ms);
+	log::trace("Game::tick(delta_ms={})\n", delta_ms);
 
 	move_player(delta_ms);
 }
@@ -43,7 +43,7 @@ void Game::move_player(uint64_t delta_ms)
 	if (direction.any()) {
 		direction.normalize();
 		direction *= pixels_per_second * delta_s;
-		log::trace("Player moving: x=%f, y=%f\n", direction.x(), direction.y());
+		log::trace("Player moving: x={}, y={}\n", direction.x(), direction.y());
 		_player.position() = Eigen::Vector2f(_player.position()) + direction;
 	}
 }
