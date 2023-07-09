@@ -1,6 +1,7 @@
 #ifndef GRID_T_HXX
 #define GRID_T_HXX
 
+#include <iterator>
 #include <ostream>
 #include <type_traits>
 
@@ -8,19 +9,19 @@
 
 #include <Eigen/Dense>
 
+namespace project {
+
 namespace detail {
-
 // https://eigen.tuxfamily.org/dox/classEigen_1_1Matrix.html
-
 template <typename T, int rows, int cols, int options = 0, int max_rows = rows, int max_cols = cols>
 using RowMajor = Eigen::Matrix<T, rows, cols, options | Eigen::RowMajor, max_rows, max_cols>;
 
 template <typename T, int rows, int cols, int options = 0, int max_rows = rows, int max_cols = cols>
 using ColMajor = Eigen::Matrix<T, rows, cols, options | Eigen::ColMajor, max_rows, max_cols>;
 
+template <typename Tvalue>
+using iterator_base = std::iterator<std::forward_iterator_tag, Tvalue>;
 }  // namespace detail
-
-namespace project {
 
 template <typename T>
 class grid_t;
@@ -281,16 +282,11 @@ std::ostream& operator<<(std::ostream& os, grid_t<T> const& grid)
 
 template <typename T>
 template <typename Tvalue, typename Tcontainer, bool const_access>
-struct grid_t<T>::iterator_impl
+struct grid_t<T>::iterator_impl : detail::iterator_base<Tvalue>
 {
-	// 5 iterator-standard member types
-	using iterator_category = std::forward_iterator_tag;
-	using value_type = Tvalue;
-	using difference_type = std::ptrdiff_t;
-	using pointer = value_type*;
-	using reference = value_type&;
-
 	using container_type = Tcontainer;
+	using typename detail::iterator_base<Tvalue>::difference_type;
+	using typename detail::iterator_base<Tvalue>::reference;
 
 	container_type& container;
 	difference_type position;
@@ -325,7 +321,7 @@ struct grid_t<T>::iterator_impl
 	}
 
 	template <bool _const_access = const_access>
-	auto operator*() const -> std::enable_if_t<_const_access, value_type const&>
+	auto operator*() const -> std::enable_if_t<_const_access, reference>
 	{
 		return (*this)[position];
 	}
