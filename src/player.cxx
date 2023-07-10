@@ -2,12 +2,16 @@
 
 namespace project {
 
-point_t& Player::position()
+Player::Player()
+    : _position()
+{}
+
+auto Player::position() const -> point_t<float> const&
 {
 	return _position;
 }
 
-point_t const& Player::position() const
+auto Player::position() -> point_t<float>&
 {
 	return _position;
 }

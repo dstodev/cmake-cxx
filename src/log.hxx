@@ -11,13 +11,13 @@ namespace project::log {
 
 /** @brief Logging severity level.
 @code
-    -- More severe --
-     Level::Error
-     Level::Warn
-     Level::Info
-     Level::Debug
-     Level::Trace
-    -- Less severe --
+-- More severe --
+ Level::Error
+ Level::Warn
+ Level::Info
+ Level::Debug
+ Level::Trace
+-- Less severe --
 @endcode
  */
 enum class Level

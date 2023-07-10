@@ -6,7 +6,7 @@ using namespace Eigen;
 
 namespace project {
 
-void shear(point_t& point, float x_magnitude, float y_magnitude)
+void shear(point_t<float>& point, float x_magnitude, float y_magnitude)
 {
 	static Matrix2f transform {{1, 0}, {0, 1}};
 

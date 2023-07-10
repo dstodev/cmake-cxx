@@ -6,7 +6,7 @@
 
 namespace project {
 
-PROJECT_API void shear(point_t& point, float x_magnitude, float y_magnitude);
+PROJECT_API void shear(point_t<float>& point, float x_magnitude, float y_magnitude);
 
 }  // namespace project
 

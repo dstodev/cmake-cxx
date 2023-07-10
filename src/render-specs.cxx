@@ -5,9 +5,9 @@
 #include <log.hxx>
 
 #include <application-impl.hxx>
-#include <game.hxx>
 #include <player.hxx>
 #include <point_t.hxx>
+#include <simulation.hxx>
 #include <textures/textures.hxx>
 
 using namespace project;
@@ -18,27 +18,24 @@ void draw(SDL_Renderer* renderer, ApplicationImpl const& application)
 	SDL_RenderClear(renderer);
 }
 
-void draw(SDL_Renderer* renderer, Game const& game)
+void draw(SDL_Renderer* renderer, Simulation const& simulation)
 {
-	draw(renderer, game.player());
+	draw(renderer, simulation.player());
 }
 
 void draw(SDL_Renderer* renderer, Player const& player)
 {
-	int width, height;
-	SDL_GetRendererOutputSize(renderer, &width, &height);
+	auto const x = static_cast<int>(player.position().x());
+	auto const y = static_cast<int>(player.position().y());
 
-	SDL_Rect center {width / 2 - 4, height / 2 - 4, 9, 9};
-	SDL_RenderCopy(renderer, textures::player, nullptr, &center);
+	int texture_width, texture_height;  // TODO: Cache these values.
+	SDL_QueryTexture(textures::player, nullptr, nullptr, &texture_width, &texture_height);
 
-	auto position = player.position();
-	position.x() += static_cast<float>(width) / 2;
-	position.y() += static_cast<float>(height) / 2;
-
-	draw(renderer, position);
+	SDL_Rect rect {x - texture_width / 2, y - texture_height / 2, texture_width, texture_height};
+	SDL_RenderCopy(renderer, textures::player, nullptr, &rect);
 }
 
-void draw(SDL_Renderer* renderer, point_t const& point)
+void draw(SDL_Renderer* renderer, point_t<int> const& point)
 {
 	SDL_SetRenderDrawColor(renderer, 0xff, 0x00, 0x00, 0xff);
 	SDL_Rect square {static_cast<int>(point.x() - 1), static_cast<int>(point.y() - 1), 3, 3};

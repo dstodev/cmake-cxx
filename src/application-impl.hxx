@@ -4,8 +4,8 @@
 #include <cstdint>
 
 #include <application-state.hxx>
-#include <game.hxx>
 #include <project-api.h>  // TODO: Only use this when testing
+#include <simulation.hxx>
 
 struct SDL_Window;
 struct SDL_Renderer;
@@ -24,11 +24,11 @@ public:
 	void render();
 	void quit();
 
-	ApplicationState const& state() const;
+	auto state() const -> ApplicationState const&;
 
 protected:
 	ApplicationState _state;
-	Game _game;
+	Simulation _simulation;
 	uint64_t _last_tick_ms;
 
 	SDL_Renderer* _renderer;

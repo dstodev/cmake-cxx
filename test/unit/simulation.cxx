@@ -1,36 +1,45 @@
 #include <gtest/gtest.h>
 
-#include <game.hxx>
 #include <player.hxx>
+#include <simulation.hxx>
 
 using namespace project;
 
-TEST(Game, construct)
+TEST(Simulation, construct)
 {
-	Game game;
-	(void) game;
+	Simulation simulation;
+	(void) simulation;
 }
 
-TEST(Game, player)
+TEST(Simulation, dimensions)
 {
-	Game game;
-	ASSERT_EQ(Player(), game.player());
+	Simulation simulation(100, 200);
+	ASSERT_EQ(100, simulation.width());
+	ASSERT_EQ(200, simulation.height());
 }
 
-TEST(Game, player_moves)
+TEST(Simulation, player)
 {
-	Game game;
-	game.tick(1000);
-	ASSERT_EQ(Player(), game.player());
+	Simulation simulation;
+	simulation.player().position() = point_t {0.0f, 0.0f};
+	ASSERT_EQ(Player(), simulation.player());
+}
 
-	game.control.up = true;
-	game.tick(1000);
-	ASSERT_NE(Player(), game.player());
+TEST(Simulation, player_moves)
+{
+	Simulation simulation;
+	simulation.player().position() = point_t {0.0f, 0.0f};
+	simulation.tick(1000);
+	ASSERT_EQ(Player(), simulation.player());
+
+	simulation.control.up = true;
+	simulation.tick(1000);
+	ASSERT_NE(Player(), simulation.player());
 }
 
 struct PlayerMoveTestParams
 {
-	PlayerMoveTestParams(int delta_ms, bool up, bool down, bool left, bool right, point_t const& expected)
+	PlayerMoveTestParams(int delta_ms, bool up, bool down, bool left, bool right, point_t<float> const& expected)
 	    : delta_ms(delta_ms)
 	    , up(up)
 	    , down(down)
@@ -44,7 +53,7 @@ struct PlayerMoveTestParams
 	bool down;
 	bool left;
 	bool right;
-	point_t expected;
+	point_t<float> expected;
 };
 
 class PlayerMoveTests : public ::testing::TestWithParam<PlayerMoveTestParams>
@@ -52,13 +61,14 @@ class PlayerMoveTests : public ::testing::TestWithParam<PlayerMoveTestParams>
 
 TEST_P(PlayerMoveTests, player_moves_adjusted_for_time)
 {
-	Game game;
-	game.control.up = GetParam().up;
-	game.control.down = GetParam().down;
-	game.control.left = GetParam().left;
-	game.control.right = GetParam().right;
-	game.tick(GetParam().delta_ms);
-	ASSERT_EQ(GetParam().expected, game.player().position());
+	Simulation simulation;
+	simulation.player().position() = point_t {0.0f, 0.0f};
+	simulation.control.up = GetParam().up;
+	simulation.control.down = GetParam().down;
+	simulation.control.left = GetParam().left;
+	simulation.control.right = GetParam().right;
+	simulation.tick(GetParam().delta_ms);
+	ASSERT_EQ(GetParam().expected, simulation.player().position());
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -76,5 +86,5 @@ INSTANTIATE_TEST_SUITE_P(
         PlayerMoveTestParams(1000, true, true, false, false, point_t {0.0f, 0.0f}),  // up + down
         PlayerMoveTestParams(1000, true, true, true, false, point_t {-200.0f, 0.0f}),  // up + down + left
         PlayerMoveTestParams(1000, true, true, true, true, point_t {0.0f, 0.0f}),  // up + down + left + right
-        PlayerMoveTestParams(1000, true, false, true, false, point_t {-141.421356237f, -141.421356237})  // up + left
+        PlayerMoveTestParams(1000, true, false, true, false, point_t {-141.421356237f, -141.421356237f})  // up + left
         ));

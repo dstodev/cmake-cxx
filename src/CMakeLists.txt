@@ -10,20 +10,19 @@ add_library(${target_name}
 	application-state.hxx
 	application.cxx
 	application.hxx
-	game.cxx
-	game.hxx
 	grid_t.hxx
 	log.cxx
 	log.hxx
 	placeholder_t.hxx
 	player.cxx
 	player.hxx
-	point_t.cxx
 	point_t.hxx
 	render-specs.cxx
 	render-specs.hxx
 	shear.cxx
 	shear.hxx
+	simulation.cxx
+	simulation.hxx
 )
 target_include_directories(${target_name}
 	PUBLIC

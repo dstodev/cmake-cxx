@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <point_t.hxx>
 #include <shear.hxx>
 
 using namespace project;

@@ -8,11 +8,16 @@
 #include <render-specs.hxx>
 #include <textures.hxx>
 
+namespace {
+constexpr int WINDOW_WIDTH = 1600;
+constexpr int WINDOW_HEIGHT = 900;
+}  // namespace
+
 namespace project {
 
 ApplicationImpl::ApplicationImpl()
     : _state(ApplicationState::NOT_INITIALIZED)
-    , _game()
+    , _simulation(WINDOW_WIDTH, WINDOW_HEIGHT)
     , _last_tick_ms()
     , _renderer(nullptr)
     , _window(nullptr)
@@ -37,8 +42,8 @@ void ApplicationImpl::init()
 	if ((_window = SDL_CreateWindow("Project",
 	                                SDL_WINDOWPOS_UNDEFINED,
 	                                SDL_WINDOWPOS_UNDEFINED,
-	                                640,
-	                                480,
+	                                WINDOW_WIDTH,
+	                                WINDOW_HEIGHT,
 	                                SDL_WINDOW_SHOWN))
 	    == nullptr) {
 		log::error("SDL_CreateWindow() failed because: {}\n", SDL_GetError());
@@ -62,7 +67,7 @@ int ApplicationImpl::app_main(int argc, char* argv[])
 	_state = ApplicationState::RUNNING;
 
 	while (_state == ApplicationState::RUNNING) {
-		auto& control = _game.control;
+		auto& control = _simulation.control;
 		SDL_Event event;
 
 		while (SDL_PollEvent(&event) != 0) {
@@ -115,13 +120,13 @@ void ApplicationImpl::tick()
 	uint64_t delta_ms = current_tick_ms - _last_tick_ms;
 
 	_last_tick_ms = current_tick_ms;
-	_game.tick(delta_ms);
+	_simulation.tick(delta_ms);
 }
 
 void ApplicationImpl::render()
 {
 	draw(_renderer, *this);
-	draw(_renderer, _game);
+	draw(_renderer, _simulation);
 	SDL_RenderPresent(_renderer);
 }
 

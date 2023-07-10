@@ -1,5 +1,5 @@
-#ifndef GAME_HXX
-#define GAME_HXX
+#ifndef SIMULATION_HXX
+#define SIMULATION_HXX
 
 #include <cstdint>
 #include <vector>
@@ -9,10 +9,10 @@
 
 namespace project {
 
-class PROJECT_API Game
+class PROJECT_API Simulation
 {
 public:
-	Game();
+	Simulation(int width = 640, int height = 480);
 
 	void tick(uint64_t delta_ms);
 
@@ -24,15 +24,21 @@ public:
 		bool right = false;
 	} control;
 
-	Player const& player() const;
-	Player& player();
+	int width() const;
+	int height() const;
+
+	auto player() const -> Player const&;
+	auto player() -> Player&;
 
 protected:
 	void move_player(uint64_t delta_ms);
+
+	int _width;
+	int _height;
 
 	Player _player;
 };
 
 }  // namespace project
 
-#endif  // GAME_HXX
+#endif  // SIMULATION_HXX

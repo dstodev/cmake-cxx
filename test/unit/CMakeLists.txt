@@ -5,13 +5,13 @@ add_google_executable(test-project TEST
 	SOURCES
 		application.cxx
 		assertions.hxx
-		game.cxx
 		grid_t.cxx
 		log.cxx
 		placeholder_t.cxx
 		player.cxx
 		point_t.cxx
 		shear.cxx
+		simulation.cxx
 
 	LIBRARIES
 		project

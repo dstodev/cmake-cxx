@@ -12,17 +12,16 @@ class PROJECT_API Player
 public:
 	static int constexpr base_speed_pps = 200;  ///< pps = pixels per second
 
-	Player()
-	    : _position()
-	{}
+	Player();
 
-	[[nodiscard]] point_t const& position() const;
-	point_t& position();
+	[[nodiscard]]
+	auto position() const -> point_t<float> const&;
+	auto position() -> point_t<float>&;
 
 	bool operator==(Player const&) const = default;
 
 private:
-	point_t _position;
+	point_t<float> _position;
 };
 
 }  // namespace project

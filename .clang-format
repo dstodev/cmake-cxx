@@ -1,5 +1,5 @@
 # 2022 Daniel Stotts
-# Version ~52
+# Version ~53
 ---
 BasedOnStyle: LLVM
 ColumnLimit: 120
@@ -47,6 +47,7 @@ AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: false
 BinPackParameters: false
+BreakAfterAttributes: Leave
 BreakBeforeBinaryOperators: NonAssignment
 BreakConstructorInitializers: BeforeComma
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
