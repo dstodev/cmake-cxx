@@ -27,6 +27,9 @@ public:
 	auto state() const -> ApplicationState const&;
 
 protected:
+	void run_until_user_quit();
+	void handle_user_input();
+
 	ApplicationState _state;
 	Simulation _simulation;
 	uint64_t _last_tick_ms;

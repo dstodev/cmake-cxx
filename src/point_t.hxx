@@ -37,8 +37,8 @@ public:
 	friend bool operator==<>(point_t const& lhs, point_t const& rhs);
 	friend std::ostream& operator<< <>(std::ostream& os, point_t<value_type> const& point);
 
-	operator container_type const&() const;
-	operator container_type&();
+	explicit operator container_type const&() const;
+	explicit operator container_type&();
 
 private:
 	container_type _data;

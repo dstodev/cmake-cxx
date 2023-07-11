@@ -65,53 +65,57 @@ int ApplicationImpl::app_main(int argc, char* argv[])
 {
 	init();
 	_state = ApplicationState::RUNNING;
+	run_until_user_quit();
+	quit();
+	return 0;
+}
 
+void ApplicationImpl::run_until_user_quit()
+{
 	while (_state == ApplicationState::RUNNING) {
-		auto& control = _simulation.control;
-		SDL_Event event;
-
-		while (SDL_PollEvent(&event) != 0) {
-			if (event.type == SDL_QUIT) {
-				_state = ApplicationState::QUITTING;
-			}
-			else if (event.type == SDL_KEYDOWN) {
-				if (event.key.repeat != 0) {
-					continue;
-				}
-				switch (event.key.keysym.scancode) {
-				case SDL_SCANCODE_ESCAPE: _state = ApplicationState::QUITTING; break;
-				case SDL_SCANCODE_UP:
-				case SDL_SCANCODE_W: control.up = true; break;
-				case SDL_SCANCODE_DOWN:
-				case SDL_SCANCODE_S: control.down = true; break;
-				case SDL_SCANCODE_LEFT:
-				case SDL_SCANCODE_A: control.left = true; break;
-				case SDL_SCANCODE_RIGHT:
-				case SDL_SCANCODE_D: control.right = true; break;
-				default: break;
-				}
-			}
-			else if (event.type == SDL_KEYUP) {
-				switch (event.key.keysym.scancode) {
-				case SDL_SCANCODE_UP:
-				case SDL_SCANCODE_W: control.up = false; break;
-				case SDL_SCANCODE_DOWN:
-				case SDL_SCANCODE_S: control.down = false; break;
-				case SDL_SCANCODE_LEFT:
-				case SDL_SCANCODE_A: control.left = false; break;
-				case SDL_SCANCODE_RIGHT:
-				case SDL_SCANCODE_D: control.right = false; break;
-				default: break;
-				}
-			}
-		}
-
+		handle_user_input();
 		tick();
 		render();
 	}
+}
 
-	quit();
-	return 0;
+void ApplicationImpl::handle_user_input()
+{
+	auto& control = _simulation.control;
+	SDL_Event event;
+
+	while (SDL_PollEvent(&event) != 0) {
+		if (event.type == SDL_QUIT) {
+			_state = ApplicationState::QUITTING;
+		}
+		else if (event.type == SDL_KEYDOWN && event.key.repeat == 0) {
+			switch (event.key.keysym.scancode) {
+			case SDL_SCANCODE_ESCAPE: _state = ApplicationState::QUITTING; break;
+			case SDL_SCANCODE_UP:
+			case SDL_SCANCODE_W: control.up = true; break;
+			case SDL_SCANCODE_DOWN:
+			case SDL_SCANCODE_S: control.down = true; break;
+			case SDL_SCANCODE_LEFT:
+			case SDL_SCANCODE_A: control.left = true; break;
+			case SDL_SCANCODE_RIGHT:
+			case SDL_SCANCODE_D: control.right = true; break;
+			default: break;
+			}
+		}
+		else if (event.type == SDL_KEYUP) {
+			switch (event.key.keysym.scancode) {
+			case SDL_SCANCODE_UP:
+			case SDL_SCANCODE_W: control.up = false; break;
+			case SDL_SCANCODE_DOWN:
+			case SDL_SCANCODE_S: control.down = false; break;
+			case SDL_SCANCODE_LEFT:
+			case SDL_SCANCODE_A: control.left = false; break;
+			case SDL_SCANCODE_RIGHT:
+			case SDL_SCANCODE_D: control.right = false; break;
+			default: break;
+			}
+		}
+	}
 }
 
 void ApplicationImpl::tick()
