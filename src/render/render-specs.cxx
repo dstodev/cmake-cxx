@@ -8,7 +8,7 @@
 #include <player.hxx>
 #include <point_t.hxx>
 #include <simulation.hxx>
-#include <textures/texture-cache.hxx>
+#include <texture-cache.hxx>
 
 using namespace project;
 
@@ -21,6 +21,15 @@ void draw(SDL_Renderer* renderer, ApplicationImpl const& application)
 void draw(SDL_Renderer* renderer, Simulation const& simulation)
 {
 	draw(renderer, simulation.player());
+
+	if (simulation.control.shift) {
+		auto& player = simulation.player();
+		auto const x = static_cast<int>(player.position().x());
+		auto const y = static_cast<int>(player.position().y());
+		SDL_SetRenderDrawColor(renderer, 0xe0, 0x11, 0x5f, 0xff);
+		SDL_Rect square = {x - 6, y - 6, 13, 13};
+		SDL_RenderDrawRect(renderer, &square);
+	}
 }
 
 void draw(SDL_Renderer* renderer, Player const& player)

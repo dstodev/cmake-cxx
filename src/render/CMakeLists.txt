@@ -5,6 +5,8 @@ target_include_directories(${target_name}
 
 target_sources(${target_name}
 	PRIVATE
+		render-specs.cxx
+		render-specs.hxx
 		texture-cache.cxx
 		texture-cache.hxx
 		texture.cxx

@@ -17,8 +17,6 @@ add_library(${target_name}
 	player.cxx
 	player.hxx
 	point_t.hxx
-	render-specs.cxx
-	render-specs.hxx
 	shear.cxx
 	shear.hxx
 	simulation.cxx
@@ -76,7 +74,7 @@ target_precompile_headers(${target_name}
 		$<BUILD_INTERFACE:placeholder_t.hxx>
 )
 
-add_subdirectory(textures)
+add_subdirectory(render)
 
 # Generate header for DLL export macro
 include(GenerateExportHeader)

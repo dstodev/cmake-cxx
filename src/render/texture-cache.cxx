@@ -4,6 +4,8 @@
 
 namespace project::textures {
 
+// TODO: Investigate transparent textures and color key
+
 void init_all(SDL_Renderer* renderer)
 {
 	player.init(renderer);

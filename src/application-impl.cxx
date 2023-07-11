@@ -72,8 +72,7 @@ int ApplicationImpl::app_main(int argc, char* argv[])
 
 void ApplicationImpl::run_until_user_quit()
 {
-	while (_state == ApplicationState::RUNNING) {
-		handle_user_input();
+	while (handle_user_input(), _state == ApplicationState::RUNNING) {
 		tick();
 		render();
 	}
@@ -81,41 +80,72 @@ void ApplicationImpl::run_until_user_quit()
 
 void ApplicationImpl::handle_user_input()
 {
+	static struct
+	{
+		bool escape = false;
+		bool up = false;
+		bool w = false;
+		bool down = false;
+		bool s = false;
+		bool left = false;
+		bool a = false;
+		bool right = false;
+		bool d = false;
+		bool lshift = false;
+		bool rshift = false;
+	} UserInput;
+
 	auto& control = _simulation.control;
 	SDL_Event event;
 
 	while (SDL_PollEvent(&event) != 0) {
 		if (event.type == SDL_QUIT) {
 			_state = ApplicationState::QUITTING;
+			return;
 		}
 		else if (event.type == SDL_KEYDOWN && event.key.repeat == 0) {
 			switch (event.key.keysym.scancode) {
-			case SDL_SCANCODE_ESCAPE: _state = ApplicationState::QUITTING; break;
-			case SDL_SCANCODE_UP:
-			case SDL_SCANCODE_W: control.up = true; break;
-			case SDL_SCANCODE_DOWN:
-			case SDL_SCANCODE_S: control.down = true; break;
-			case SDL_SCANCODE_LEFT:
-			case SDL_SCANCODE_A: control.left = true; break;
-			case SDL_SCANCODE_RIGHT:
-			case SDL_SCANCODE_D: control.right = true; break;
+			case SDL_SCANCODE_ESCAPE: UserInput.escape = true; break;
+			case SDL_SCANCODE_UP: UserInput.up = true; break;
+			case SDL_SCANCODE_W: UserInput.w = true; break;
+			case SDL_SCANCODE_DOWN: UserInput.down = true; break;
+			case SDL_SCANCODE_S: UserInput.s = true; break;
+			case SDL_SCANCODE_LEFT: UserInput.left = true; break;
+			case SDL_SCANCODE_A: UserInput.a = true; break;
+			case SDL_SCANCODE_RIGHT: UserInput.right = true; break;
+			case SDL_SCANCODE_D: UserInput.d = true; break;
+			case SDL_SCANCODE_LSHIFT: UserInput.lshift = true; break;
+			case SDL_SCANCODE_RSHIFT: UserInput.rshift = true; break;
 			default: break;
 			}
 		}
 		else if (event.type == SDL_KEYUP) {
 			switch (event.key.keysym.scancode) {
-			case SDL_SCANCODE_UP:
-			case SDL_SCANCODE_W: control.up = false; break;
-			case SDL_SCANCODE_DOWN:
-			case SDL_SCANCODE_S: control.down = false; break;
-			case SDL_SCANCODE_LEFT:
-			case SDL_SCANCODE_A: control.left = false; break;
-			case SDL_SCANCODE_RIGHT:
-			case SDL_SCANCODE_D: control.right = false; break;
+			case SDL_SCANCODE_ESCAPE: UserInput.escape = false; break;
+			case SDL_SCANCODE_UP: UserInput.up = false; break;
+			case SDL_SCANCODE_W: UserInput.w = false; break;
+			case SDL_SCANCODE_DOWN: UserInput.down = false; break;
+			case SDL_SCANCODE_S: UserInput.s = false; break;
+			case SDL_SCANCODE_LEFT: UserInput.left = false; break;
+			case SDL_SCANCODE_A: UserInput.a = false; break;
+			case SDL_SCANCODE_RIGHT: UserInput.right = false; break;
+			case SDL_SCANCODE_D: UserInput.d = false; break;
+			case SDL_SCANCODE_LSHIFT: UserInput.lshift = false; break;
+			case SDL_SCANCODE_RSHIFT: UserInput.rshift = false; break;
 			default: break;
 			}
 		}
 	}
+
+	if (UserInput.escape) {
+		_state = ApplicationState::QUITTING;
+	}
+
+	control.up = UserInput.up || UserInput.w;
+	control.down = UserInput.down || UserInput.s;
+	control.left = UserInput.left || UserInput.a;
+	control.right = UserInput.right || UserInput.d;
+	control.shift = UserInput.lshift || UserInput.rshift;
 }
 
 void ApplicationImpl::tick()

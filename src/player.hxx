@@ -11,6 +11,7 @@ class PROJECT_API Player
 {
 public:
 	static int constexpr base_speed_pps = 200;  ///< pps = pixels per second
+	static float constexpr shift_multiplier = 1.6f;
 
 	Player();
 

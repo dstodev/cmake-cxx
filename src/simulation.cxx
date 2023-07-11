@@ -33,9 +33,7 @@ int Simulation::height() const
 
 void Simulation::move_player(uint64_t delta_ms)
 {
-	float const pixels_per_second = Player::base_speed_pps;
 	auto const delta_s = static_cast<float>(delta_ms) / 1000.0f;
-
 	Eigen::Vector2f direction(0.0f, 0.0f);
 
 	// Add a full impulse in each direction that is pressed, then normalize the
@@ -56,7 +54,7 @@ void Simulation::move_player(uint64_t delta_ms)
 
 	if (direction.any()) {
 		direction.normalize();
-		direction *= pixels_per_second * delta_s;
+		direction *= Player::base_speed_pps * delta_s * (control.shift ? Player::shift_multiplier : 1.0f);
 		log::trace("Player move vector: ({:.2f}, {:.2f})\n", direction.x(), direction.y());
 		using container_cast_t = std::remove_reference_t<decltype(_player.position())>::container_type&;
 		_player.position() = static_cast<container_cast_t>(_player.position()) + direction;
