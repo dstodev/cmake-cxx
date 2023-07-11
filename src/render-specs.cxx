@@ -8,7 +8,7 @@
 #include <player.hxx>
 #include <point_t.hxx>
 #include <simulation.hxx>
-#include <textures/textures.hxx>
+#include <textures/texture-cache.hxx>
 
 using namespace project;
 
@@ -25,14 +25,12 @@ void draw(SDL_Renderer* renderer, Simulation const& simulation)
 
 void draw(SDL_Renderer* renderer, Player const& player)
 {
+	auto const& texture = textures::player;
 	auto const x = static_cast<int>(player.position().x());
 	auto const y = static_cast<int>(player.position().y());
 
-	int texture_width, texture_height;  // TODO: Cache these values.
-	SDL_QueryTexture(textures::player, nullptr, nullptr, &texture_width, &texture_height);
-
-	SDL_Rect rect {x - texture_width / 2, y - texture_height / 2, texture_width, texture_height};
-	SDL_RenderCopy(renderer, textures::player, nullptr, &rect);
+	SDL_Rect rect {x - texture.width() / 2, y - texture.height() / 2, texture.width(), texture.height()};
+	SDL_RenderCopy(renderer, texture.data(), nullptr, &rect);
 }
 
 void draw(SDL_Renderer* renderer, point_t<int> const& point)

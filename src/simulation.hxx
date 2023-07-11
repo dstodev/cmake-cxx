@@ -12,7 +12,7 @@ namespace project {
 class PROJECT_API Simulation
 {
 public:
-	Simulation(int width = 640, int height = 480);
+	explicit Simulation(int width = 640, int height = 480);
 
 	void tick(uint64_t delta_ms);
 
@@ -24,9 +24,13 @@ public:
 		bool right = false;
 	} control;
 
+	[[nodiscard]]
 	int width() const;
+
+	[[nodiscard]]
 	int height() const;
 
+	[[nodiscard]]
 	auto player() const -> Player const&;
 	auto player() -> Player&;
 

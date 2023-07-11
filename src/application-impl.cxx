@@ -6,7 +6,7 @@
 
 #include <log.hxx>
 #include <render-specs.hxx>
-#include <textures.hxx>
+#include <texture-cache.hxx>
 
 namespace {
 constexpr int WINDOW_WIDTH = 1600;
@@ -56,7 +56,7 @@ void ApplicationImpl::init()
 		throw std::runtime_error("Application failed to create renderer!");
 	}
 
-	textures::init(_renderer);
+	textures::init_all(_renderer);
 
 	_state = ApplicationState::INITIALIZED;
 }

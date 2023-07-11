@@ -1,31 +1,20 @@
-#include "textures.hxx"
+#include "texture-cache.hxx"
 
 #include <log.hxx>
 
 namespace project::textures {
 
-SDL_Texture* player = nullptr;
-
-namespace {
-void init_player(SDL_Renderer* renderer);
+void init_all(SDL_Renderer* renderer)
+{
+	player.init(renderer);
 }
 
-void init(SDL_Renderer* renderer)
-{
-	init_player(renderer);
-}
-
-namespace {
-void init_player(SDL_Renderer* renderer)
-{
+Texture player([](SDL_Renderer* renderer) {
+	auto player = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 9, 9);
 	if (player == nullptr) {
-		player = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 9, 9);
-
-		if (player == nullptr) {
-			log::warn("Failed to create player texture because: {}\n", SDL_GetError());
-			return;
-		}
-
+		log::warn("Failed to create player texture because: {}\n", SDL_GetError());
+	}
+	else {
 		SDL_SetRenderTarget(renderer, player);
 
 		SDL_SetRenderDrawColor(renderer, 0x80, 0xff, 0xa0, 0xff);
@@ -42,7 +31,7 @@ void init_player(SDL_Renderer* renderer)
 
 		SDL_SetRenderTarget(renderer, nullptr);
 	}
-}
-}  // namespace
+	return player;
+});
 
 }  // namespace project::textures
