@@ -21,14 +21,11 @@ ApplicationImpl::ApplicationImpl()
     : _state(ApplicationState::NOT_INITIALIZED)
     , _last_tick_ms()
     , _scenes()
-    , _current_scene(nullptr)
+    , _current_scene(_scenes.emplace_back(std::make_unique<Simulation>(WINDOW_WIDTH, WINDOW_HEIGHT)).get())
     , _renderer(nullptr)
     , _renderer_visitor(nullptr)
     , _window(nullptr)
-{
-	_scenes.emplace_back(std::make_unique<Simulation>(WINDOW_WIDTH, WINDOW_HEIGHT));
-	_current_scene = _scenes.begin()->get();
-}
+{}
 
 ApplicationImpl& ApplicationImpl::instance()
 {
