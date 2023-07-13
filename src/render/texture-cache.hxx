@@ -1,8 +1,6 @@
 #ifndef TEXTURE_CACHE_HXX
 #define TEXTURE_CACHE_HXX
 
-#include <SDL_render.h>
-
 #include <texture.hxx>
 
 namespace project::textures {

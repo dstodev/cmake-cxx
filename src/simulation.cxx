@@ -56,8 +56,7 @@ void Simulation::move_player(uint64_t delta_ms)
 		direction.normalize();
 		direction *= Player::base_speed_pps * delta_s * (control.shift ? Player::shift_multiplier : 1.0f);
 		log::trace("Player move vector: ({:.2f}, {:.2f})\n", direction.x(), direction.y());
-		using container_cast_t = std::remove_reference_t<decltype(_player.position())>::container_type&;
-		_player.position() = static_cast<container_cast_t>(_player.position()) + direction;
+		_player.position() = static_cast<Eigen::Vector2f>(_player.position()) + direction;
 	}
 }
 

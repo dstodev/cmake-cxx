@@ -5,8 +5,6 @@
 #include <ostream>
 #include <type_traits>
 
-#include <project-api.h>
-
 #include <Eigen/Dense>
 
 namespace project {
@@ -100,8 +98,8 @@ public:
 	auto as_matrix() const -> container_type const&;
 	auto as_matrix() -> container_type&;
 
-	explicit operator container_type const&() const;
-	explicit operator container_type&();
+	/* explicit */ operator container_type const&() const;
+	/* explicit */ operator container_type&();
 
 	auto begin() const -> const_iterator;
 	auto begin() -> iterator;

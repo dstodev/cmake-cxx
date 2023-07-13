@@ -1,8 +1,6 @@
 #ifndef APPLICATION_IMPL_HXX
 #define APPLICATION_IMPL_HXX
 
-#include <cstdint>
-
 #include <application-state.hxx>
 #include <project-api.h>  // TODO: Only use this when testing
 #include <simulation.hxx>
@@ -15,7 +13,7 @@ namespace project {
 class PROJECT_API ApplicationImpl
 {
 public:
-	ApplicationImpl();
+	static ApplicationImpl& instance();
 
 	void init();
 	int app_main(int argc, char* argv[]);
@@ -24,7 +22,9 @@ public:
 	void render();
 	void quit();
 
+	[[nodiscard]]
 	auto state() const -> ApplicationState const&;
+	void state(ApplicationState state);
 
 protected:
 	void run_until_user_quit();
@@ -36,6 +36,9 @@ protected:
 
 	SDL_Renderer* _renderer;
 	SDL_Window* _window;
+
+private:
+	ApplicationImpl();
 };
 
 }  // namespace project

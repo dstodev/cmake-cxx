@@ -5,14 +5,8 @@
 namespace project {
 
 Application::Application()
-    : _impl(new ApplicationImpl {})
+    : _impl(&ApplicationImpl::instance())
 {}
-
-Application& Application::instance()
-{
-	static Application instance;
-	return instance;
-}
 
 void Application::init()
 {

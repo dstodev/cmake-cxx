@@ -7,23 +7,48 @@ using namespace project;
 
 TEST(Application, init)
 {
-	auto& app = Application::instance();
+	Application app;
 	app.init();  // Must not throw
 }
 
+struct ApplicationHelper : public Application
+{
+	ApplicationHelper()
+	    : Application()
+	{}
+	ApplicationImpl* impl()
+	{
+		return _impl;
+	}
+};
+
 TEST(Application, same_instance)
 {
-	auto& app1 = Application::instance();
-	auto& app2 = Application::instance();
-	EXPECT_EQ(&app1, &app2);
+	ApplicationHelper app1;
+	ApplicationHelper app2;
+	EXPECT_EQ(app1.impl(), app2.impl());
 }
 
 TEST(ApplicationImpl, state)
 {
-	ApplicationImpl app;
+	auto& app = ApplicationImpl::instance();
 	EXPECT_EQ(app.state(), ApplicationState::NOT_INITIALIZED);
 	app.init();
 	EXPECT_EQ(app.state(), ApplicationState::INITIALIZED);
 	app.quit();
 	EXPECT_EQ(app.state(), ApplicationState::DONE);
+}
+
+TEST(ApplicationImpl, set_state_across_instances)
+{
+	auto& app1 = ApplicationImpl::instance();
+	auto& app2 = ApplicationImpl::instance();
+
+	EXPECT_EQ(app1.state(), ApplicationState::NOT_INITIALIZED);
+	EXPECT_EQ(app2.state(), ApplicationState::NOT_INITIALIZED);
+
+	app1.state(ApplicationState::INITIALIZED);
+
+	EXPECT_EQ(app1.state(), ApplicationState::INITIALIZED);
+	EXPECT_EQ(app2.state(), ApplicationState::INITIALIZED);
 }

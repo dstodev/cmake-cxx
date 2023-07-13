@@ -1,9 +1,6 @@
 #ifndef SIMULATION_HXX
 #define SIMULATION_HXX
 
-#include <cstdint>
-#include <vector>
-
 #include <player.hxx>
 #include <project-api.h>
 

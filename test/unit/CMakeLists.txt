@@ -5,6 +5,7 @@ add_google_executable(test-project TEST
 	SOURCES
 		application.cxx
 		assertions.hxx
+		entity.cxx
 		grid_t.cxx
 		log.cxx
 		placeholder_t.cxx

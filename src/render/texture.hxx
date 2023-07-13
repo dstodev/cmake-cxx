@@ -3,7 +3,6 @@
 
 #include <functional>
 #include <memory>
-#include <utility>
 
 #include <SDL_render.h>
 

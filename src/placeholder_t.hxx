@@ -1,7 +1,7 @@
 #ifndef PLACEHOLDER_T_HXX
 #define PLACEHOLDER_T_HXX
 
-#include <compare>
+#include <compare>  // Required for operator<=>
 
 class placeholder_t
 {
@@ -34,7 +34,7 @@ public:
 
 #define generic_operator(symbol) \
 	template <typename... Args> \
-	[[maybe_unused]] auto& operator symbol(Args...) \
+	auto& operator symbol(Args...) \
 	{ \
 		return *this; \
 	}

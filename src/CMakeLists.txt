@@ -10,6 +10,8 @@ add_library(${target_name}
 	application-state.hxx
 	application.cxx
 	application.hxx
+	entity.cxx
+	entity.hxx
 	grid_t.hxx
 	log.cxx
 	log.hxx

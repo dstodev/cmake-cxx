@@ -1,8 +1,6 @@
 #ifndef APPLICATION_HXX
 #define APPLICATION_HXX
 
-#include <memory>
-
 #include <project-api.h>
 
 namespace project {
@@ -12,7 +10,7 @@ class ApplicationImpl;
 class PROJECT_API Application
 {
 public:
-	static Application& instance();
+	Application();
 
 	void init();
 	int app_main(int argc, char* argv[]);
@@ -20,10 +18,7 @@ public:
 	virtual ~Application();
 
 protected:
-	std::unique_ptr<ApplicationImpl> _impl;
-
-private:
-	Application();
+	ApplicationImpl* _impl;
 };
 
 }  // namespace project

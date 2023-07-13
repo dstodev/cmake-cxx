@@ -299,7 +299,7 @@ TEST_F(GridToFromEigenMatrix, grid_convertible_to_matrix)
 
 TEST_F(GridToFromEigenMatrix, row_major_matrix_convertible_to_grid)
 {
-	auto matrix = Matrix<char, 2, 3, RowMajor>();
+	Matrix<char, 2, 3, RowMajor> matrix;
 	matrix << 0, 1, 2, 3, 4, 5;
 	ASSERT_EQ(0, matrix(0, 0));
 	ASSERT_EQ(1, matrix(0, 1));
@@ -319,7 +319,7 @@ TEST_F(GridToFromEigenMatrix, row_major_matrix_convertible_to_grid)
 
 TEST_F(GridToFromEigenMatrix, col_major_matrix_convertible_to_grid)
 {
-	auto matrix = Matrix<char, 2, 3, ColMajor>();
+	Matrix<char, 2, 3, ColMajor> matrix;
 	matrix << 0, 1, 2, 3, 4, 5;
 	ASSERT_EQ(0, matrix(0, 0));
 	ASSERT_EQ(1, matrix(0, 1));
@@ -367,4 +367,17 @@ TEST_F(GridToFromEigenMatrix, grid_is_a_copy_not_a_mutable_view)
 	_grid(0, 0) = mod;
 	ASSERT_EQ(mod, _grid(0, 0));
 	ASSERT_EQ(0, matrix(0, 0));  // matrix is unchanged
+}
+
+// Not in fixture, but still to Eigen matrix
+TEST(Grid, as_matrix_const)
+{
+	grid_t<char> const grid(2, 3, {0, 1, 2, 3, 4, 5});
+	auto& matrix = grid.as_matrix();
+	ASSERT_EQ(0, matrix(0, 0));
+	ASSERT_EQ(1, matrix(0, 1));
+	ASSERT_EQ(2, matrix(0, 2));
+	ASSERT_EQ(3, matrix(1, 0));
+	ASSERT_EQ(4, matrix(1, 1));
+	ASSERT_EQ(5, matrix(1, 2));
 }

@@ -23,6 +23,12 @@ ApplicationImpl::ApplicationImpl()
     , _window(nullptr)
 {}
 
+ApplicationImpl& ApplicationImpl::instance()
+{
+	static ApplicationImpl instance;
+	return instance;
+}
+
 void ApplicationImpl::init()
 {
 	if (_state != ApplicationState::NOT_INITIALIZED) {
@@ -184,6 +190,11 @@ void ApplicationImpl::quit()
 ApplicationState const& ApplicationImpl::state() const
 {
 	return _state;
+}
+
+void ApplicationImpl::state(ApplicationState state)
+{
+	_state = state;
 }
 
 }  // namespace project

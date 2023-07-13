@@ -13,7 +13,7 @@ using namespace project;
 
 int main(int argc, char* args[])
 {
-	auto& app = Application::instance();
+	Application app;
 	int result = 0;
 
 #ifdef _WIN32
