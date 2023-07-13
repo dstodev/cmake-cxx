@@ -23,12 +23,13 @@ void draw(SDL_Renderer* renderer, Simulation const& simulation)
 	draw(renderer, simulation.player());
 
 	if (simulation.control.shift) {
+		auto const& texture = textures::shift;
 		auto& player = simulation.player();
 		auto const x = static_cast<int>(player.position().x());
 		auto const y = static_cast<int>(player.position().y());
-		SDL_SetRenderDrawColor(renderer, 0xe0, 0x11, 0x5f, 0xff);
-		SDL_Rect square = {x - 6, y - 6, 13, 13};
-		SDL_RenderDrawRect(renderer, &square);
+
+		SDL_Rect rect {x - texture.width() / 2, y - texture.height() / 2, texture.width(), texture.height()};
+		SDL_RenderCopy(renderer, texture.data(), nullptr, &rect);
 	}
 }
 

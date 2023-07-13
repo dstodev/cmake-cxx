@@ -8,6 +8,7 @@
 namespace project::textures {
 
 extern Texture player;
+extern Texture shift;
 
 void init_all(SDL_Renderer* renderer);
 
