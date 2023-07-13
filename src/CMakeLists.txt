@@ -13,6 +13,7 @@ add_library(${target_name}
 	entity.cxx
 	entity.hxx
 	grid_t.hxx
+	iscene.hxx
 	log.cxx
 	log.hxx
 	placeholder_t.hxx
@@ -23,6 +24,8 @@ add_library(${target_name}
 	shear.hxx
 	simulation.cxx
 	simulation.hxx
+	user-input.cxx
+	user-input.hxx
 )
 target_include_directories(${target_name}
 	PUBLIC

@@ -9,8 +9,9 @@
 #include <point_t.hxx>
 #include <simulation.hxx>
 #include <texture-cache.hxx>
+#include <user-input.hxx>
 
-using namespace project;
+namespace project {
 
 void draw(SDL_Renderer* renderer, ApplicationImpl const& application)
 {
@@ -22,7 +23,7 @@ void draw(SDL_Renderer* renderer, Simulation const& simulation)
 {
 	draw(renderer, simulation.player());
 
-	if (simulation.control.shift) {
+	if (UserInput.lshift || UserInput.rshift) {
 		auto const& texture = textures::shift;
 		auto& player = simulation.player();
 		auto const x = static_cast<int>(player.position().x());
@@ -52,3 +53,5 @@ void draw(SDL_Renderer* renderer, point_t<int> const& point)
 		log::warn("Failed to draw type point_t because: {}\n", SDL_GetError());
 	}
 }
+
+}  // namespace project

@@ -1,40 +1,48 @@
 #ifndef APPLICATION_IMPL_HXX
 #define APPLICATION_IMPL_HXX
 
+#include <memory>
+#include <vector>
+
 #include <application-state.hxx>
+#include <iscene.hxx>
 #include <project-api.h>  // TODO: Only use this when testing
-#include <simulation.hxx>
+#include <scene-visitor.hxx>
 
 struct SDL_Window;
 struct SDL_Renderer;
 
 namespace project {
 
-class PROJECT_API ApplicationImpl
+class ApplicationImpl
 {
 public:
-	static ApplicationImpl& instance();
+	PROJECT_API static ApplicationImpl& instance();
 
-	void init();
-	int app_main(int argc, char* argv[]);
+	PROJECT_API void init();
+	PROJECT_API int app_main(int argc, char* argv[]);
 
-	void tick();
-	void render();
-	void quit();
+	PROJECT_API void tick();
+	PROJECT_API void render() const;
+	PROJECT_API void quit();
 
 	[[nodiscard]]
-	auto state() const -> ApplicationState const&;
-	void state(ApplicationState state);
+	PROJECT_API auto state() const -> ApplicationState const&;
+	PROJECT_API void state(ApplicationState state);
 
 protected:
 	void run_until_user_quit();
 	void handle_user_input();
 
 	ApplicationState _state;
-	Simulation _simulation;
 	uint64_t _last_tick_ms;
 
+	std::vector<std::unique_ptr<IScene>> _scenes;
+	IScene* _current_scene;
+
 	SDL_Renderer* _renderer;
+	SceneVisitor _renderer_visitor;
+
 	SDL_Window* _window;
 
 private:

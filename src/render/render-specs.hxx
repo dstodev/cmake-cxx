@@ -10,9 +10,13 @@
 
 struct SDL_Renderer;
 
-PROJECT_API void draw(SDL_Renderer* renderer, project::ApplicationImpl const& application);
-PROJECT_API void draw(SDL_Renderer* renderer, project::Simulation const& simulation);
-PROJECT_API void draw(SDL_Renderer* renderer, project::Player const& player);
-PROJECT_API void draw(SDL_Renderer* renderer, project::point_t<int> const& point);
+namespace project {
+
+PROJECT_API void draw(SDL_Renderer* renderer, ApplicationImpl const& application);
+PROJECT_API void draw(SDL_Renderer* renderer, Simulation const& simulation);
+PROJECT_API void draw(SDL_Renderer* renderer, Player const& player);
+PROJECT_API void draw(SDL_Renderer* renderer, point_t<int> const& point);
+
+}  // namespace project
 
 #endif  // RENDER_SPECS_HXX

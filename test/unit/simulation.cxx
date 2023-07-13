@@ -2,6 +2,7 @@
 
 #include <player.hxx>
 #include <simulation.hxx>
+#include <user-input.hxx>
 
 using namespace project;
 
@@ -32,7 +33,8 @@ TEST(Simulation, player_moves)
 	simulation.tick(1000);
 	ASSERT_EQ(Player(), simulation.player());
 
-	simulation.control.up = true;
+	UserInput = user_input_t {};
+	UserInput.up = true;
 	simulation.tick(1000);
 	ASSERT_NE(Player(), simulation.player());
 }
@@ -63,10 +65,11 @@ TEST_P(PlayerMoveTests, player_moves_adjusted_for_time)
 {
 	Simulation simulation;
 	simulation.player().position() = point_t {0.0f, 0.0f};
-	simulation.control.up = GetParam().up;
-	simulation.control.down = GetParam().down;
-	simulation.control.left = GetParam().left;
-	simulation.control.right = GetParam().right;
+	UserInput = user_input_t {};
+	UserInput.up = GetParam().up;
+	UserInput.down = GetParam().down;
+	UserInput.left = GetParam().left;
+	UserInput.right = GetParam().right;
 	simulation.tick(GetParam().delta_ms);
 	ASSERT_EQ(GetParam().expected, simulation.player().position());
 }

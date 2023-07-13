@@ -6,7 +6,9 @@
 
 #include <log.hxx>
 #include <render-specs.hxx>
+#include <simulation.hxx>
 #include <texture-cache.hxx>
+#include <user-input.hxx>
 
 namespace {
 constexpr int WINDOW_WIDTH = 1600;
@@ -17,11 +19,16 @@ namespace project {
 
 ApplicationImpl::ApplicationImpl()
     : _state(ApplicationState::NOT_INITIALIZED)
-    , _simulation(WINDOW_WIDTH, WINDOW_HEIGHT)
     , _last_tick_ms()
+    , _scenes()
+    , _current_scene(nullptr)
     , _renderer(nullptr)
+    , _renderer_visitor(nullptr)
     , _window(nullptr)
-{}
+{
+	_scenes.emplace_back(std::make_unique<Simulation>(WINDOW_WIDTH, WINDOW_HEIGHT));
+	_current_scene = _scenes.begin()->get();
+}
 
 ApplicationImpl& ApplicationImpl::instance()
 {
@@ -62,6 +69,8 @@ void ApplicationImpl::init()
 		throw std::runtime_error("Application failed to create renderer!");
 	}
 
+	_renderer_visitor = SceneVisitor(_renderer);
+
 	textures::init_all(_renderer);
 
 	_state = ApplicationState::INITIALIZED;
@@ -86,22 +95,6 @@ void ApplicationImpl::run_until_user_quit()
 
 void ApplicationImpl::handle_user_input()
 {
-	static struct
-	{
-		bool escape = false;
-		bool up = false;
-		bool w = false;
-		bool down = false;
-		bool s = false;
-		bool left = false;
-		bool a = false;
-		bool right = false;
-		bool d = false;
-		bool lshift = false;
-		bool rshift = false;
-	} UserInput;
-
-	auto& control = _simulation.control;
 	SDL_Event event;
 
 	while (SDL_PollEvent(&event) != 0) {
@@ -146,12 +139,6 @@ void ApplicationImpl::handle_user_input()
 	if (UserInput.escape) {
 		_state = ApplicationState::QUITTING;
 	}
-
-	control.up = UserInput.up || UserInput.w;
-	control.down = UserInput.down || UserInput.s;
-	control.left = UserInput.left || UserInput.a;
-	control.right = UserInput.right || UserInput.d;
-	control.shift = UserInput.lshift || UserInput.rshift;
 }
 
 void ApplicationImpl::tick()
@@ -160,13 +147,13 @@ void ApplicationImpl::tick()
 	uint64_t delta_ms = current_tick_ms - _last_tick_ms;
 
 	_last_tick_ms = current_tick_ms;
-	_simulation.tick(delta_ms);
+	_current_scene->tick(delta_ms);
 }
 
-void ApplicationImpl::render()
+void ApplicationImpl::render() const
 {
 	draw(_renderer, *this);
-	draw(_renderer, _simulation);
+	_current_scene->accept(_renderer_visitor);
 	SDL_RenderPresent(_renderer);
 }
 

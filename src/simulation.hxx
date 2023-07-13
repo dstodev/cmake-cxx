@@ -1,26 +1,19 @@
 #ifndef SIMULATION_HXX
 #define SIMULATION_HXX
 
+#include <iscene.hxx>
 #include <player.hxx>
 #include <project-api.h>
 
 namespace project {
 
-class PROJECT_API Simulation
+class PROJECT_API Simulation : public IScene
 {
 public:
 	explicit Simulation(int width = 640, int height = 480);
 
-	void tick(uint64_t delta_ms);
-
-	struct
-	{
-		bool up = false;
-		bool down = false;
-		bool left = false;
-		bool right = false;
-		bool shift = false;
-	} control;
+	void tick(uint64_t delta_ms) override;
+	void accept(SceneVisitor const& visitor) const override;
 
 	[[nodiscard]]
 	int width() const;
