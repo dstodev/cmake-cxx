@@ -6,6 +6,7 @@ namespace project::textures {
 
 void init_all(SDL_Renderer* renderer)
 {
+	log::debug("Initializing textures\n");
 	player.init(renderer);
 	shift.init(renderer);
 }

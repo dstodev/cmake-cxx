@@ -12,6 +12,8 @@ add_library(${target_name}
 	application.hxx
 	entity.cxx
 	entity.hxx
+	event-handler.cxx
+	event-handler.hxx
 	grid_t.hxx
 	iscene.hxx
 	log.cxx
@@ -24,8 +26,8 @@ add_library(${target_name}
 	shear.hxx
 	simulation.cxx
 	simulation.hxx
-	user-input.cxx
-	user-input.hxx
+	user-intent.cxx
+	user-intent.hxx
 )
 target_include_directories(${target_name}
 	PUBLIC

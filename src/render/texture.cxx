@@ -30,4 +30,16 @@ int Texture::height() const
 	return _height;
 }
 
+SDL_Rect Texture::rect() const
+{
+	SDL_Rect rect {0, 0, _width, _height};
+	return rect;
+}
+
+SDL_Rect Texture::rect_centered(int x, int y) const
+{
+	SDL_Rect rect {x - _width / 2, y - _height / 2, _width, _height};
+	return rect;
+}
+
 }  // namespace project

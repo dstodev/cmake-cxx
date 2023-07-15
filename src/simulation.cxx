@@ -4,11 +4,11 @@
 
 #include <log.hxx>
 #include <scene-visitor.hxx>
-#include <user-input.hxx>
+#include <user-intent.hxx>
 
 namespace project {
 
-Simulation::Simulation(int width, int height)
+Simulation::Simulation(int width, int height)  // TODO: Resize with window
     : _width(width)
     , _height(height)
     , _player()
@@ -43,11 +43,11 @@ void Simulation::move_player(uint64_t delta_ms)
 	auto const delta_s = static_cast<float>(delta_ms) / 1000.0f;
 	Eigen::Vector2f direction(0.0f, 0.0f);
 
-	bool up = UserInput.up || UserInput.w;
-	bool down = UserInput.down || UserInput.s;
-	bool left = UserInput.left || UserInput.a;
-	bool right = UserInput.right || UserInput.d;
-	bool shift = UserInput.lshift || UserInput.rshift;
+	bool const up = UserIntent.up;
+	bool const down = UserIntent.down;
+	bool const left = UserIntent.left;
+	bool const right = UserIntent.right;
+	bool const shift = UserIntent.shift;
 
 	// Add a full impulse in each direction that is pressed, then normalize the
 	// vector and scale it by the number of pixels to travel per second.

@@ -5,6 +5,7 @@
 #include <memory>
 
 #include <SDL_render.h>
+#include <project-api.h>
 
 namespace project {
 
@@ -13,18 +14,24 @@ class Texture
 public:
 	using Initializer = std::function<SDL_Texture*(SDL_Renderer*)>;
 
-	explicit Texture(Initializer initializer);
+	PROJECT_API explicit Texture(Initializer initializer);
 
-	void init(SDL_Renderer* renderer);
-
-	[[nodiscard]]
-	auto data() const -> SDL_Texture*;
+	PROJECT_API void init(SDL_Renderer* renderer);
 
 	[[nodiscard]]
-	int width() const;
+	PROJECT_API auto data() const -> SDL_Texture*;
 
 	[[nodiscard]]
-	int height() const;
+	PROJECT_API int width() const;
+
+	[[nodiscard]]
+	PROJECT_API int height() const;
+
+	[[nodiscard]]
+	PROJECT_API SDL_Rect rect() const;
+
+	[[nodiscard]]
+	PROJECT_API SDL_Rect rect_centered(int x, int y) const;
 
 private:
 	Initializer _initializer;

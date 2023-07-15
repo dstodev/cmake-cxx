@@ -13,6 +13,7 @@ add_google_executable(test-project TEST
 		point_t.cxx
 		shear.cxx
 		simulation.cxx
+		texture.cxx
 
 	LIBRARIES
 		project

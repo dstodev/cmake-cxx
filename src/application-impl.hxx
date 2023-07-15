@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <application-state.hxx>
+#include <event-handler.hxx>
 #include <iscene.hxx>
 #include <project-api.h>  // TODO: Only use this when testing
 #include <scene-visitor.hxx>
@@ -44,6 +45,8 @@ protected:
 	SceneVisitor _renderer_visitor;
 
 	SDL_Window* _window;
+
+	EventHandler _handler;
 
 private:
 	ApplicationImpl();

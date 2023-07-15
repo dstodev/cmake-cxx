@@ -8,11 +8,12 @@
 #include <render-specs.hxx>
 #include <simulation.hxx>
 #include <texture-cache.hxx>
-#include <user-input.hxx>
+#include <user-intent.hxx>
 
 namespace {
-constexpr int WINDOW_WIDTH = 1600;
-constexpr int WINDOW_HEIGHT = 900;
+// 16:9 aspect ratio
+constexpr int WINDOW_WIDTH = 1280;
+constexpr int WINDOW_HEIGHT = 720;
 }  // namespace
 
 namespace project {
@@ -54,7 +55,7 @@ void ApplicationImpl::init()
 	                                SDL_WINDOWPOS_UNDEFINED,
 	                                WINDOW_WIDTH,
 	                                WINDOW_HEIGHT,
-	                                SDL_WINDOW_SHOWN))
+	                                SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE))
 	    == nullptr) {
 		log::error("SDL_CreateWindow() failed because: {}\n", SDL_GetError());
 		throw std::runtime_error("Application failed to create window!");
@@ -92,49 +93,19 @@ void ApplicationImpl::run_until_user_quit()
 
 void ApplicationImpl::handle_user_input()
 {
-	SDL_Event event;
+	_handler.handle_queued_events();
 
-	while (SDL_PollEvent(&event) != 0) {
-		if (event.type == SDL_QUIT) {
-			_state = ApplicationState::QUITTING;
-			return;
-		}
-		else if (event.type == SDL_KEYDOWN && event.key.repeat == 0) {
-			switch (event.key.keysym.scancode) {
-			case SDL_SCANCODE_ESCAPE: UserInput.escape = true; break;
-			case SDL_SCANCODE_UP: UserInput.up = true; break;
-			case SDL_SCANCODE_W: UserInput.w = true; break;
-			case SDL_SCANCODE_DOWN: UserInput.down = true; break;
-			case SDL_SCANCODE_S: UserInput.s = true; break;
-			case SDL_SCANCODE_LEFT: UserInput.left = true; break;
-			case SDL_SCANCODE_A: UserInput.a = true; break;
-			case SDL_SCANCODE_RIGHT: UserInput.right = true; break;
-			case SDL_SCANCODE_D: UserInput.d = true; break;
-			case SDL_SCANCODE_LSHIFT: UserInput.lshift = true; break;
-			case SDL_SCANCODE_RSHIFT: UserInput.rshift = true; break;
-			default: break;
-			}
-		}
-		else if (event.type == SDL_KEYUP) {
-			switch (event.key.keysym.scancode) {
-			case SDL_SCANCODE_ESCAPE: UserInput.escape = false; break;
-			case SDL_SCANCODE_UP: UserInput.up = false; break;
-			case SDL_SCANCODE_W: UserInput.w = false; break;
-			case SDL_SCANCODE_DOWN: UserInput.down = false; break;
-			case SDL_SCANCODE_S: UserInput.s = false; break;
-			case SDL_SCANCODE_LEFT: UserInput.left = false; break;
-			case SDL_SCANCODE_A: UserInput.a = false; break;
-			case SDL_SCANCODE_RIGHT: UserInput.right = false; break;
-			case SDL_SCANCODE_D: UserInput.d = false; break;
-			case SDL_SCANCODE_LSHIFT: UserInput.lshift = false; break;
-			case SDL_SCANCODE_RSHIFT: UserInput.rshift = false; break;
-			default: break;
-			}
-		}
-	}
-
-	if (UserInput.escape) {
+	if (_handler.intent_quit() || _handler.intent_escape()) {
 		_state = ApplicationState::QUITTING;
+	}
+	else {
+		if (_handler.intent_reset_render()) {
+			textures::init_all(_renderer);  // invalidated by e.g. window resize
+		}
+		if (_handler.window_resized()) {
+			_handler.reset();
+		}
+		UserIntent = _handler.intents();
 	}
 }
 
