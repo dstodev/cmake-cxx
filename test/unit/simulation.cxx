@@ -19,6 +19,17 @@ TEST(Simulation, dimensions)
 	ASSERT_EQ(200, simulation.height());
 }
 
+TEST(Simulation, resize)
+{
+	Simulation simulation(0, 0);
+	ASSERT_EQ(0, simulation.width());
+	ASSERT_EQ(0, simulation.height());
+
+	simulation.resize(200, 400);
+	ASSERT_EQ(200, simulation.width());
+	ASSERT_EQ(400, simulation.height());
+}
+
 TEST(Simulation, player)
 {
 	Simulation simulation;

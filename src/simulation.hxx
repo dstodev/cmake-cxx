@@ -10,16 +10,15 @@ namespace project {
 class PROJECT_API Simulation : public IScene
 {
 public:
-	explicit Simulation(int width = 640, int height = 480);
+	explicit Simulation(int view_width = 640, int view_height = 480);
 
 	void tick(uint64_t delta_ms) override;
 	void accept(SceneVisitor const& visitor) const override;
 
-	[[nodiscard]]
-	int width() const;
+	void resize(int width, int height);
 
-	[[nodiscard]]
-	int height() const;
+	[[nodiscard]] int width() const;
+	[[nodiscard]] int height() const;
 
 	[[nodiscard]]
 	auto player() const -> Player const&;

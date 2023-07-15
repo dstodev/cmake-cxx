@@ -13,20 +13,22 @@ public:
 	void handle_queued_events();
 	void reset();
 
-	user_intent_t intents() const;
+#define _attr [[nodiscard]]
+	_attr user_intent_t intents() const;
 
-	bool intent_quit() const;
-	bool intent_reset_render() const;
+	_attr bool intent_quit() const;
+	_attr bool intent_reset_render() const;
 
-	bool intent_escape() const;
-	bool intent_up() const;
-	bool intent_down() const;
-	bool intent_left() const;
-	bool intent_right() const;
-	bool intent_shift() const;
-	bool intent_r() const;
+	_attr bool intent_escape() const;
+	_attr bool intent_up() const;
+	_attr bool intent_down() const;
+	_attr bool intent_left() const;
+	_attr bool intent_right() const;
+	_attr bool intent_shift() const;
+	_attr bool intent_r() const;
 
-	bool window_resized() const;
+	_attr bool window_resized() const;
+#undef _attr
 
 private:
 	void handle_scancode(SDL_Scancode code, bool pressed);

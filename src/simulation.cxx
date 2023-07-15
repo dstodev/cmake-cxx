@@ -8,13 +8,14 @@
 
 namespace project {
 
-Simulation::Simulation(int width, int height)  // TODO: Resize with window
-    : _width(width)
-    , _height(height)
+Simulation::Simulation(int view_width, int view_height)
+    : _width(view_width)
+    , _height(view_height)
     , _player()
 {
-	_player.position().x() = static_cast<float>(width) / 2.0f;
-	_player.position().y() = static_cast<float>(height) / 2.0f;
+	log::debug("Simulation::Simulation(view_width={}, view_height={})\n", view_width, view_height);
+	_player.position().x() = static_cast<float>(view_width) / 2.0f;
+	_player.position().y() = static_cast<float>(view_height) / 2.0f;
 }
 
 void Simulation::tick(uint64_t delta_ms)
@@ -26,6 +27,13 @@ void Simulation::tick(uint64_t delta_ms)
 void Simulation::accept(SceneVisitor const& visitor) const
 {
 	visitor.visit(*this);
+}
+
+void Simulation::resize(int width, int height)
+{
+	log::debug("Simulation::resize(width={}, height={})\n", width, height);
+	_width = width;
+	_height = height;
 }
 
 int Simulation::width() const

@@ -14,7 +14,6 @@ using namespace project;
 int main(int argc, char* args[])
 {
 	Application app;
-	int result = 0;
 
 #ifdef _WIN32
 	// If there is no console allocated, writing to stdout will crash the application.
@@ -36,6 +35,8 @@ int main(int argc, char* args[])
 	log::debug("Debug messages enabled\n");
 	log::trace("Trace messages enabled\n");
 
+	int result = 0;
+
 	try {
 		app.init();
 		result = app.app_main(argc, args);
@@ -45,5 +46,5 @@ int main(int argc, char* args[])
 
 	log::info("Application closed with result: {}\n", result);
 
-	return 0;
+	return result;
 }

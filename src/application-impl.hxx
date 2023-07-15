@@ -36,6 +36,7 @@ protected:
 	void handle_user_input();
 
 	ApplicationState _state;
+	EventHandler _handler;
 	uint64_t _last_tick_ms;
 
 	std::vector<std::unique_ptr<IScene>> _scenes;
@@ -45,8 +46,6 @@ protected:
 	SceneVisitor _renderer_visitor;
 
 	SDL_Window* _window;
-
-	EventHandler _handler;
 
 private:
 	ApplicationImpl();

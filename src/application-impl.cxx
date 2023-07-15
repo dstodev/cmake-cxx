@@ -20,9 +20,10 @@ namespace project {
 
 ApplicationImpl::ApplicationImpl()
     : _state(ApplicationState::NOT_INITIALIZED)
+    , _handler()
     , _last_tick_ms()
     , _scenes()
-    , _current_scene(_scenes.emplace_back(std::make_unique<Simulation>(WINDOW_WIDTH, WINDOW_HEIGHT)).get())
+    , _current_scene(nullptr)
     , _renderer(nullptr)
     , _renderer_visitor(nullptr)
     , _window(nullptr)
@@ -39,6 +40,8 @@ void ApplicationImpl::init()
 	if (_state != ApplicationState::NOT_INITIALIZED) {
 		return;
 	}
+
+	_current_scene = _scenes.emplace_back(std::make_unique<Simulation>(WINDOW_WIDTH, WINDOW_HEIGHT)).get();
 
 	if (int status; (status = SDL_Init(SDL_INIT_VIDEO)) < 0) {
 		log::error("SDL_Init() returned {} because: {}\n", status, SDL_GetError());
@@ -104,6 +107,12 @@ void ApplicationImpl::handle_user_input()
 		}
 		if (_handler.window_resized()) {
 			_handler.reset();
+
+			if (auto simulation = dynamic_cast<Simulation*>(_current_scene)) {
+				int width, height;
+				SDL_GetWindowSize(_window, &width, &height);
+				simulation->resize(width, height);
+			}
 		}
 		UserIntent = _handler.intents();
 	}
