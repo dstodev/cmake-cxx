@@ -6,10 +6,10 @@
 
 #include <application-state.hxx>
 #include <event-handler.hxx>
-#include <iscene.hxx>
 #include <project-api.h>  // TODO: Only use this when testing
 #include <scene-input-injector.hxx>
 #include <scene-renderer.hxx>
+#include <scene.hxx>
 
 struct SDL_Window;
 struct SDL_Renderer;
@@ -42,8 +42,8 @@ protected:
 	EventHandler _handler;
 	uint64_t _last_tick_ms;
 
-	std::vector<std::unique_ptr<IScene>> _scenes;
-	IScene* _current_scene;
+	std::vector<std::unique_ptr<Scene>> _scenes;
+	Scene* _current_scene;
 
 	SDL_Renderer* _renderer;
 	SceneRenderer _scene_renderer;

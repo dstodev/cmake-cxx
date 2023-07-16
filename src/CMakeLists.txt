@@ -15,8 +15,6 @@ add_library(${target_name}
 	event-handler.cxx
 	event-handler.hxx
 	grid_t.hxx
-	iscene-visitor.hxx
-	iscene.hxx
 	log.cxx
 	log.hxx
 	placeholder_t.hxx
@@ -25,6 +23,8 @@ add_library(${target_name}
 	point_t.hxx
 	scene-input-injector.cxx
 	scene-input-injector.hxx
+	scene-visitor.hxx
+	scene.hxx
 	shear.cxx
 	shear.hxx
 	simulation.cxx

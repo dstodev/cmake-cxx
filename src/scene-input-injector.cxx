@@ -1,5 +1,7 @@
 #include "scene-input-injector.hxx"
 
+#include <simulation.hxx>
+
 namespace project {
 
 SceneInputInjector::SceneInputInjector(EventHandler& handler)

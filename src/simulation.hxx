@@ -1,19 +1,19 @@
 #ifndef SIMULATION_HXX
 #define SIMULATION_HXX
 
-#include <iscene.hxx>
 #include <player.hxx>
 #include <project-api.h>
+#include <scene.hxx>
 
 namespace project {
 
-class PROJECT_API Simulation : public IScene
+class PROJECT_API Simulation : public Scene
 {
 public:
 	explicit Simulation(int view_width = 640, int view_height = 480);
 
 	void tick(uint64_t delta_ms) override;
-	void accept(ISceneVisitor& visitor) override;
+	void accept(SceneVisitor& visitor) override;
 
 	void resize(int width, int height);
 

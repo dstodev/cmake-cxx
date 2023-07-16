@@ -2,13 +2,13 @@
 #define SCENE_RENDERER_HXX
 
 #include <event-handler.hxx>
-#include <iscene-visitor.hxx>
+#include <scene-visitor.hxx>
 
 struct SDL_Renderer;
 
 namespace project {
 
-class SceneRenderer : public ISceneVisitor
+class SceneRenderer : public SceneVisitor
 {
 public:
 	explicit SceneRenderer(EventHandler& handler);

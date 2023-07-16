@@ -2,8 +2,8 @@
 
 #include <Eigen/Dense>
 
-#include <iscene-visitor.hxx>
 #include <log.hxx>
+#include <scene-visitor.hxx>
 
 namespace project {
 
@@ -24,7 +24,7 @@ void Simulation::tick(uint64_t delta_ms)
 	move_player(delta_ms);
 }
 
-void Simulation::accept(ISceneVisitor& visitor)
+void Simulation::accept(SceneVisitor& visitor)
 {
 	visitor.visit(*this);
 }

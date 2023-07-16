@@ -2,12 +2,13 @@
 #define SCENE_INPUT_INJECTOR_HXX
 
 #include <event-handler.hxx>
-#include <iscene-visitor.hxx>
-#include <simulation.hxx>
+#include <scene-visitor.hxx>
+
+class Simulation;
 
 namespace project {
 
-class SceneInputInjector : public ISceneVisitor
+class SceneInputInjector : public SceneVisitor
 {
 public:
 	explicit SceneInputInjector(EventHandler& handler);
