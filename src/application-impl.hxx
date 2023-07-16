@@ -8,7 +8,8 @@
 #include <event-handler.hxx>
 #include <iscene.hxx>
 #include <project-api.h>  // TODO: Only use this when testing
-#include <scene-visitor.hxx>
+#include <scene-input-injector.hxx>
+#include <scene-renderer.hxx>
 
 struct SDL_Window;
 struct SDL_Renderer;
@@ -18,18 +19,20 @@ namespace project {
 class ApplicationImpl
 {
 public:
-	PROJECT_API static ApplicationImpl& instance();
+#define ATTR PROJECT_API
+	ATTR static ApplicationImpl& instance();
 
-	PROJECT_API void init();
-	PROJECT_API int app_main(int argc, char* argv[]);
+	ATTR void init();
+	ATTR int app_main(int argc, char* argv[]);
 
-	PROJECT_API void tick();
-	PROJECT_API void render() const;
-	PROJECT_API void quit();
+	ATTR void tick();
+	ATTR void render();
+	ATTR void quit();
 
 	[[nodiscard]]
-	PROJECT_API auto state() const -> ApplicationState const&;
-	PROJECT_API void state(ApplicationState state);
+	ATTR auto state() const -> ApplicationState const&;
+	ATTR void state(ApplicationState state);
+#undef ATTR
 
 protected:
 	void run_until_user_quit();
@@ -43,7 +46,8 @@ protected:
 	IScene* _current_scene;
 
 	SDL_Renderer* _renderer;
-	SceneVisitor _renderer_visitor;
+	SceneRenderer _scene_renderer;
+	SceneInputInjector _scene_input_injector;
 
 	SDL_Window* _window;
 

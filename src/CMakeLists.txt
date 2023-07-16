@@ -15,6 +15,7 @@ add_library(${target_name}
 	event-handler.cxx
 	event-handler.hxx
 	grid_t.hxx
+	iscene-visitor.hxx
 	iscene.hxx
 	log.cxx
 	log.hxx
@@ -22,12 +23,12 @@ add_library(${target_name}
 	player.cxx
 	player.hxx
 	point_t.hxx
+	scene-input-injector.cxx
+	scene-input-injector.hxx
 	shear.cxx
 	shear.hxx
 	simulation.cxx
 	simulation.hxx
-	user-intent.cxx
-	user-intent.hxx
 )
 target_include_directories(${target_name}
 	PUBLIC

@@ -7,8 +7,8 @@ target_sources(${target_name}
 	PRIVATE
 		render-specs.cxx
 		render-specs.hxx
-		scene-visitor.cxx
-		scene-visitor.hxx
+		scene-renderer.cxx
+		scene-renderer.hxx
 		texture-cache.cxx
 		texture-cache.hxx
 		texture.cxx

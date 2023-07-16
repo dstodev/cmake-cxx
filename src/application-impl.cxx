@@ -8,7 +8,6 @@
 #include <render-specs.hxx>
 #include <simulation.hxx>
 #include <texture-cache.hxx>
-#include <user-intent.hxx>
 
 namespace {
 // 16:9 aspect ratio
@@ -25,7 +24,8 @@ ApplicationImpl::ApplicationImpl()
     , _scenes()
     , _current_scene(nullptr)
     , _renderer(nullptr)
-    , _renderer_visitor(nullptr)
+    , _scene_renderer(_handler)
+    , _scene_input_injector(_handler)
     , _window(nullptr)
 {}
 
@@ -33,6 +33,15 @@ ApplicationImpl& ApplicationImpl::instance()
 {
 	static ApplicationImpl instance;
 	return instance;
+}
+
+int ApplicationImpl::app_main(int argc, char* argv[])
+{
+	init();
+	_state = ApplicationState::RUNNING;
+	run_until_user_quit();
+	quit();
+	return 0;
 }
 
 void ApplicationImpl::init()
@@ -70,20 +79,11 @@ void ApplicationImpl::init()
 		throw std::runtime_error("Application failed to create renderer!");
 	}
 
-	_renderer_visitor = SceneVisitor(_renderer);
+	_scene_renderer.renderer(_renderer);
 
 	textures::init_all(_renderer);
 
 	_state = ApplicationState::INITIALIZED;
-}
-
-int ApplicationImpl::app_main(int argc, char* argv[])
-{
-	init();
-	_state = ApplicationState::RUNNING;
-	run_until_user_quit();
-	quit();
-	return 0;
 }
 
 void ApplicationImpl::run_until_user_quit()
@@ -114,8 +114,8 @@ void ApplicationImpl::handle_user_input()
 				simulation->resize(width, height);
 			}
 		}
-		UserIntent = _handler.intents();
 	}
+	_current_scene->accept(_scene_input_injector);
 }
 
 void ApplicationImpl::tick()
@@ -127,10 +127,10 @@ void ApplicationImpl::tick()
 	_current_scene->tick(delta_ms);
 }
 
-void ApplicationImpl::render() const
+void ApplicationImpl::render()
 {
 	draw(_renderer, *this);
-	_current_scene->accept(_renderer_visitor);
+	_current_scene->accept(_scene_renderer);
 	SDL_RenderPresent(_renderer);
 }
 

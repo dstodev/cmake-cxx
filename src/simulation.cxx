@@ -2,14 +2,14 @@
 
 #include <Eigen/Dense>
 
+#include <iscene-visitor.hxx>
 #include <log.hxx>
-#include <scene-visitor.hxx>
-#include <user-intent.hxx>
 
 namespace project {
 
 Simulation::Simulation(int view_width, int view_height)
-    : _width(view_width)
+    : intent()
+    , _width(view_width)
     , _height(view_height)
     , _player()
 {
@@ -24,7 +24,7 @@ void Simulation::tick(uint64_t delta_ms)
 	move_player(delta_ms);
 }
 
-void Simulation::accept(SceneVisitor const& visitor) const
+void Simulation::accept(ISceneVisitor& visitor)
 {
 	visitor.visit(*this);
 }
@@ -51,31 +51,25 @@ void Simulation::move_player(uint64_t delta_ms)
 	auto const delta_s = static_cast<float>(delta_ms) / 1000.0f;
 	Eigen::Vector2f direction(0.0f, 0.0f);
 
-	bool const up = UserIntent.up;
-	bool const down = UserIntent.down;
-	bool const left = UserIntent.left;
-	bool const right = UserIntent.right;
-	bool const shift = UserIntent.shift;
-
 	// Add a full impulse in each direction that is pressed, then normalize the
 	// vector and scale it by the number of pixels to travel per second.
 
-	if (up) {
+	if (intent.up) {
 		direction.y() -= 1.0f;
 	}
-	if (down) {
+	if (intent.down) {
 		direction.y() += 1.0f;
 	}
-	if (left) {
+	if (intent.left) {
 		direction.x() -= 1.0f;
 	}
-	if (right) {
+	if (intent.right) {
 		direction.x() += 1.0f;
 	}
 
 	if (direction.any()) {
 		direction.normalize();
-		direction *= Player::base_speed_pps * delta_s * (shift ? Player::shift_multiplier : 1.0f);
+		direction *= Player::base_speed_pps * delta_s * (intent.shift ? Player::shift_multiplier : 1.0f);
 		log::trace("Player move vector: ({:.2f}, {:.2f})\n", direction.x(), direction.y());
 		_player.position() = static_cast<Eigen::Vector2f>(_player.position()) + direction;
 	}

@@ -3,8 +3,6 @@
 
 #include <SDL_events.h>
 
-#include <user-intent.hxx>
-
 namespace project {
 
 class EventHandler
@@ -13,22 +11,23 @@ public:
 	void handle_queued_events();
 	void reset();
 
-#define _attr [[nodiscard]]
-	_attr user_intent_t intents() const;
+#define ATTR [[nodiscard]]
+	ATTR bool intent_quit() const;
+	ATTR bool intent_reset_render() const;
 
-	_attr bool intent_quit() const;
-	_attr bool intent_reset_render() const;
+	ATTR int mouse_xpos() const;
+	ATTR int mouse_ypos() const;
 
-	_attr bool intent_escape() const;
-	_attr bool intent_up() const;
-	_attr bool intent_down() const;
-	_attr bool intent_left() const;
-	_attr bool intent_right() const;
-	_attr bool intent_shift() const;
-	_attr bool intent_r() const;
+	ATTR bool intent_escape() const;
+	ATTR bool intent_up() const;
+	ATTR bool intent_down() const;
+	ATTR bool intent_left() const;
+	ATTR bool intent_right() const;
+	ATTR bool intent_shift() const;
+	ATTR bool intent_r() const;
 
-	_attr bool window_resized() const;
-#undef _attr
+	ATTR bool window_resized() const;
+#undef ATTR
 
 private:
 	void handle_scancode(SDL_Scancode code, bool pressed);
@@ -38,6 +37,10 @@ private:
 	bool event_window_resized;
 	bool event_render_targets_reset;
 	bool event_render_device_reset;
+
+	int mouse_x;
+	int mouse_y;
+
 	bool key_escape;
 	bool key_up;
 	bool key_w;

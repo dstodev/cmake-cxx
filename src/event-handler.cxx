@@ -31,28 +31,39 @@ void EventHandler::handle_queued_events()
 			log::debug("Render device reset\n");
 			event_render_device_reset = true;
 			break;
+		case SDL_MOUSEMOTION:
+			mouse_x = event.motion.x;
+			mouse_y = event.motion.y;
+			break;
 		default: break;
 		}
 	}
 }
 
+void EventHandler::handle_scancode(SDL_Scancode code, bool pressed)
+{
+	switch (code) {
+	case SDL_SCANCODE_ESCAPE: key_escape = pressed; break;
+	case SDL_SCANCODE_UP: key_up = pressed; break;
+	case SDL_SCANCODE_W: key_w = pressed; break;
+	case SDL_SCANCODE_DOWN: key_down = pressed; break;
+	case SDL_SCANCODE_S: key_s = pressed; break;
+	case SDL_SCANCODE_LEFT: key_left = pressed; break;
+	case SDL_SCANCODE_A: key_a = pressed; break;
+	case SDL_SCANCODE_RIGHT: key_right = pressed; break;
+	case SDL_SCANCODE_D: key_d = pressed; break;
+	case SDL_SCANCODE_LSHIFT: key_lshift = pressed; break;
+	case SDL_SCANCODE_RSHIFT: key_rshift = pressed; break;
+	case SDL_SCANCODE_R: key_r = pressed; break;
+	default: break;
+	}
+}
+
+
+
 void EventHandler::reset()
 {
 	*this = EventHandler {};
-}
-
-user_intent_t EventHandler::intents() const
-{
-	return {
-	    intent_quit(),
-	    intent_escape(),
-	    intent_up(),
-	    intent_down(),
-	    intent_left(),
-	    intent_right(),
-	    intent_shift(),
-	    intent_r(),
-	};
 }
 
 bool EventHandler::intent_quit() const
@@ -103,25 +114,6 @@ bool EventHandler::intent_r() const
 bool EventHandler::window_resized() const
 {
 	return event_window_resized;
-}
-
-void EventHandler::handle_scancode(SDL_Scancode code, bool pressed)
-{
-	switch (code) {
-	case SDL_SCANCODE_ESCAPE: key_escape = pressed; break;
-	case SDL_SCANCODE_UP: key_up = pressed; break;
-	case SDL_SCANCODE_W: key_w = pressed; break;
-	case SDL_SCANCODE_DOWN: key_down = pressed; break;
-	case SDL_SCANCODE_S: key_s = pressed; break;
-	case SDL_SCANCODE_LEFT: key_left = pressed; break;
-	case SDL_SCANCODE_A: key_a = pressed; break;
-	case SDL_SCANCODE_RIGHT: key_right = pressed; break;
-	case SDL_SCANCODE_D: key_d = pressed; break;
-	case SDL_SCANCODE_LSHIFT: key_lshift = pressed; break;
-	case SDL_SCANCODE_RSHIFT: key_rshift = pressed; break;
-	case SDL_SCANCODE_R: key_r = pressed; break;
-	default: break;
-	}
 }
 
 }  // namespace project

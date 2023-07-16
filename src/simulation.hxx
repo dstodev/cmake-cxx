@@ -13,7 +13,7 @@ public:
 	explicit Simulation(int view_width = 640, int view_height = 480);
 
 	void tick(uint64_t delta_ms) override;
-	void accept(SceneVisitor const& visitor) const override;
+	void accept(ISceneVisitor& visitor) override;
 
 	void resize(int width, int height);
 
@@ -23,6 +23,15 @@ public:
 	[[nodiscard]]
 	auto player() const -> Player const&;
 	auto player() -> Player&;
+
+	struct Control
+	{
+		bool up;
+		bool down;
+		bool left;
+		bool right;
+		bool shift;
+	} intent {};
 
 protected:
 	void move_player(uint64_t delta_ms);

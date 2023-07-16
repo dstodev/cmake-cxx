@@ -18,14 +18,14 @@ public:
 
 	PROJECT_API void init(SDL_Renderer* renderer);
 
-#define _attr [[nodiscard]] PROJECT_API
-	_attr auto data() const -> SDL_Texture*;
-	_attr int width() const;
-	_attr int height() const;
+#define ATTR [[nodiscard]] PROJECT_API
+	ATTR auto data() const -> SDL_Texture*;
+	ATTR int width() const;
+	ATTR int height() const;
 
-	_attr SDL_Rect rect() const;
-	_attr SDL_Rect rect_centered(int x, int y) const;
-#undef _attr
+	ATTR SDL_Rect rect() const;
+	ATTR SDL_Rect rect_centered(int x, int y) const;
+#undef ATTR
 
 private:
 	Initializer _initializer;

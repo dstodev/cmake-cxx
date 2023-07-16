@@ -9,7 +9,6 @@
 #include <point_t.hxx>
 #include <simulation.hxx>
 #include <texture-cache.hxx>
-#include <user-intent.hxx>
 
 namespace project {
 
@@ -19,15 +18,16 @@ void draw(SDL_Renderer* renderer, ApplicationImpl const& application)
 	SDL_RenderClear(renderer);
 }
 
-void draw(SDL_Renderer* renderer, Simulation const& simulation)
+void draw(SDL_Renderer* renderer, Simulation const& simulation, EventHandler const& handler)
 {
-	draw(renderer, simulation.player());
+	auto const& player = simulation.player();
+	auto const x = static_cast<int>(player.position().x());
+	auto const y = static_cast<int>(player.position().y());
 
-	if (UserIntent.shift) {
+	draw(renderer, player);
+
+	if (handler.intent_shift()) {
 		auto const& texture = textures::shift;
-		auto const& player = simulation.player();
-		auto const x = static_cast<int>(player.position().x());
-		auto const y = static_cast<int>(player.position().y());
 		auto const rect = texture.rect_centered(x, y);
 		SDL_RenderCopy(renderer, texture.data(), nullptr, &rect);
 	}

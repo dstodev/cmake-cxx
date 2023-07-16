@@ -18,7 +18,7 @@ public:
 	auto position() const -> point_t<float> const&;
 	auto position() -> point_t<float>&;
 
-	auto operator<=>(Entity const& rhs) const = default;
+	bool operator==(Entity const& rhs) const = default;
 
 protected:
 	point_t<float> _position;
