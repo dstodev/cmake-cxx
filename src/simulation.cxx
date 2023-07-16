@@ -8,7 +8,7 @@
 namespace project {
 
 Simulation::Simulation(int view_width, int view_height)
-    : intent()
+    : _intent()
     , _width(view_width)
     , _height(view_height)
     , _player()
@@ -54,22 +54,22 @@ void Simulation::move_player(uint64_t delta_ms)
 	// Add a full impulse in each direction that is pressed, then normalize the
 	// vector and scale it by the number of pixels to travel per second.
 
-	if (intent.up) {
+	if (_intent.up) {
 		direction.y() -= 1.0f;
 	}
-	if (intent.down) {
+	if (_intent.down) {
 		direction.y() += 1.0f;
 	}
-	if (intent.left) {
+	if (_intent.left) {
 		direction.x() -= 1.0f;
 	}
-	if (intent.right) {
+	if (_intent.right) {
 		direction.x() += 1.0f;
 	}
 
 	if (direction.any()) {
 		direction.normalize();
-		direction *= Player::base_speed_pps * delta_s * (intent.shift ? Player::shift_multiplier : 1.0f);
+		direction *= Player::base_speed_pps * delta_s * (_intent.shift ? Player::shift_multiplier : 1.0f);
 		log::trace("Player move vector: ({:.2f}, {:.2f})\n", direction.x(), direction.y());
 		_player.position() = static_cast<Eigen::Vector2f>(_player.position()) + direction;
 	}
@@ -83,6 +83,16 @@ Player const& Simulation::player() const
 Player& Simulation::player()
 {
 	return _player;
+}
+
+auto Simulation::control() const -> const Simulation::Control&
+{
+	return _intent;
+}
+
+auto Simulation::control() -> Simulation::Control&
+{
+	return _intent;
 }
 
 }  // namespace project

@@ -43,7 +43,7 @@ TEST(Simulation, player_moves)
 	simulation.tick(1000);
 	ASSERT_EQ(Player(), simulation.player());
 
-	simulation.intent.up = true;
+	simulation.control().up = true;
 	simulation.tick(1000);
 	ASSERT_NE(Player(), simulation.player());
 }
@@ -81,12 +81,13 @@ class PlayerMoveTests : public ::testing::TestWithParam<PlayerMoveTestParams>
 TEST_P(PlayerMoveTests, player_moves_adjusted_for_time)
 {
 	Simulation simulation;
+	auto& control = simulation.control();
 	simulation.player().position() = point_t {0.0f, 0.0f};
-	simulation.intent.up = GetParam().up;
-	simulation.intent.down = GetParam().down;
-	simulation.intent.left = GetParam().left;
-	simulation.intent.right = GetParam().right;
-	simulation.intent.shift = GetParam().shift;
+	control.up = GetParam().up;
+	control.down = GetParam().down;
+	control.left = GetParam().left;
+	control.right = GetParam().right;
+	control.shift = GetParam().shift;
 	simulation.tick(GetParam().delta_ms);
 	auto const& expected = GetParam().expected;
 	auto const& actual = simulation.player().position();

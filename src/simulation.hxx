@@ -31,9 +31,14 @@ public:
 		bool left;
 		bool right;
 		bool shift;
-	} intent {};
+	};
+
+	auto control() const -> Control const&;
+	auto control() -> Control&;
 
 protected:
+	Control _intent {};
+
 	void move_player(uint64_t delta_ms);
 
 	int _width;
