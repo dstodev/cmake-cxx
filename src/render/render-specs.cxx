@@ -25,6 +25,7 @@ void draw(SDL_Renderer* renderer, Simulation const& simulation, EventHandler con
 	auto const y = static_cast<int>(player.position().y());
 
 	draw(renderer, player);
+	draw(renderer, handler.mouse_pos());
 
 	if (handler.intent_shift()) {
 		auto const& texture = textures::shift;

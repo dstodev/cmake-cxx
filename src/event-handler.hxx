@@ -3,6 +3,8 @@
 
 #include <SDL_events.h>
 
+#include <point_t.hxx>
+
 namespace project {
 
 class EventHandler
@@ -15,8 +17,7 @@ public:
 	ATTR bool intent_quit() const;
 	ATTR bool intent_reset_render() const;
 
-	ATTR int mouse_xpos() const;
-	ATTR int mouse_ypos() const;
+	ATTR auto mouse_pos() const -> point_t<int> const&;
 
 	ATTR bool intent_escape() const;
 	ATTR bool intent_up() const;
@@ -32,27 +33,26 @@ public:
 private:
 	void handle_scancode(SDL_Scancode code, bool pressed);
 
-	SDL_Event event;
-	bool event_quit;
-	bool event_window_resized;
-	bool event_render_targets_reset;
-	bool event_render_device_reset;
+	SDL_Event _event;
+	bool _event_quit;
+	bool _event_window_resized;
+	bool _event_render_targets_reset;
+	bool _event_render_device_reset;
 
-	int mouse_x;
-	int mouse_y;
+	point_t<int> _mouse_pos;
 
-	bool key_escape;
-	bool key_up;
-	bool key_w;
-	bool key_down;
-	bool key_s;
-	bool key_left;
-	bool key_a;
-	bool key_right;
-	bool key_d;
-	bool key_lshift;
-	bool key_rshift;
-	bool key_r;
+	bool _key_escape;
+	bool _key_up;
+	bool _key_w;
+	bool _key_down;
+	bool _key_s;
+	bool _key_left;
+	bool _key_a;
+	bool _key_right;
+	bool _key_d;
+	bool _key_lshift;
+	bool _key_rshift;
+	bool _key_r;
 };
 
 }  // namespace project
