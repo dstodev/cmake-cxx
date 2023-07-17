@@ -5,8 +5,6 @@
 
 #include <application-impl.hxx>
 #include <event-handler.hxx>
-#include <player.hxx>
-#include <point_t.hxx>
 #include <simulation.hxx>
 
 struct SDL_Renderer;
@@ -15,8 +13,6 @@ namespace project {
 
 PROJECT_API void draw(SDL_Renderer* renderer, ApplicationImpl const& application);
 PROJECT_API void draw(SDL_Renderer* renderer, Simulation const& simulation, EventHandler const& handler);
-PROJECT_API void draw(SDL_Renderer* renderer, Player const& player);
-PROJECT_API void draw(SDL_Renderer* renderer, point_t<int> const& point);
 
 }  // namespace project
 

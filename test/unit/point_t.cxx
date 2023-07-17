@@ -57,3 +57,70 @@ TEST(Point, copy)
 	point_t<float> point_2 {point_1};
 	ASSERT_EQ(point_1, point_2);
 }
+
+TEST(Point, addition)
+{
+	point_t<float> point_1 {1.0f, 2.0f};
+	point_t<float> point_2 {3.0f, 4.0f};
+	point_t<float> expected {4.0f, 6.0f};
+	ASSERT_EQ(expected, point_1 + point_2);
+}
+
+TEST(Point, subtraction)
+{
+	point_t<float> point_1 {1.0f, 2.0f};
+	point_t<float> point_2 {3.0f, 4.0f};
+	point_t<float> expected {-2.0f, -2.0f};
+	ASSERT_EQ(expected, point_1 - point_2);
+}
+
+TEST(Point, multiplication)
+{
+	point_t<float> point {1.0f, 2.0f};
+	point_t<float> expected {2.0f, 4.0f};
+	ASSERT_EQ(expected, point * 2.0f);
+}
+
+TEST(Point, division)
+{
+	point_t<float> point {1.0f, 2.0f};
+	point_t<float> expected {0.5f, 1.0f};
+	ASSERT_EQ(expected, point / 2.0f);
+}
+
+TEST(Point, addition_assignment)
+{
+	point_t<float> point_1 {1.0f, 2.0f};
+	point_t<float> point_2 {3.0f, 4.0f};
+	point_t<float> expected {4.0f, 6.0f};
+	ASSERT_EQ(expected, point_1 += point_2);
+}
+
+TEST(Point, subtraction_assignment)
+{
+	point_t<float> point_1 {1.0f, 2.0f};
+	point_t<float> point_2 {3.0f, 4.0f};
+	point_t<float> expected {-2.0f, -2.0f};
+	ASSERT_EQ(expected, point_1 -= point_2);
+}
+
+TEST(Point, multiplication_assignment)
+{
+	point_t<float> point {1.0f, 2.0f};
+	point_t<float> expected {2.0f, 4.0f};
+	ASSERT_EQ(expected, point *= 2.0f);
+}
+
+TEST(Point, division_assignment)
+{
+	point_t<float> point {1.0f, 2.0f};
+	point_t<float> expected {0.5f, 1.0f};
+	ASSERT_EQ(expected, point /= 2.0f);
+}
+
+TEST(Point, cast)
+{
+	point_t<float> point {1.0f, 2.0f};
+	point_t<int> expected {1, 2};
+	ASSERT_EQ(expected, point.cast<int>());
+}

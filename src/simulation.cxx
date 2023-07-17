@@ -14,8 +14,6 @@ Simulation::Simulation(int view_width, int view_height)
     , _player()
 {
 	log::debug("Simulation::Simulation(view_width={}, view_height={})\n", view_width, view_height);
-	_player.position().x() = static_cast<float>(view_width) / 2.0f;
-	_player.position().y() = static_cast<float>(view_height) / 2.0f;
 }
 
 void Simulation::tick(uint64_t delta_ms)
@@ -83,6 +81,11 @@ Player const& Simulation::player() const
 Player& Simulation::player()
 {
 	return _player;
+}
+
+point_t<int> Simulation::center() const
+{
+	return point_t<int> {_width / 2, _height / 2};
 }
 
 auto Simulation::control() const -> const Simulation::Control&

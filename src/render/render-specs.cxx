@@ -12,6 +12,9 @@
 
 namespace project {
 
+void draw(SDL_Renderer* renderer, Simulation const& simulation, Player const& player);
+void draw(SDL_Renderer* renderer, point_t<int> const& point);
+
 void draw(SDL_Renderer* renderer, ApplicationImpl const& application)
 {
 	SDL_SetRenderDrawColor(renderer, 0xe0, 0xf0, 0xff, 0xff);
@@ -21,31 +24,34 @@ void draw(SDL_Renderer* renderer, ApplicationImpl const& application)
 void draw(SDL_Renderer* renderer, Simulation const& simulation, EventHandler const& handler)
 {
 	auto const& player = simulation.player();
-	auto const x = static_cast<int>(player.position().x());
-	auto const y = static_cast<int>(player.position().y());
 
-	draw(renderer, player);
+	draw(renderer, simulation, player);
 	draw(renderer, handler.mouse_pos());
-
-	if (handler.intent_shift()) {
-		auto const& texture = textures::shift;
-		auto const rect = texture.rect_centered(x, y);
-		SDL_RenderCopy(renderer, texture.data(), nullptr, &rect);
-	}
 }
 
-void draw(SDL_Renderer* renderer, Player const& player)
+void draw(SDL_Renderer* renderer, Simulation const& simulation, Player const& player)
 {
 	auto const& texture = textures::player;
-	auto const x = static_cast<int>(player.position().x());
-	auto const y = static_cast<int>(player.position().y());
+	auto const x = simulation.width() / 2;
+	auto const y = simulation.height() / 2;
 	auto const rect = texture.rect_centered(x, y);
+
 	SDL_RenderCopy(renderer, texture.data(), nullptr, &rect);
+
+	if (simulation.control().shift) {
+		auto const& texture = textures::shift;
+		auto const rect = texture.rect_centered(x, y);
+
+		SDL_RenderCopy(renderer, texture.data(), nullptr, &rect);
+	}
+
+	draw(renderer, player.position().cast<int>() + simulation.center());
 }
 
 void draw(SDL_Renderer* renderer, point_t<int> const& point)
 {
 	SDL_Rect const square {static_cast<int>(point.x() - 1), static_cast<int>(point.y() - 1), 3, 3};
+
 	SDL_SetRenderDrawColor(renderer, 0xff, 0x00, 0x00, 0xff);
 	SDL_RenderDrawRect(renderer, &square);
 }

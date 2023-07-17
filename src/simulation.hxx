@@ -2,6 +2,7 @@
 #define SIMULATION_HXX
 
 #include <player.hxx>
+#include <point_t.hxx>
 #include <project-api.h>
 #include <scene.hxx>
 
@@ -23,6 +24,9 @@ public:
 	[[nodiscard]]
 	auto player() const -> Player const&;
 	auto player() -> Player&;
+
+	[[nodiscard]]
+	point_t<int> center() const;
 
 	struct Control
 	{
