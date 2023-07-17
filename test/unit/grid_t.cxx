@@ -56,6 +56,36 @@ TEST(Grid, construct_with_data)
 	ASSERT_EQ(4, grid.at(1, 0));
 }
 
+TEST(Grid, construct_with_nonscalar_data)
+{
+	struct Object
+	{
+		int value;
+	};
+	grid_t<Object> grid(2, 1, {Object {3}, Object {4}});
+	ASSERT_EQ(3, grid.at(0, 0).value);
+	ASSERT_EQ(4, grid.at(1, 0).value);
+}
+
+/* TODO: The previous test only passes because Object is constructible like Object{}.
+       Investigate supporting non-default-constructible types: */
+
+#if brave
+TEST(Grid, construct_with_non_default_constructible_data)
+{
+	struct Object
+	{
+		explicit Object(int value)
+		    : value(value)
+		{}
+		int value;
+	};
+	grid_t<Object> grid(2, 1, {Object(3), Object(4)});
+	ASSERT_EQ(3, grid.at(0, 0).value);
+	ASSERT_EQ(4, grid.at(1, 0).value);
+}
+#endif
+
 TEST(Grid, at_horizontal_rectangle)
 {
 	/*  0 1 2 3 4   a b c d e f g h i j
@@ -138,7 +168,7 @@ TEST(Grid, call_operator_const)
 	ASSERT_EQ(0, element);
 }
 
-TEST(Grid, iterator)
+TEST(Grid, iterator)  // griderator
 {
 	grid_t<char> grid(2, 2, {0, 1, 2, 3});
 
