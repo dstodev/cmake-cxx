@@ -18,26 +18,31 @@ It includes:
 
 The following scripts have been tested on MacOS Monterey and Windows 11.
 
-- Natively
-    - on Mac, Linux, or Windows with WSL  
-      Run `script/run-tests.sh`
+### Natively
 
-- through Docker
-    - on Mac/Linux  
-      Run `script/run-docker-tests.bash`
+- with **CMake**, run:  
+  `cmake -S . -B build/manual; cmake --build build/manual --parallel --target all-test`
 
-    - on Windows  
-      Run `script\run-docker-tests.bat`
+- on **Mac**, **Linux**, or Windows with [**WSL**](https://learn.microsoft.com/en-us/windows/wsl/), run:  
+  `script/run-tests.sh`
 
-    - with [Docker Compose](https://docs.docker.com/compose/)  
-      Run `docker compose -f docker/compose.yaml run build`, or  
-      Run `docker compose -f docker/compose.yaml run build-clang`, or  
-      Run `docker compose -f docker/compose.yaml up`
+### with Docker
+
+- on **Mac** or **Linux**, run:  
+  `script/run-docker-tests.bash`
+
+- on **Windows**, run:  
+  `script\run-docker-tests.bat`
+
+- with [**Docker Compose**](https://docs.docker.com/compose/), run one of:  
+  `docker compose -f docker/compose.yaml run build`  
+  `docker compose -f docker/compose.yaml run build-clang`  
+  `docker compose -f docker/compose.yaml up`
 
 ## Build Package
 
-- with CMake  
-  `cmake -B build/package && cmake --build build/package --target package --parallel`
+- with **CMake**  
+  `cmake -S . -B build/package; cmake --build build/package --parallel --target package`
 
 > **NOTE:**  
 > Building the package requires CPack, normally included with CMake.  
@@ -62,8 +67,7 @@ build utilities.
 
 Notes:
 
-- Make sure that the CMake Tools extension is configured to match the
-  `CMAKE_BUILD_TYPE`.
+- Make sure that the CMake Tools extension is configured to match the `CMAKE_BUILD_TYPE`.
 - There are currently intellisense bugs on MacOS due to CMake Tools.  
   One such issue is being tracked [here](https://github.com/microsoft/vscode-cmake-tools/issues/1178).
 - On Windows, make sure that you use the Ninja generator if you are able.  

@@ -4,8 +4,6 @@
 #include <point_t.hxx>
 #include <project-api.h>
 
-#include <compare>
-
 namespace project {
 
 class PROJECT_API Entity

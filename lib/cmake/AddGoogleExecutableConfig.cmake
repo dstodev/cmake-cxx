@@ -44,6 +44,7 @@ function(add_google_executable target)
 	)
 
 	if (args_TEST)
+		# TODO: Better properties support https://cmake.org/cmake/help/latest/command/set_tests_properties.html
 		gtest_discover_tests(${target})
 	endif()
 endfunction()

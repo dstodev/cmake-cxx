@@ -29,9 +29,21 @@ TEST(Application, same_instance)
 	EXPECT_EQ(app1.impl(), app2.impl());
 }
 
+TEST(ApplicationImpl, reset)
+{
+	auto& app = ApplicationImpl::instance();
+	app.reset();  // Global state may have changed from different test
+	EXPECT_EQ(app.state(), ApplicationState::NOT_INITIALIZED);
+	app.init();
+	EXPECT_EQ(app.state(), ApplicationState::INITIALIZED);
+	app.reset();
+	EXPECT_EQ(app.state(), ApplicationState::NOT_INITIALIZED);
+}
+
 TEST(ApplicationImpl, state)
 {
 	auto& app = ApplicationImpl::instance();
+	app.reset();  // Global state may have changed from different test
 	EXPECT_EQ(app.state(), ApplicationState::NOT_INITIALIZED);
 	app.init();
 	EXPECT_EQ(app.state(), ApplicationState::INITIALIZED);
@@ -43,6 +55,8 @@ TEST(ApplicationImpl, set_state_across_instances)
 {
 	auto& app1 = ApplicationImpl::instance();
 	auto& app2 = ApplicationImpl::instance();
+
+	app1.reset();  // Global state may have changed from different test
 
 	EXPECT_EQ(app1.state(), ApplicationState::NOT_INITIALIZED);
 	EXPECT_EQ(app2.state(), ApplicationState::NOT_INITIALIZED);

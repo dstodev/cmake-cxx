@@ -56,7 +56,7 @@ target_compile_features(${target_name}
 		cxx_std_20  # for helpful features like [[nodiscard]] and operator<=>
 )
 target_compile_definitions(${target_name}
-	PRIVATE
+	PUBLIC
 		$<$<CONFIG:Debug>:ENABLE_LOGGING>
 )
 

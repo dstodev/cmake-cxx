@@ -109,7 +109,7 @@ bool EventHandler::intent_shift() const
 	return _key_lshift || _key_rshift;
 }
 
-bool EventHandler::intent_r() const
+bool EventHandler::key_r() const
 {
 	return _key_r;
 }

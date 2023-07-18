@@ -4,8 +4,10 @@ set(export_name "project")
 install(TARGETS
 	# Project targets
 	project
-	main
-	mainc
+
+	# Optional targets
+	app-gui
+	app-console
 
 	# Dependency targets
 	eigen
@@ -30,7 +32,7 @@ list(FILTER release_runtimes EXCLUDE REGEX "Debug")
 set(debug_runtimes ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS})
 list(FILTER debug_runtimes INCLUDE REGEX "Debug")
 
-install(PROGRAMS ${release_runtimes} DESTINATION bin CONFIGURATIONS Release)
+install(PROGRAMS ${release_runtimes} DESTINATION bin CONFIGURATIONS Re.lease)
 install(PROGRAMS ${debug_runtimes} DESTINATION bin CONFIGURATIONS Debug)
 
 log_vars(release_runtimes debug_runtimes SPLIT_LISTS MODE DEBUG)

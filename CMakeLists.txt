@@ -52,14 +52,14 @@ set(libraries
 	SDL2::SDL2main
 	SDL2::SDL2 # only for SDL2main
 )
-set(target_name "main") # GUI application
+set(target_name "app-gui") # GUI application
 add_executable(${target_name} WIN32 MACOSX_BUNDLE
 	${SAMPLE_MAIN}  # Defined under `test` subdirectory
 )
 target_link_libraries(${target_name} PRIVATE ${libraries})
 target_compile_definitions(${target_name} PRIVATE $<$<CONFIG:Debug>:ENABLE_LOGGING>)
 
-set(target_name "mainc") # Console application
+set(target_name "app-console") # Console application
 add_executable(${target_name} ${SAMPLE_MAIN})
 target_link_libraries(${target_name} PRIVATE ${libraries})
 target_compile_definitions(${target_name} PRIVATE $<$<CONFIG:Debug>:ENABLE_LOGGING>)

@@ -4,6 +4,7 @@
 #include <iterator>
 #include <ostream>
 #include <type_traits>
+#include <utility>
 
 #include <Eigen/Dense>
 
@@ -199,8 +200,7 @@ auto grid_t<T>::at(size_t row, size_t column) -> value_type&
 	    The only way to call this is via non-const instance or reference,
 	    guaranteeing that calling const_cast<> to remove const here is safe.
 	*/
-	auto const& this_const = *this;
-	return const_cast<value_type&>(this_const.at(row, column));
+	return const_cast<value_type&>(std::as_const(*this).at(row, column));
 }
 
 template <typename T>

@@ -151,6 +151,17 @@ void ApplicationImpl::quit()
 	_state = ApplicationState::DONE;
 }
 
+void ApplicationImpl::reset()
+{
+	_state = ApplicationState::NOT_INITIALIZED;
+	_handler.reset();
+	_last_tick_ms = 0;
+	_scenes.clear();
+	_current_scene = nullptr;
+	_renderer = nullptr;
+	_window = nullptr;
+}
+
 ApplicationState const& ApplicationImpl::state() const
 {
 	return _state;

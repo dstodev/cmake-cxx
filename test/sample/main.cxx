@@ -2,12 +2,12 @@
 
 #include <SDL_main.h>
 
-#include <application.hxx>
-#include <log.hxx>
-
 #ifdef _WIN32
 #include <Windows.h>
 #endif
+
+#include <application.hxx>
+#include <log.hxx>
 
 using namespace project;
 

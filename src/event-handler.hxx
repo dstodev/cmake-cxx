@@ -25,7 +25,8 @@ public:
 	ATTR bool intent_left() const;
 	ATTR bool intent_right() const;
 	ATTR bool intent_shift() const;
-	ATTR bool intent_r() const;
+
+	ATTR bool key_r() const;
 
 	ATTR bool window_resized() const;
 #undef ATTR

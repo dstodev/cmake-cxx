@@ -10,6 +10,7 @@ build
  ├ clion-release
  ├ compose-build  
  ├ compose-build-clang  
+ ├ manual
  ├ run-docker-tests-bash
  ├ run-docker-tests-bat
  ├ run-tests-sh

@@ -1,9 +1,8 @@
+#include <SDL_log.h>
 #include <gtest/gtest.h>
 
 // A "main" function is required for SDL to link properly; will be redefined
 // to "SDL_main()" by SDL_main.h
-
-#include <SDL_log.h>
 
 int main(int argc, char* argv[])
 {

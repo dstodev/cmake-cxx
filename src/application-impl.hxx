@@ -28,6 +28,7 @@ public:
 	ATTR void tick();
 	ATTR void render();
 	ATTR void quit();
+	ATTR void reset();
 
 	[[nodiscard]]
 	ATTR auto state() const -> ApplicationState const&;
