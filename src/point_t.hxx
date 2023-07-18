@@ -213,7 +213,7 @@ auto operator<<(std::ostream& os, point_t<T> const& point) -> std::ostream&
 	// https://eigen.tuxfamily.org/dox/structEigen_1_1IOFormat.html
 	static Eigen::IOFormat const format(4, 0, ", ", "\n", "[", "]");
 
-	auto vector = static_cast<project::point_t<T>::container_type const&>(point);
+	auto vector = static_cast<typename project::point_t<T>::container_type const&>(point);
 
 	// Eigen defaults to column-major containers, so transpose to a row-major
 	// vector for more-compact printing.

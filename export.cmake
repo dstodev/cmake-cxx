@@ -16,6 +16,7 @@ install(TARGETS
 	SDL2main
 
 	EXPORT ${export_name}
+	BUNDLE DESTINATION bin
 )
 install(DIRECTORY "${eigen_SOURCE_DIR}/Eigen" DESTINATION include)
 install(DIRECTORY "${SDL2_SOURCE_DIR}/include/" DESTINATION include/SDL2)
@@ -42,3 +43,11 @@ install(EXPORT ${export_name}
 	DESTINATION cmake
 	NAMESPACE project::
 )
+
+if (APPLE)
+	# https://cmake.org/cmake/help/latest/module/BundleUtilities.html
+	install(CODE "
+		include(BundleUtilities)
+		fixup_bundle(\"\${CMAKE_INSTALL_PREFIX}/bin/app-gui.app\" \"\" \"\${CMAKE_INSTALL_PREFIX}/lib\")
+	")
+endif()

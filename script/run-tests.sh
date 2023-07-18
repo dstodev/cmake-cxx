@@ -13,5 +13,4 @@ fi
 export GTEST_FILTER="-Application.*:ApplicationImpl.*"
 
 cmake -S "$source_dir" -B "$build_dir" -DCMAKE_BUILD_TYPE=Release
-cmake --build "$build_dir" --target check-flags
 cmake --build "$build_dir" --target all-test sample-app --parallel

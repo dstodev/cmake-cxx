@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.21)
 
+# Our policies
 cmake_policy(SET CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0091.html
+
+# Dependency policies
+set(CMAKE_POLICY_DEFAULT_CMP0068 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0068.html
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/lib/cmake")  # mostly for include()
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/lib/cmake")  # mostly for find_package()
@@ -35,6 +39,16 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")  # .exe, .dll, .
 
 # When building the `install` target, put artifacts in this directory.
 set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install-stage")  # https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html
+
+if(UNIX)
+	if(APPLE)
+		set(prefix "@loader_path")
+	else()
+		set(prefix "$ORIGIN")
+	endif()
+	set(CMAKE_INSTALL_RPATH "${prefix}/../lib")
+	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+endif()
 
 set(CPACK_GENERATOR "ZIP")
 
