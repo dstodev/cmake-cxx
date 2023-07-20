@@ -17,6 +17,7 @@ public:
 	PROJECT_API explicit Texture(Initializer initializer);
 
 	PROJECT_API void init(SDL_Renderer* renderer);
+	PROJECT_API void reset_color();
 
 #define ATTR [[nodiscard]] PROJECT_API
 	ATTR auto data() const -> SDL_Texture*;

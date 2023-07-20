@@ -96,7 +96,7 @@ void ApplicationImpl::run_until_user_quit()
 
 void ApplicationImpl::handle_user_input()
 {
-	_handler.handle_queued_events();
+	_handler.update_event_state();
 
 	if (_handler.intent_quit() || _handler.intent_escape()) {
 		_state = ApplicationState::QUITTING;
@@ -129,7 +129,7 @@ void ApplicationImpl::tick()
 
 void ApplicationImpl::render()
 {
-	draw(_renderer, *this);
+	draw(*this, _renderer);
 	_current_scene->accept(_scene_renderer);
 	SDL_RenderPresent(_renderer);
 }

@@ -19,7 +19,7 @@ Texture player([](SDL_Renderer* renderer) {
 	else {
 		SDL_SetRenderTarget(renderer, texture);
 
-		SDL_SetRenderDrawColor(renderer, 0x80, 0xff, 0xa0, 0xff);
+		SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
 		SDL_Rect square {2, 2, 5, 5};
 		SDL_RenderFillRect(renderer, &square);
 
@@ -45,7 +45,7 @@ Texture shift([](SDL_Renderer* renderer) {
 		SDL_SetRenderTarget(renderer, texture);
 		SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 
-		SDL_SetRenderDrawColor(renderer, 0xe0, 0x11, 0x5f, 0xff);
+		SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
 
 		SDL_Rect square = {0, 0, 13, 13};
 		SDL_RenderDrawRect(renderer, &square);

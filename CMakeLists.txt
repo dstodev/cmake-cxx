@@ -10,9 +10,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/lib/cmake")  # mostly f
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/lib/cmake")  # mostly for find_package()
 
 find_package(Expect CONFIG REQUIRED)  # so modules may use expect() as a 'builtin' without find_package()
-find_package(LogVars CONFIG REQUIRED)  # For developer utility
+find_package(BuildUtilities CONFIG REQUIRED)
 
-find_package(SetupBuildMode CONFIG REQUIRED)
 setup_build_mode()
 
 project(Project)
@@ -30,27 +29,23 @@ option(CMAKE_POSITION_INDEPENDENT_CODE "Build position-independent code?" TRUE)
 option(CMAKE_TLS_VERIFY "Verify HTTPS server certificates?" TRUE)
 option(CMAKE_VERBOSE_MAKEFILE "Emit verbose build output?" FALSE)
 
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE STRING "MSVC runtime")
 
 # https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#output-artifacts
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")  # .lib, .a, ...
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")  # .so, .dylib, ...
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")  # .exe, .dll, ...
 
-# When building the `install` target, put artifacts in this directory.
-set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install-stage")  # https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html
+configure_rpath_variables()
 
-if(UNIX)
-	if(APPLE)
-		set(prefix "@loader_path")
-	else()
-		set(prefix "$ORIGIN")
-	endif()
-	set(CMAKE_INSTALL_RPATH "${prefix}/../lib")
-	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-endif()
+set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install-stage"
+	CACHE PATH "When building the `install` target, put artifacts in this directory."
+)  # https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html
 
-set(CPACK_GENERATOR "ZIP")
+set(CPACK_GENERATOR "TXZ")
+set(CPACK_THREADS 0)  # https://cmake.org/cmake/help/latest/module/CPack.html#variable:CPACK_THREADS
+set(CPACK_ARCHIVE_THREADS 0)
+set(CPACK_VERBATIM_VARIABLES TRUE)
 
 include(CPack)
 add_custom_target(build-package cpack)
@@ -71,11 +66,9 @@ add_executable(${target_name} WIN32 MACOSX_BUNDLE
 	${SAMPLE_MAIN}  # Defined under `test` subdirectory
 )
 target_link_libraries(${target_name} PRIVATE ${libraries})
-target_compile_definitions(${target_name} PRIVATE $<$<CONFIG:Debug>:ENABLE_LOGGING>)
 
 set(target_name "app-console") # Console application
 add_executable(${target_name} ${SAMPLE_MAIN})
 target_link_libraries(${target_name} PRIVATE ${libraries})
-target_compile_definitions(${target_name} PRIVATE $<$<CONFIG:Debug>:ENABLE_LOGGING>)
 
 include(export.cmake)

@@ -15,6 +15,11 @@ void Texture::init(SDL_Renderer* renderer)
 	SDL_QueryTexture(_texture.get(), nullptr, nullptr, &_width, &_height);
 }
 
+void Texture::reset_color()
+{
+	SDL_SetTextureColorMod(data(), 0xff, 0xff, 0xff);
+}
+
 auto Texture::data() const -> SDL_Texture*
 {
 	return _texture.get();

@@ -10,7 +10,7 @@ namespace project {
 class EventHandler
 {
 public:
-	void handle_queued_events();
+	void update_event_state();
 	void reset();
 
 #define ATTR [[nodiscard]]
@@ -18,6 +18,8 @@ public:
 	ATTR bool intent_reset_render() const;
 
 	ATTR auto mouse_pos() const -> point_t<int> const&;
+	ATTR bool mouse_left() const;
+	ATTR bool mouse_right() const;
 
 	ATTR bool intent_escape() const;
 	ATTR bool intent_up() const;
@@ -41,6 +43,8 @@ private:
 	bool _event_render_device_reset;
 
 	point_t<int> _mouse_pos;
+	bool _mouse_left;
+	bool _mouse_right;
 
 	bool _key_escape;
 	bool _key_up;

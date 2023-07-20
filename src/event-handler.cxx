@@ -4,7 +4,7 @@
 
 namespace project {
 
-void EventHandler::handle_queued_events()
+void EventHandler::update_event_state()
 {
 	_event_quit = false;
 	_event_window_resized = false;
@@ -24,16 +24,30 @@ void EventHandler::handle_queued_events()
 			}
 			break;
 		case SDL_RENDER_TARGETS_RESET:
-			log::debug("Render targets reset\n");
+			log::debug("Render targets reset_color\n");
 			_event_render_targets_reset = true;
 			break;
 		case SDL_RENDER_DEVICE_RESET:
-			log::debug("Render device reset\n");
+			log::debug("Render device reset_color\n");
 			_event_render_device_reset = true;
 			break;
 		case SDL_MOUSEMOTION:
 			_mouse_pos.x() = _event.motion.x;
 			_mouse_pos.y() = _event.motion.y;
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			switch (_event.button.button) {
+			case SDL_BUTTON_LEFT: _mouse_left = true; break;
+			case SDL_BUTTON_RIGHT: _mouse_right = true; break;
+			default: break;
+			}
+			break;
+		case SDL_MOUSEBUTTONUP:
+			switch (_event.button.button) {
+			case SDL_BUTTON_LEFT: _mouse_left = false; break;
+			case SDL_BUTTON_RIGHT: _mouse_right = false; break;
+			default: break;
+			}
 			break;
 		default: break;
 		}
@@ -45,12 +59,12 @@ void EventHandler::handle_scancode(SDL_Scancode code, bool pressed)
 	switch (code) {
 	case SDL_SCANCODE_ESCAPE: _key_escape = pressed; break;
 	case SDL_SCANCODE_UP: _key_up = pressed; break;
-	case SDL_SCANCODE_W: _key_w = pressed; break;
 	case SDL_SCANCODE_DOWN: _key_down = pressed; break;
-	case SDL_SCANCODE_S: _key_s = pressed; break;
 	case SDL_SCANCODE_LEFT: _key_left = pressed; break;
-	case SDL_SCANCODE_A: _key_a = pressed; break;
 	case SDL_SCANCODE_RIGHT: _key_right = pressed; break;
+	case SDL_SCANCODE_W: _key_w = pressed; break;
+	case SDL_SCANCODE_S: _key_s = pressed; break;
+	case SDL_SCANCODE_A: _key_a = pressed; break;
 	case SDL_SCANCODE_D: _key_d = pressed; break;
 	case SDL_SCANCODE_LSHIFT: _key_lshift = pressed; break;
 	case SDL_SCANCODE_RSHIFT: _key_rshift = pressed; break;
@@ -77,6 +91,16 @@ bool EventHandler::intent_reset_render() const
 auto EventHandler::mouse_pos() const -> point_t<int> const&
 {
 	return _mouse_pos;
+}
+
+bool EventHandler::mouse_left() const
+{
+	return _mouse_left;
+}
+
+bool EventHandler::mouse_right() const
+{
+	return _mouse_right;
 }
 
 bool EventHandler::intent_escape() const

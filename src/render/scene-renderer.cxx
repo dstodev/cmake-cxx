@@ -11,7 +11,7 @@ SceneRenderer::SceneRenderer(EventHandler& handler)
 
 void SceneRenderer::visit(Simulation& scene)
 {
-	draw(_renderer, scene, _handler);
+	draw(scene, _renderer, _handler);
 }
 
 void SceneRenderer::renderer(SDL_Renderer* renderer)
