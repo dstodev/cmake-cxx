@@ -21,8 +21,8 @@ add_library(${target_name}
 	player.cxx
 	player.hxx
 	point_t.hxx
-	scene-input-injector.cxx
-	scene-input-injector.hxx
+	scene-input-visitor.cxx
+	scene-input-visitor.hxx
 	scene-visitor.hxx
 	scene.hxx
 	shear.cxx

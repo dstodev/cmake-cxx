@@ -7,12 +7,12 @@
 #include <application-state.hxx>
 #include <event-handler.hxx>
 #include <project-api.h>  // TODO: Only use this when testing
-#include <scene-input-injector.hxx>
-#include <scene-renderer.hxx>
+#include <renderer.hxx>
+#include <scene-input-visitor.hxx>
+#include <scene-render-visitor.hxx>
 #include <scene.hxx>
 
 struct SDL_Window;
-struct SDL_Renderer;
 
 namespace project {
 
@@ -46,9 +46,9 @@ protected:
 	std::vector<std::unique_ptr<Scene>> _scenes;
 	Scene* _current_scene;
 
-	SDL_Renderer* _renderer;
-	SceneRenderer _scene_renderer;
-	SceneInputInjector _scene_input_injector;
+	Renderer _renderer;
+	SceneInputVisitor _scene_input_visitor;
+	SceneRenderVisitor _scene_render_visitor;
 
 	SDL_Window* _window;
 

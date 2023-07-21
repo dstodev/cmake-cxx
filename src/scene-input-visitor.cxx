@@ -1,14 +1,15 @@
-#include "scene-input-injector.hxx"
+#include "scene-input-visitor.hxx"
 
+#include <event-handler.hxx>
 #include <simulation.hxx>
 
 namespace project {
 
-SceneInputInjector::SceneInputInjector(EventHandler& handler)
+SceneInputVisitor::SceneInputVisitor(EventHandler& handler)
     : _handler(handler)
 {}
 
-void SceneInputInjector::visit(Simulation& scene)
+void SceneInputVisitor::visit(Simulation& scene)
 {
 	auto& control = scene.control();
 	control.up = _handler.intent_up();

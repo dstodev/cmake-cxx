@@ -5,10 +5,10 @@ target_include_directories(${target_name}
 
 target_sources(${target_name}
 	PRIVATE
-		render-specs.cxx
-		render-specs.hxx
-		scene-renderer.cxx
-		scene-renderer.hxx
+		renderer.cxx
+		renderer.hxx
+		scene-render-visitor.cxx
+		scene-render-visitor.hxx
 		texture-cache.cxx
 		texture-cache.hxx
 		texture.cxx

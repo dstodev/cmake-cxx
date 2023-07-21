@@ -5,9 +5,7 @@
 #include <SDL.h>
 
 #include <log.hxx>
-#include <render-specs.hxx>
 #include <simulation.hxx>
-#include <texture-cache.hxx>
 
 namespace {
 // 16:9 aspect ratio
@@ -23,9 +21,9 @@ ApplicationImpl::ApplicationImpl()
     , _last_tick_ms()
     , _scenes()
     , _current_scene(nullptr)
-    , _renderer(nullptr)
-    , _scene_renderer(_handler)
-    , _scene_input_injector(_handler)
+    , _renderer(_handler)
+    , _scene_input_visitor(_handler)
+    , _scene_render_visitor(_renderer)
     , _window(nullptr)
 {}
 
@@ -73,15 +71,15 @@ void ApplicationImpl::init()
 		throw std::runtime_error("Application failed to create window!");
 	}
 
-	if ((_renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC))
+	SDL_Renderer* sdl_renderer = nullptr;
+
+	if ((sdl_renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC))
 	    == nullptr) {
 		log::error("SDL_CreateRenderer() failed because: {}\n", SDL_GetError());
 		throw std::runtime_error("Application failed to create renderer!");
 	}
 
-	_scene_renderer.renderer(_renderer);
-
-	textures::init_all(_renderer);
+	_renderer.init(sdl_renderer);
 
 	_state = ApplicationState::INITIALIZED;
 }
@@ -98,14 +96,14 @@ void ApplicationImpl::handle_user_input()
 {
 	_handler.update_event_state();
 
-	if (_handler.intent_quit() || _handler.intent_escape()) {
+	if (_handler.signal_quit() || _handler.intent_escape()) {
 		_state = ApplicationState::QUITTING;
 	}
 	else {
-		if (_handler.intent_reset_render()) {
-			textures::init_all(_renderer);  // invalidated by e.g. window resize
+		if (_handler.signal_refresh_render()) {
+			_renderer.refresh();
 		}
-		if (_handler.window_resized()) {
+		if (_handler.signal_window_resized()) {
 			_handler.reset();
 
 			if (auto simulation = dynamic_cast<Simulation*>(_current_scene)) {
@@ -115,7 +113,7 @@ void ApplicationImpl::handle_user_input()
 			}
 		}
 	}
-	_current_scene->accept(_scene_input_injector);
+	_current_scene->accept(_scene_input_visitor);
 }
 
 void ApplicationImpl::tick()
@@ -129,17 +127,14 @@ void ApplicationImpl::tick()
 
 void ApplicationImpl::render()
 {
-	draw(*this, _renderer);
-	_current_scene->accept(_scene_renderer);
-	SDL_RenderPresent(_renderer);
+	_renderer.clear();
+	_current_scene->accept(_scene_render_visitor);
+	_renderer.render();
 }
 
 void ApplicationImpl::quit()
 {
-	if (_renderer != nullptr) {
-		SDL_DestroyRenderer(_renderer);
-		_renderer = nullptr;
-	}
+	_renderer.deinit();
 
 	if (_window != nullptr) {
 		SDL_DestroyWindow(_window);
@@ -158,7 +153,6 @@ void ApplicationImpl::reset()
 	_last_tick_ms = 0;
 	_scenes.clear();
 	_current_scene = nullptr;
-	_renderer = nullptr;
 	_window = nullptr;
 }
 

@@ -6,30 +6,30 @@ namespace project {
 
 void EventHandler::update_event_state()
 {
-	_event_quit = false;
-	_event_window_resized = false;
-	_event_render_targets_reset = false;
-	_event_render_device_reset = false;
+	_signal_quit = false;
+	_signal_window_resized = false;
+	_signal_render_targets_reset = false;
+	_signal_render_device_reset = false;
 
 	while (SDL_PollEvent(&_event) != 0) {
 		switch (_event.type) {
-		case SDL_QUIT: _event_quit = true; return;
+		case SDL_QUIT: _signal_quit = true; return;
 		case SDL_KEYDOWN: handle_scancode(_event.key.keysym.scancode, true); break;
 		case SDL_KEYUP: handle_scancode(_event.key.keysym.scancode, false); break;
 		case SDL_WINDOWEVENT:
 			switch (_event.window.event) {
 			case SDL_WINDOWEVENT_RESIZED:
-			case SDL_WINDOWEVENT_SIZE_CHANGED: _event_window_resized = true; break;
+			case SDL_WINDOWEVENT_SIZE_CHANGED: _signal_window_resized = true; break;
 			default: break;
 			}
 			break;
 		case SDL_RENDER_TARGETS_RESET:
 			log::debug("Render targets reset_color\n");
-			_event_render_targets_reset = true;
+			_signal_render_targets_reset = true;
 			break;
 		case SDL_RENDER_DEVICE_RESET:
 			log::debug("Render device reset_color\n");
-			_event_render_device_reset = true;
+			_signal_render_device_reset = true;
 			break;
 		case SDL_MOUSEMOTION:
 			_mouse_pos.x() = _event.motion.x;
@@ -78,14 +78,19 @@ void EventHandler::reset()
 	*this = EventHandler {};
 }
 
-bool EventHandler::intent_quit() const
+bool EventHandler::signal_quit() const
 {
-	return _event_quit;
+	return _signal_quit;
 }
 
-bool EventHandler::intent_reset_render() const
+bool EventHandler::signal_refresh_render() const
 {
-	return _event_render_targets_reset;
+	return _signal_render_targets_reset;
+}
+
+bool EventHandler::signal_window_resized() const
+{
+	return _signal_window_resized;
 }
 
 auto EventHandler::mouse_pos() const -> point_t<int> const&
@@ -136,11 +141,6 @@ bool EventHandler::intent_shift() const
 bool EventHandler::key_r() const
 {
 	return _key_r;
-}
-
-bool EventHandler::window_resized() const
-{
-	return _event_window_resized;
 }
 
 }  // namespace project

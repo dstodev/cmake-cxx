@@ -14,8 +14,9 @@ public:
 	void reset();
 
 #define ATTR [[nodiscard]]
-	ATTR bool intent_quit() const;
-	ATTR bool intent_reset_render() const;
+	ATTR bool signal_quit() const;
+	ATTR bool signal_refresh_render() const;
+	ATTR bool signal_window_resized() const;
 
 	ATTR auto mouse_pos() const -> point_t<int> const&;
 	ATTR bool mouse_left() const;
@@ -29,18 +30,17 @@ public:
 	ATTR bool intent_shift() const;
 
 	ATTR bool key_r() const;
-
-	ATTR bool window_resized() const;
 #undef ATTR
 
 private:
 	void handle_scancode(SDL_Scancode code, bool pressed);
 
 	SDL_Event _event;
-	bool _event_quit;
-	bool _event_window_resized;
-	bool _event_render_targets_reset;
-	bool _event_render_device_reset;
+
+	bool _signal_quit;
+	bool _signal_window_resized;
+	bool _signal_render_targets_reset;
+	bool _signal_render_device_reset;
 
 	point_t<int> _mouse_pos;
 	bool _mouse_left;
