@@ -16,12 +16,7 @@ setup_build_mode()
 
 project(Project)
 
-set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)  # Do not populate CTest/CDash targets
-include(CTest)  # This is used instead of `enable_testing()` for better IDE compatibility
-#enable_testing()
-
-include(CheckPIESupported)  # https://cmake.org/cmake/help/latest/module/CheckPIESupported.html
-check_pie_supported()
+set(CMAKE_CXX_STANDARD 20)
 
 option(BUILD_SHARED_LIBS "Build a shared artifact (.dll, .so, .dylib)?" TRUE)
 option(CMAKE_EXPORT_COMPILE_COMMANDS "Generate compile_commands.json?" TRUE)
@@ -37,6 +32,13 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")  # .so, .dylib, 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")  # .exe, .dll, ...
 
 configure_rpath_variables()
+
+set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)  # Do not populate CTest/CDash targets
+include(CTest)  # This is used instead of `enable_testing()` for better IDE compatibility
+#enable_testing()
+
+include(CheckPIESupported)  # https://cmake.org/cmake/help/latest/module/CheckPIESupported.html
+check_pie_supported()
 
 set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install-stage"
 	CACHE PATH "When building the `install` target, put artifacts in this directory."

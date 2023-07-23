@@ -7,8 +7,8 @@ struct SDL_Renderer;
 
 namespace project {
 
-struct Renderer;
-struct Simulation;
+class Renderer;
+class Simulation;
 
 class SceneRenderVisitor : public SceneVisitor
 {

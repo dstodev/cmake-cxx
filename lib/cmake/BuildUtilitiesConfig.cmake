@@ -1,4 +1,5 @@
 find_package(LogVars CONFIG REQUIRED)
+find_package(ProjectDllExport REQUIRED CONFIG)
 find_package(SetupBuildMode CONFIG REQUIRED)
 
 function(configure_rpath_variables)

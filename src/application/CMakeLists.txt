@@ -1,0 +1,12 @@
+target_sources(${target_name}
+	PRIVATE
+		application-impl.cxx
+		application-impl.hxx
+		application-state.hxx
+		application.cxx
+		application.hxx
+)
+target_include_directories(${target_name}
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
+)

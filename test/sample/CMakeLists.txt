@@ -22,7 +22,7 @@ project(SampleProject)
 	reside in this unzipped package directory.
 ]]
 file(GLOB_RECURSE project_exports "${PROJECT_BINARY_DIR}/../project.cmake")
-list(FILTER project_exports INCLUDE REGEX "ZIP")
+list(FILTER project_exports INCLUDE REGEX "TXZ")
 list(LENGTH project_exports project_exports_length)
 if(NOT project_exports_length EQUAL 1)
 	message(FATAL_ERROR "Cannot locate project.cmake")

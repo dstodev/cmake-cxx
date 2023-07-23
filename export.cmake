@@ -10,10 +10,10 @@ install(TARGETS
 	app-console
 
 	# Dependency targets
-	eigen
-	fmt
 	SDL2
 	SDL2main
+	eigen
+	fmt
 
 	EXPORT ${export_name}
 	BUNDLE DESTINATION bin

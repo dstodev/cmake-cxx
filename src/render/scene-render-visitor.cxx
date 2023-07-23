@@ -11,7 +11,8 @@ SceneRenderVisitor::SceneRenderVisitor(Renderer& renderer)
 
 void SceneRenderVisitor::visit(Simulation& scene)
 {
-	_renderer.draw(scene);
+	auto const& scene_const = scene;
+	_renderer.draw(scene_const);
 }
 
 }  // namespace project

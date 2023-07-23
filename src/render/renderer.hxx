@@ -1,26 +1,24 @@
 #ifndef RENDERER_HXX
 #define RENDERER_HXX
 
-#include <project-api.h>
-
 struct SDL_Renderer;
 
 namespace project {
 
 template <typename T>
-struct point_t;
+class point_t;
 
-struct EventHandler;
-struct Simulation;
-struct Player;
+class EventHandler;
+class Simulation;
+class Player;
 
 /*  This class cannot be const-correct because the SDL render functions do not
     take const pointers.
 */
-class PROJECT_API Renderer
+class Renderer
 {
 public:
-	Renderer(EventHandler const& handler);
+	explicit Renderer(EventHandler const& handler);
 
 	void init(SDL_Renderer* renderer);
 	void deinit();

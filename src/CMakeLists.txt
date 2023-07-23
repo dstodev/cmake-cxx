@@ -1,38 +1,16 @@
 set(target_name "project")
 
-set(dll_export_file "project-api.h")
-set(dll_export_macro "PROJECT_API")
+add_library(${target_name})
 
-# Configure the library
-add_library(${target_name}
-	application-impl.cxx
-	application-impl.hxx
-	application-state.hxx
-	application.cxx
-	application.hxx
-	entity.cxx
-	entity.hxx
-	event-handler.cxx
-	event-handler.hxx
-	grid_t.hxx
-	log.cxx
-	log.hxx
-	placeholder_t.hxx
-	player.cxx
-	player.hxx
-	point_t.hxx
-	scene-input-visitor.cxx
-	scene-input-visitor.hxx
-	scene-visitor.hxx
-	scene.hxx
-	shear.cxx
-	shear.hxx
-	simulation.cxx
-	simulation.hxx
-)
+add_subdirectory(utility)
+add_subdirectory(scene)
+add_subdirectory(simulation)
+add_subdirectory(input)
+add_subdirectory(render)
+add_subdirectory(application)
+
 target_include_directories(${target_name}
 	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 		$<INSTALL_INTERFACE:include>
 )
 target_link_libraries(${target_name}
@@ -43,58 +21,18 @@ target_link_libraries(${target_name}
 	PRIVATE
 		SDL2::SDL2
 )
-set(header_files_to_package
-	application.hxx
-	log.hxx
+target_compile_features(${target_name}
+	PUBLIC
+		cxx_std_20
 )
-list(TRANSFORM header_files_to_package PREPEND "${CMAKE_CURRENT_LIST_DIR}/")
+
+set(header_files_to_package
+	"${CMAKE_CURRENT_LIST_DIR}/application/application.hxx"
+	"${CMAKE_CURRENT_LIST_DIR}/utility/log.hxx"
+)
+
 set_target_properties(${target_name} PROPERTIES
 	PUBLIC_HEADER "${header_files_to_package}"
 )
-target_compile_features(${target_name}
-	PUBLIC
-		cxx_std_20  # for helpful features like [[nodiscard]] and operator<=>
-)
-target_compile_definitions(${target_name}
-	PUBLIC
-		$<$<CONFIG:Debug>:ENABLE_LOGGING>
-)
 
-#[[
-	This call to target_precompile_headers() affects development builds
-	(i.e. not sources in an install() context) by prepending
-	'#include <placeholder.hxx>' to all sources, exposing the
-	placeholder_t type for developer utility.
-
-	This behavior applies in a BUILD_INTERFACE context and not in a
-	INSTALL_INTERFACE context, meaning that:
-
-	The project::placeholder_t type is usable on-the-fly while developing,
-	as the header is implicitly provided. However, the header is not supplied
-	to packages, so packages still using this type will fail to compile.
-
-	This signals that the package should not release; the placeholder type
-	should first be replaced with a real type. Therefore, the 'placeholder'
-	name and 'type not found' error should make sense in context.
-]]
-target_precompile_headers(${target_name}
-	PUBLIC
-		$<BUILD_INTERFACE:placeholder_t.hxx>
-)
-
-add_subdirectory(render)
-
-# Generate header for DLL export macro
-include(GenerateExportHeader)
-generate_export_header(${target_name}
-	EXPORT_FILE_NAME ${dll_export_file}
-	EXPORT_MACRO_NAME ${dll_export_macro}
-)
-target_include_directories(${target_name}
-	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-		$<INSTALL_INTERFACE:include>
-)
-set_property(TARGET ${target_name}
-	APPEND PROPERTY PUBLIC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/${dll_export_file}"
-)
+project_dll_export(${target_name})

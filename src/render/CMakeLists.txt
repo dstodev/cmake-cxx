@@ -1,8 +1,3 @@
-target_include_directories(${target_name}
-	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
-)
-
 target_sources(${target_name}
 	PRIVATE
 		renderer.cxx
@@ -13,4 +8,8 @@ target_sources(${target_name}
 		texture-cache.hxx
 		texture.cxx
 		texture.hxx
+)
+target_include_directories(${target_name}
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 )
