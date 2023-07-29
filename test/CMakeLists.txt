@@ -1,11 +1,13 @@
+add_subdirectory(integration)
 add_subdirectory(link)
-add_subdirectory(perf)
+add_subdirectory(performance)
 add_subdirectory(unit)
 
 add_custom_target(all-test)
 add_dependencies(all-test
-	_all-link
-	_all-unit
+	all-link
+	all-unit
+	all-integration
 )
 
 include(sample/targets.cmake)

@@ -1,5 +1,7 @@
+find_package(AddGoogleExecutable CONFIG REQUIRED)
+find_package(AddLocalAllTarget CONFIG REQUIRED)
 find_package(LogVars CONFIG REQUIRED)
-find_package(ProjectDllExport REQUIRED CONFIG)
+find_package(ProjectDllExport CONFIG REQUIRED)
 find_package(SetupBuildMode CONFIG REQUIRED)
 
 function(configure_rpath_variables)
