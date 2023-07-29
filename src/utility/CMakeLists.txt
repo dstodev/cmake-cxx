@@ -3,6 +3,7 @@ target_sources(${target_name}
 		grid_t.hxx
 		log.cxx
 		log.hxx
+		notify-assignment.hxx
 		placeholder_t.hxx
 		point_t.hxx
 		shear.cxx

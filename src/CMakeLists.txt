@@ -2,12 +2,12 @@ set(target_name "project")
 
 add_library(${target_name})
 
-add_subdirectory(utility)
-add_subdirectory(scene)
-add_subdirectory(simulation)
+add_subdirectory(application)
 add_subdirectory(input)
 add_subdirectory(render)
-add_subdirectory(application)
+add_subdirectory(scene)
+add_subdirectory(simulation)
+add_subdirectory(utility)
 
 target_include_directories(${target_name}
 	PUBLIC

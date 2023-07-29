@@ -8,6 +8,7 @@ add_google_executable(test-project TEST
 		entity.cxx
 		grid_t.cxx
 		log.cxx
+		notify-assignment.cxx
 		placeholder_t.cxx
 		player.cxx
 		point_t.cxx
