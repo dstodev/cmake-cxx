@@ -6,13 +6,12 @@
 
 namespace project {
 
-class PROJECT_API Entity
+class DLL Entity
 {
 public:
 	Entity();
 	virtual ~Entity() = default;
 
-	[[nodiscard]]
 	auto position() const -> point_t<float> const&;
 	auto position() -> point_t<float>&;
 

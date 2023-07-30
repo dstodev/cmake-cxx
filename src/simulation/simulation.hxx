@@ -8,7 +8,7 @@
 
 namespace project {
 
-class PROJECT_API Simulation : public Scene
+class DLL Simulation : public Scene
 {
 public:
 	explicit Simulation(int view_width = 640, int view_height = 480);
@@ -18,19 +18,17 @@ public:
 
 	void resize(int width, int height);
 
-	[[nodiscard]] int width() const;
-	[[nodiscard]] int height() const;
+	int width() const;
+	int height() const;
 
-	[[nodiscard]]
 	auto player() const -> Player const&;
 	auto player() -> Player&;
 
-	[[nodiscard]]
 	point_t<int> center() const;
 
 	struct Control
 	{
-		bool up;
+	bool up;
 		bool down;
 		bool left;
 		bool right;

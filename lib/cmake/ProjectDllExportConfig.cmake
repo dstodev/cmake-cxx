@@ -1,5 +1,5 @@
 set(__dll_export_file "project-api.h" CACHE STRING "Name of the file that contains the dll export macro")
-set(__dll_export_macro "PROJECT_API" CACHE STRING "Name of the dll export macro")
+set(__dll_export_macro "DLL" CACHE STRING "Name of the dll export macro")
 
 include(GenerateExportHeader)
 

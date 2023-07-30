@@ -16,24 +16,28 @@ struct SDL_Window;
 
 namespace project {
 
-class ApplicationImpl
+class DLL ApplicationImpl
 {
 public:
-#define ATTR PROJECT_API
-	ATTR static ApplicationImpl& instance();
+	static ApplicationImpl& instance();
+	~ApplicationImpl() = default;
 
-	ATTR void init();
-	ATTR int app_main(int argc, char* argv[]);
+	ApplicationImpl(ApplicationImpl const& copy) = delete;
+	ApplicationImpl(ApplicationImpl&& move) = default;
 
-	ATTR void tick();
-	ATTR void render();
-	ATTR void quit();
-	ATTR void reset();
+	ApplicationImpl& operator=(ApplicationImpl const& copy) = delete;
+	ApplicationImpl& operator=(ApplicationImpl&& move) = default;
 
-	[[nodiscard]]
-	ATTR auto state() const -> ApplicationState const&;
-	ATTR void state(ApplicationState state);
-#undef ATTR
+	void init();
+	int app_main(int argc, char* argv[]);
+
+	void tick();
+	void render();
+	void quit();
+	void reset();
+
+	auto state() const -> ApplicationState const&;
+	void state(ApplicationState state);
 
 protected:
 	void run_until_user_quit();

@@ -77,12 +77,10 @@ public:
 	grid_t& operator=(grid_t&& move) noexcept = default;
 
 	/// Number of grid rows
-	[[nodiscard]]
 	auto height() const -> size_t;
 	void height(size_t height);
 
 	/// Number of grid columns
-	[[nodiscard]]
 	auto width() const -> size_t;
 	void width(size_t width);
 
@@ -93,7 +91,6 @@ public:
 	auto operator()(size_t row, size_t column) const -> value_type const&;
 	auto operator()(size_t row, size_t column) -> value_type&;
 
-	[[nodiscard]]
 	auto size() const -> size_t;
 
 	auto as_matrix() const -> container_type const&;

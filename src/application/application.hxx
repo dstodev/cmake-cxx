@@ -7,7 +7,7 @@ namespace project {
 
 class ApplicationImpl;
 
-class PROJECT_API Application
+class DLL Application
 {
 public:
 	Application();

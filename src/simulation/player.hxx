@@ -7,7 +7,7 @@
 
 namespace project {
 
-class PROJECT_API Player : public Entity
+class DLL Player : public Entity
 {
 public:
 	static int constexpr base_speed_pps = 200;  ///< pps = pixels per second

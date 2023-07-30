@@ -11,9 +11,9 @@
 namespace project {
 
 Renderer::Renderer(EventHandler const& handler)
-    : _renderer(nullptr)
-    , _handler(handler)
+    : _handler(handler)
     , _simulation(nullptr)
+    , _renderer(nullptr)
 {}
 
 void Renderer::init(SDL_Renderer* renderer)

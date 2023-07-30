@@ -31,19 +31,19 @@ enum class Level
 };
 
 namespace detail {
-PROJECT_API extern Level LogLevel;
+DLL extern Level LogLevel;
 }  // namespace detail
 
 /** @brief Convert a string to a logging severity level.
     @param level Options are: error warn info debug trace.
     @return Corresponding Level or Level::None if \p level is invalid or empty.
  */
-PROJECT_API Level level_from(char const* level);
+DLL Level level_from(char const* level);
 
 /// Ignore messages less-severe than \p level.
-PROJECT_API void set_level(Level level);
+DLL void set_level(Level level);
 
-PROJECT_API Level get_level();
+DLL Level get_level();
 
 /// Emit an error message.
 template <typename... Args>

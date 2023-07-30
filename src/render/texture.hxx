@@ -9,24 +9,22 @@
 
 namespace project {
 
-class Texture
+class DLL Texture
 {
 public:
 	using Initializer = std::function<SDL_Texture*(SDL_Renderer*)>;
 
-	PROJECT_API explicit Texture(Initializer initializer);
+	explicit Texture(Initializer initializer);
 
-	PROJECT_API void init(SDL_Renderer* renderer);
-	PROJECT_API void reset_color();
+	void init(SDL_Renderer* renderer);
+	void reset_color();
 
-#define ATTR [[nodiscard]] PROJECT_API
-	ATTR auto data() const -> SDL_Texture*;
-	ATTR int width() const;
-	ATTR int height() const;
+	auto data() const -> SDL_Texture*;
+	int width() const;
+	int height() const;
 
-	ATTR SDL_Rect rect() const;
-	ATTR SDL_Rect rect_centered(int x, int y) const;
-#undef ATTR
+	SDL_Rect rect() const;
+	SDL_Rect rect_centered(int x, int y) const;
 
 private:
 	Initializer _initializer;
