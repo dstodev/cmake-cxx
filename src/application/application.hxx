@@ -1,7 +1,7 @@
 #ifndef APPLICATION_HXX
 #define APPLICATION_HXX
 
-#include <project-api.h>
+#include <dll-export.h>
 
 namespace project {
 

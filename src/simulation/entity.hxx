@@ -1,8 +1,8 @@
 #ifndef ENTITY_HXX
 #define ENTITY_HXX
 
+#include <dll-export.h>
 #include <point_t.hxx>
-#include <project-api.h>
 
 namespace project {
 

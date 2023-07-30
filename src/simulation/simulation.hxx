@@ -1,9 +1,9 @@
 #ifndef SIMULATION_HXX
 #define SIMULATION_HXX
 
+#include <dll-export.h>
 #include <player.hxx>
 #include <point_t.hxx>
-#include <project-api.h>
 #include <scene.hxx>
 
 namespace project {
@@ -28,7 +28,7 @@ public:
 
 	struct Control
 	{
-	bool up;
+		bool up;
 		bool down;
 		bool left;
 		bool right;

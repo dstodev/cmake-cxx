@@ -5,7 +5,7 @@
 
 #include <fmt/core.h>
 
-#include <project-api.h>
+#include <dll-export.h>
 
 namespace project::log {
 

@@ -5,8 +5,8 @@
 #include <vector>
 
 #include <application-state.hxx>
+#include <dll-export.h>  // TODO: Only use this when testing
 #include <event-handler.hxx>
-#include <project-api.h>  // TODO: Only use this when testing
 #include <renderer.hxx>
 #include <scene-input-visitor.hxx>
 #include <scene-render-visitor.hxx>

@@ -5,7 +5,8 @@
 #include <memory>
 
 #include <SDL_render.h>
-#include <project-api.h>
+
+#include <dll-export.h>
 
 namespace project {
 
