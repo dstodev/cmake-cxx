@@ -26,7 +26,7 @@ public:
 	ApplicationImpl(ApplicationImpl&& move) = default;
 
 	ApplicationImpl& operator=(ApplicationImpl const& copy) = delete;
-	ApplicationImpl& operator=(ApplicationImpl&& move) = default;
+	ApplicationImpl& operator=(ApplicationImpl&& move) = delete;
 
 	void init();
 	int app_main(int argc, char* argv[]);

@@ -24,7 +24,7 @@ public:
 	Renderer(Renderer&& move) = default;
 
 	Renderer& operator=(Renderer const& copy) = delete;
-	Renderer& operator=(Renderer&& move) = default;
+	Renderer& operator=(Renderer&& move) = delete;
 
 	void init(SDL_Renderer* renderer);
 	void deinit();

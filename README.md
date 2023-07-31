@@ -35,9 +35,9 @@ The following scripts have been tested on MacOS Monterey and Windows 11.
   `script\run-docker-tests.bat`
 
 - with [**Docker Compose**](https://docs.docker.com/compose/), run one of:  
-  `docker compose -f docker/compose.yaml run build`  
-  `docker compose -f docker/compose.yaml run build-clang`  
-  `docker compose -f docker/compose.yaml up`
+  `docker compose -f docker/compose.yml run build`  
+  `docker compose -f docker/compose.yml run build-clang`  
+  `docker compose -f docker/compose.yml up`
 
 ## Build Package
 
@@ -51,10 +51,10 @@ The following scripts have been tested on MacOS Monterey and Windows 11.
 ## Helper Commands
 
 Open terminal in docker build environment  
-`docker compose -f docker/compose.yaml run shell`
+`docker compose -f docker/compose.yml run shell`
 
 Rebuild Docker image  
-`docker compose -f docker/compose.yaml build --no-cache build`
+`docker compose -f docker/compose.yml build --no-cache build`
 
 ## Visual Studio Code integration
 
