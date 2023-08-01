@@ -1,6 +1,7 @@
 #include "log.hxx"
 
 #include <algorithm>
+#include <cctype>
 #include <iterator>
 #include <string>
 
@@ -14,7 +15,9 @@ Level level_from(char const* level)
 {
 	std::string level_lowercase;
 	std::string_view it(level);
-	std::transform(it.begin(), it.end(), std::back_inserter(level_lowercase), std::tolower);
+	std::transform(it.begin(), it.end(), std::back_inserter(level_lowercase), [](unsigned char c) {
+		return std::tolower(c);
+	});
 
 	Level result = Level::None;
 
