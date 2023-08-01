@@ -12,3 +12,39 @@ jobs:
     steps:
       - uses: actions/checkout@v3  # https://github.com/marketplace/actions/checkout
       - run: script/run-docker-tests.bash
+
+  native-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          cmake -S . -B build/manual
+          cmake --build build/manual --parallel --target all-unit package
+      - uses: actions/upload-artifact@v3  # https://github.com/actions/upload-artifact
+        with:
+          name: package
+          path: build/manual/*.tar.xz
+
+  native-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          cmake -S . -B build/manual
+          cmake --build build/manual --parallel --target all-unit package
+      - uses: actions/upload-artifact@v3
+        with:
+          name: package
+          path: build/manual/*.tar.xz
+
+  native-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          cmake -S . -B build/manual
+          cmake --build build/manual --parallel --target all-unit package
+      - uses: actions/upload-artifact@v3
+        with:
+          name: package
+          path: build/manual/*.tar.xz

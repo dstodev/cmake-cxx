@@ -1,6 +1,7 @@
 #ifndef NOTIFY_ASSIGNMENT_HXX
 #define NOTIFY_ASSIGNMENT_HXX
 
+#include <algorithm>
 #include <functional>
 #include <memory>
 #include <type_traits>
@@ -81,9 +82,7 @@ auto NotifyAssignment<T>::operator=(value_type const& value)
 template <typename T>
 void NotifyAssignment<T>::notify(value_type const& old_value, value_type const& new_value)
 {
-	std::for_each(_observers.begin(), _observers.end(), [&](auto const& observer) {
-		observer(old_value, new_value);
-	});
+	std::for_each(_observers.begin(), _observers.end(), [&](auto const& observer) { observer(old_value, new_value); });
 }
 
 }  // namespace project
