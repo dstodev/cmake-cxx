@@ -10,9 +10,14 @@ add_google_executable(test-project TEST
 		point_t.cxx
 		shear.cxx
 		simulation.cxx
+		texture.cxx
 
 	LIBRARIES
 		project
+
+		SDL2::SDL2
+
+	MAIN ../sdl-main.cxx
 )
 
 add_local_all_target(all-unit)

@@ -18,33 +18,33 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          cmake -S . -B build/manual
-          cmake --build build/manual --parallel --target all-unit build-package
+          cmake -S . -B build/ci
+          cmake --build build/ci --parallel --target all-unit build-package --config Release
       - uses: actions/upload-artifact@v3  # https://github.com/actions/upload-artifact
         with:
           name: package-${{ github.job }}
-          path: build/manual/*.tar.xz
+          path: build/ci/*.tar.xz
 
   native-macos:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - run: |
-          cmake -S . -B build/manual
-          cmake --build build/manual --parallel --target all-unit build-package
+          cmake -S . -B build/ci -DCMAKE_BUILD_TYPE=Release
+          cmake --build build/ci --parallel --target all-unit build-package
       - uses: actions/upload-artifact@v3
         with:
           name: package-${{ github.job }}
-          path: build/manual/*.tar.xz
+          path: build/ci/*.tar.xz
 
   native-linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - run: |
-          cmake -S . -B build/manual
-          cmake --build build/manual --parallel --target all-unit build-package
+          cmake -S . -B build/ci -DCMAKE_BUILD_TYPE=Release
+          cmake --build build/ci --parallel --target all-unit build-package
       - uses: actions/upload-artifact@v3
         with:
           name: package-${{ github.job }}
-          path: build/manual/*.tar.xz
+          path: build/ci/*.tar.xz

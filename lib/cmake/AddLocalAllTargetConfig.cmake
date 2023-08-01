@@ -9,4 +9,5 @@ function(add_local_all_target target_name)
 	endforeach()
 
 	add_custom_target(${target_name} ${argv} VERBATIM)
+	add_dependencies(${target_name} ${targets})
 endfunction()
