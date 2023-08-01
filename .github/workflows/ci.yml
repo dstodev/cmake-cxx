@@ -22,7 +22,7 @@ jobs:
           cmake --build build/manual --parallel --target all-unit package
       - uses: actions/upload-artifact@v3  # https://github.com/actions/upload-artifact
         with:
-          name: package
+          name: package-${{ github.job }}
           path: build/manual/*.tar.xz
 
   native-macos:
@@ -34,7 +34,7 @@ jobs:
           cmake --build build/manual --parallel --target all-unit package
       - uses: actions/upload-artifact@v3
         with:
-          name: package
+          name: package-${{ github.job }}
           path: build/manual/*.tar.xz
 
   native-linux:
@@ -46,5 +46,5 @@ jobs:
           cmake --build build/manual --parallel --target all-unit package
       - uses: actions/upload-artifact@v3
         with:
-          name: package
+          name: package-${{ github.job }}
           path: build/manual/*.tar.xz
