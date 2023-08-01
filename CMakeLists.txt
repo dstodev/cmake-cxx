@@ -14,6 +14,10 @@ find_package(BuildUtilities CONFIG REQUIRED)
 
 setup_build_mode()
 
+#############
+#  Project  #
+#############
+
 project(Project)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -44,18 +48,28 @@ set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install-stage"
 	CACHE PATH "When building the `install` target, put artifacts in this directory."
 )  # https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html
 
+include(dependencies.cmake)
+
+add_subdirectory(src)
+add_subdirectory(test EXCLUDE_FROM_ALL)
+
+#############
+#  Package  #
+#############
+
 set(CPACK_GENERATOR "TXZ")
 set(CPACK_THREADS 0)  # https://cmake.org/cmake/help/latest/module/CPack.html#variable:CPACK_THREADS
 set(CPACK_ARCHIVE_THREADS 0)
 set(CPACK_VERBATIM_VARIABLES TRUE)
 
 include(CPack)
+
 add_custom_target(build-package cpack)
+add_dependencies(build-package project)
 
-include(dependencies.cmake)
-
-add_subdirectory(src)
-add_subdirectory(test)
+#############
+#  Samples  #
+#############
 
 # Configure sample applications
 set(libraries
