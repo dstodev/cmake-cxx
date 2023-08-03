@@ -45,22 +45,23 @@ jobs:
       - uses: actions/checkout@v3
       - name: Test & package
         run: |
-          # Allocate virtual frame buffer
-          sudo apt update && sudo apt install -y xvfb
+          sudo apt update && sudo apt install -y xvfb x11-utils
+          
+          # Allocate virtual framebuffer
           export DISPLAY=:99.0
           Xvfb :99 -screen 0 1280x720x24 &
           
           retries=5
           while [ $retries -gt 0 ]; do
             #xdpyinfo -display $DISPLAY > /dev/null 2>&1 && break
-            echo "Awaiting virtual frame buffer..."
+            printf "Awaiting virtual framebuffer... (%d)\n" $retries
             xdpyinfo -display $DISPLAY && break
             sleep 1
             retries=$((retries-1))
           done
           
           if [ $retries -eq 0 ]; then
-            echo "Failed to create virtual frame buffer!"
+            echo "Failed to create virtual framebuffer!"
             exit 1
           fi
           
