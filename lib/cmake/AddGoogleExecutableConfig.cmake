@@ -29,7 +29,7 @@ function(add_google_executable target)
 		message(FATAL_ERROR "At least one option must be provided: TEST or BENCHMARK")
 	endif()
 
-	add_executable(${target} EXCLUDE_FROM_ALL
+	add_executable(${target}
 		${args_SOURCES}
 		${args_MAIN}
 	)
