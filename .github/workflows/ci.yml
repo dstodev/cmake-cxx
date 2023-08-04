@@ -43,8 +43,8 @@ on:
 
 env:
   # Defaults
-  DEFAULT_BUILD_TYPE: 'Release'
-  DEFAULT_JOB_FILTER: ''
+  DEFAULT_BUILD_TYPE: 'Debug'
+  DEFAULT_JOB_FILTER: 'macos'
   DEFAULT_LOG_LEVEL: 'info'  # Only valid when BUILD_TYPE=Debug
   DEFAULT_VERBOSE: false
 
