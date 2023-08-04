@@ -43,10 +43,10 @@ on:
 
 env:
   # Defaults
-  DEFAULT_BUILD_TYPE: 'Debug'
+  DEFAULT_BUILD_TYPE: 'Release'
   DEFAULT_JOB_FILTER: ''
   DEFAULT_LOG_LEVEL: 'info'  # Only valid when build type is Debug
-  DEFAULT_VERBOSE: true
+  DEFAULT_VERBOSE: false
 
 jobs:
   cfg:
