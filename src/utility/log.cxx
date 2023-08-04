@@ -30,7 +30,7 @@ Level level_from(char const* level)
 	else if (level_lowercase == "info") {
 		result = Level::Info;
 	}
-	else if (level_lowercase == "warn") {
+	else if (level_lowercase == "warn" || level_lowercase == "warning") {
 		result = Level::Warn;
 	}
 	else if (level_lowercase == "error") {

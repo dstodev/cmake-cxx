@@ -1,4 +1,4 @@
-add_google_executable(_benchmark BENCHMARK
+add_google_executable(perf-project BENCHMARK
 	SOURCES
 		shear.cxx
 

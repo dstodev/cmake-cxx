@@ -6,45 +6,151 @@ on:
     branches:
       - main
 
+  workflow_dispatch: # https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow
+    inputs:
+      build-type:
+        description: 'Build type'
+        default: 'Release'
+        type: choice
+        options:
+          - 'Debug'
+          - 'Release'
+        required: true
+
+      job-filter:
+        description: 'Only run jobs containing this string'
+        default: ''
+        type: string
+        required: false
+
+      log-level:
+        description: 'Log level'
+        default: 'info'
+        type: choice
+        options:
+          - 'error'
+          - 'warning'
+          - 'info'
+          - 'debug'
+          - 'trace'
+        required: false
+
+      verbose:
+        description: 'Verbose build output'
+        default: false
+        type: boolean
+        required: false
+
+env:
+  # Defaults
+  DEFAULT_BUILD_TYPE: 'Release'
+  DEFAULT_JOB_FILTER: ''
+  DEFAULT_LOG_LEVEL: 'info'  # Only valid when build type is Debug
+  DEFAULT_VERBOSE: false
+
 jobs:
+  cfg:
+    runs-on: ubuntu-latest
+    outputs: # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
+      build-type: ${{ steps.build-type.outputs.build-type }}
+      job-filter: ${{ steps.job-filter.outputs.job-filter }}
+      log-level: ${{ steps.log-level.outputs.log-level }}
+      verbose: ${{ steps.verbose.outputs.verbose }}
+    steps:
+      - id: build-type
+        name: build-type
+        run: |
+          build_type='${{ inputs.build-type }}'
+          build_type=${build_type:-$DEFAULT_BUILD_TYPE}
+          echo "build-type=$build_type" | tee -a "$GITHUB_OUTPUT"
+
+      - id: job-filter
+        name: job-filter
+        run: |
+          job_filter='${{ inputs.job-filter }}'
+          job_filter=${job_filter:-$DEFAULT_JOB_FILTER}
+          echo "job-filter=$job_filter" | tee -a "$GITHUB_OUTPUT"
+
+      - id: log-level
+        name: log-level
+        run: |
+          log_level='${{ inputs.log-level }}'
+          log_level=${log_level:-$DEFAULT_LOG_LEVEL}
+          echo "log-level=$log_level" | tee -a "$GITHUB_OUTPUT"
+
+      - id: verbose
+        name: verbose
+        run: |
+          verbose='${{ inputs.verbose }}'
+          verbose=${verbose:-$DEFAULT_VERBOSE}
+          echo "verbose=$verbose" | tee -a "$GITHUB_OUTPUT"
+
   run-docker-tests-bash:
+    if: contains('run-docker-tests-bash', needs.cfg.outputs.job-filter)
+    needs: cfg
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3  # https://github.com/marketplace/actions/checkout
       - run: script/run-docker-tests.bash
 
   native-windows:
+    if: contains('native-windows', needs.cfg.outputs.job-filter)
+    needs: cfg
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          cmake -S . -B build/ci
-          cmake --build build/ci --parallel --target all-unit build-package --config Release
+      - name: Test & package
+        run: |
+          cmake -S . -B build/$env:BUILD_TYPE
+          cmake --build build/$env:BUILD_TYPE --parallel --target all-unit build-package --config $env:BUILD_TYPE
       - uses: actions/upload-artifact@v3  # https://github.com/actions/upload-artifact
         with:
           name: package-${{ github.job }}
-          path: build/ci/*.tar.xz
+          path: build/${{ env.BUILD_TYPE }}/*.tar.xz
+    env:
+      BUILD_TYPE: ${{ needs.cfg.outputs.build-type }}
+      LOG_LEVEL: ${{ needs.cfg.outputs.log-level }}
 
   native-macos:
+    if: contains('native-macos', needs.cfg.outputs.job-filter)
+    needs: cfg
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          cmake -S . -B build/ci -DCMAKE_BUILD_TYPE=Release
-          cmake --build build/ci --parallel --target all-unit build-package
+      - name: Test & package
+        run: |
+          if [ "$VERBOSE_MAKEFILE" = 'true' ]; then
+            verbose_makefile='-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON'
+          fi
+          cmake -S . -B build/$BUILD_TYPE -DCMAKE_BUILD_TYPE=$BUILD_TYPE $verbose_makefile
+          cmake --build build/$BUILD_TYPE --parallel --target all-unit build-package
       - uses: actions/upload-artifact@v3
         with:
           name: package-${{ github.job }}
-          path: build/ci/*.tar.xz
+          path: build/${{ env.BUILD_TYPE }}/*.tar.xz
+    env:
+      BUILD_TYPE: ${{ needs.cfg.outputs.build-type }}
+      LOG_LEVEL: ${{ needs.cfg.outputs.log-level }}
+      VERBOSE_MAKEFILE: ${{ needs.cfg.outputs.verbose }}
 
   native-linux:
+    if: contains('native-linux', needs.cfg.outputs.job-filter)
+    needs: cfg
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          cmake -S . -B build/ci -DCMAKE_BUILD_TYPE=Release
-          cmake --build build/ci --parallel --target all-unit build-package
+      - name: Test & package
+        run: |
+          if [ "$VERBOSE_MAKEFILE" = 'true' ]; then
+            verbose_makefile='-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON'
+          fi
+          cmake -S . -B build/$BUILD_TYPE -DCMAKE_BUILD_TYPE=$BUILD_TYPE $verbose_makefile
+          cmake --build build/$BUILD_TYPE --parallel --target all-unit build-package
       - uses: actions/upload-artifact@v3
         with:
           name: package-${{ github.job }}
-          path: build/ci/*.tar.xz
+          path: build/${{ env.BUILD_TYPE }}/*.tar.xz
+    env:
+      BUILD_TYPE: ${{ needs.cfg.outputs.build-type }}
+      LOG_LEVEL: ${{ needs.cfg.outputs.log-level }}
+      VERBOSE_MAKEFILE: ${{ needs.cfg.outputs.verbose }}

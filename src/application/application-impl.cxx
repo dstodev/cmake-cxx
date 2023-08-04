@@ -73,9 +73,18 @@ void ApplicationImpl::init()
 
 	SDL_Renderer* sdl_renderer = nullptr;
 
-	if ((sdl_renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC))
-	    == nullptr) {
-		log::error("SDL_CreateRenderer() failed because: {}\n", SDL_GetError());
+	int renderer_flag_attempt_order[] = {
+	    SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC,
+	    SDL_RENDERER_ACCELERATED,
+	    SDL_RENDERER_SOFTWARE,
+	};
+	for (auto renderer_flags : renderer_flag_attempt_order) {
+		if ((sdl_renderer = SDL_CreateRenderer(_window, -1, renderer_flags)) != nullptr) {
+			break;
+		}
+		log::warn("SDL_CreateRenderer(., ., {}) failed with because: {}\n", renderer_flags, SDL_GetError());
+	}
+	if (sdl_renderer == nullptr) {
 		throw std::runtime_error("Application failed to create renderer!");
 	}
 

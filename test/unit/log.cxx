@@ -191,6 +191,7 @@ TEST(Log, level_from)
 {
 	EXPECT_EQ(log::Level::Error, log::level_from("error"));
 	EXPECT_EQ(log::Level::Warn, log::level_from("warn"));
+	EXPECT_EQ(log::Level::Warn, log::level_from("warning"));
 	EXPECT_EQ(log::Level::Info, log::level_from("info"));
 	EXPECT_EQ(log::Level::Debug, log::level_from("debug"));
 	EXPECT_EQ(log::Level::Trace, log::level_from("trace"));
@@ -201,6 +202,7 @@ TEST(Log, level_from_case_insensitive)
 {
 	EXPECT_EQ(log::Level::Error, log::level_from("ERROR"));
 	EXPECT_EQ(log::Level::Warn, log::level_from("WARN"));
+	EXPECT_EQ(log::Level::Warn, log::level_from("WARNING"));
 	EXPECT_EQ(log::Level::Info, log::level_from("INFO"));
 	EXPECT_EQ(log::Level::Debug, log::level_from("DEBUG"));
 	EXPECT_EQ(log::Level::Trace, log::level_from("TRACE"));

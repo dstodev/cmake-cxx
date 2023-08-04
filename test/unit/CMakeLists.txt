@@ -1,4 +1,4 @@
-add_google_executable(test-project TEST
+add_google_executable(unit-project TEST
 	SOURCES
 		assertions.hxx
 		entity.cxx
@@ -10,6 +10,14 @@ add_google_executable(test-project TEST
 		point_t.cxx
 		shear.cxx
 		simulation.cxx
+
+	LIBRARIES
+		project
+)
+
+add_google_executable(unit-sdl2 TEST
+	SOURCES
+		application.cxx
 		texture.cxx
 
 	LIBRARIES
