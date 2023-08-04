@@ -3,6 +3,9 @@ set(CPM_SOURCE_CACHE "${PROJECT_BINARY_DIR}/../_dependency-cache")
 
 include(lib/third-party/cpm.cmake)
 
+message(STATUS "Adding dependency packages...")
+message_gate_close()
+
 CPMAddPackage(NAME googletest
 	GITHUB_REPOSITORY google/googletest
 	VERSION 1.13.0
@@ -44,3 +47,5 @@ CPMAddPackage(NAME fmt
 	SYSTEM TRUE
 )
 set_target_properties(fmt PROPERTIES PUBLIC_HEADER "")
+
+message_gate_open()
