@@ -44,7 +44,7 @@ on:
 env:
   # Defaults
   DEFAULT_BUILD_TYPE: 'Debug'
-  DEFAULT_JOB_FILTER: ''
+  DEFAULT_JOB_FILTER: 'linux'
   DEFAULT_LOG_LEVEL: 'info'  # Only valid when build type is Debug
   DEFAULT_VERBOSE: false
 
@@ -119,10 +119,10 @@ jobs:
       - uses: actions/checkout@v3
       - name: Test & package
         run: |
-          if [ "$VERBOSE" = 'true' ]; then
-            verbose='-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON'
+          if [ "$VERBOSE_MAKEFILE" = 'true' ]; then
+            verbose_makefile='-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON'
           fi
-          cmake -S . -B build/$BUILD_TYPE -DCMAKE_BUILD_TYPE=$BUILD_TYPE $verbose
+          cmake -S . -B build/$BUILD_TYPE -DCMAKE_BUILD_TYPE=$BUILD_TYPE $verbose_makefile
           cmake --build build/$BUILD_TYPE --parallel --target all-unit build-package
       - uses: actions/upload-artifact@v3
         with:
@@ -131,7 +131,7 @@ jobs:
     env:
       BUILD_TYPE: ${{ needs.cfg.outputs.build-type }}
       LOG_LEVEL: ${{ needs.cfg.outputs.log-level }}
-      VERBOSE: ${{ needs.cfg.outputs.verbose }}
+      VERBOSE_MAKEFILE: ${{ needs.cfg.outputs.verbose }}
 
   native-linux:
     if: contains('native-linux', needs.cfg.outputs.job-filter)
@@ -141,10 +141,10 @@ jobs:
       - uses: actions/checkout@v3
       - name: Test & package
         run: |
-          if [ "$VERBOSE" = 'true' ]; then
-            verbose='-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON'
+          if [ "$VERBOSE_MAKEFILE" = 'true' ]; then
+            verbose_makefile='-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON'
           fi
-          cmake -S . -B build/$BUILD_TYPE -DCMAKE_BUILD_TYPE=$BUILD_TYPE $verbose
+          cmake -S . -B build/$BUILD_TYPE -DCMAKE_BUILD_TYPE=$BUILD_TYPE $verbose_makefile
           cmake --build build/$BUILD_TYPE --parallel --target all-unit build-package
       - uses: actions/upload-artifact@v3
         with:
@@ -153,4 +153,4 @@ jobs:
     env:
       BUILD_TYPE: ${{ needs.cfg.outputs.build-type }}
       LOG_LEVEL: ${{ needs.cfg.outputs.log-level }}
-      VERBOSE: ${{ needs.cfg.outputs.verbose }}
+      VERBOSE_MAKEFILE: ${{ needs.cfg.outputs.verbose }}

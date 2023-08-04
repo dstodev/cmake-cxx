@@ -82,7 +82,7 @@ void ApplicationImpl::init()
 		if ((sdl_renderer = SDL_CreateRenderer(_window, -1, renderer_flags)) != nullptr) {
 			break;
 		}
-		log::warn("SDL_CreateRenderer(..., ..., {}) failed with because: {}\n", renderer_flags, SDL_GetError());
+		log::warn("SDL_CreateRenderer(., ., {}) failed with because: {}\n", renderer_flags, SDL_GetError());
 	}
 	if (sdl_renderer == nullptr) {
 		throw std::runtime_error("Application failed to create renderer!");
