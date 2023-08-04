@@ -11,7 +11,7 @@ target_include_directories(${target_name}
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 )
 
-if(ENV{RENDER_HEADLESS})
+if(DEFINED ENV{RENDER_HEADLESS})
 	target_compile_definitions(${target_name}
 		PRIVATE
 			RENDER_HEADLESS
