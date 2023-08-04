@@ -73,7 +73,7 @@ void ApplicationImpl::init()
 
 	SDL_Renderer* sdl_renderer = nullptr;
 
-#if RENDER_HEADLESS
+#ifdef RENDER_HEADLESS
 	int renderer_flags = SDL_RENDERER_SOFTWARE;
 #else
 	int renderer_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
