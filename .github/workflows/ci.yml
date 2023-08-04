@@ -44,9 +44,9 @@ on:
 env:
   # Defaults
   DEFAULT_BUILD_TYPE: 'Debug'
-  DEFAULT_JOB_FILTER: 'linux'
-  DEFAULT_LOG_LEVEL: 'info'  # Only valid when build type is Debug
-  DEFAULT_VERBOSE: false
+  DEFAULT_JOB_FILTER: 'native'
+  DEFAULT_LOG_LEVEL: 'trace'  # Only valid when build type is Debug
+  DEFAULT_VERBOSE: true
 
 jobs:
   cfg:
