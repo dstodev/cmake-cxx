@@ -6,7 +6,43 @@ on:
     branches:
       - main
 
+  workflow_dispatch: # https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow
+    inputs:
+      build-type:
+        description: 'Build type'
+        default: 'Release'
+        type: string
+        required: true
+
+      job-filter:
+        description: 'Only run jobs containing this string'
+        default: ''
+        type: string
+        required: false
+
+env:
+  DEFAULT_BUILD_TYPE: 'Release'
+  DEFAULT_JOB_FILTER: ''
+
 jobs:
+  cfg:
+    runs-on: ubuntu-latest
+    outputs: # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
+      build-type: ${{ steps.build-type.outputs.build-type }}
+      job-filter: ${{ steps.job-filter.outputs.job-filter }}
+    steps:
+      - id: build-type
+        run: |
+          build_type='${{ github.event.inputs.build-type }}'
+          build_type=${build_type:-$DEFAULT_BUILD_TYPE}
+          echo "build-type=$build_type" | tee -a "$GITHUB_OUTPUT"
+
+      - id: job-filter
+        run: |
+          job_filter='${{ github.event.inputs.job-filter }}'
+          job_filter=${job_filter:-$DEFAULT_JOB_FILTER}
+          echo "job-filter=$job_filter" | tee -a "$GITHUB_OUTPUT"
+
   run-docker-tests-bash:
     runs-on: ubuntu-latest
     steps:
@@ -14,32 +50,41 @@ jobs:
       - run: script/run-docker-tests.bash
 
   native-windows:
+    if: contains('native-windows', needs.cfg.outputs.job-filter)
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
       - name: Test & package
         run: |
           cmake -S . -B build/ci
-          cmake --build build/ci --parallel --target all-unit build-package --config Release
+          cmake --build build/ci --parallel --target all-unit build-package --config $env:BUILD_TYPE
       - uses: actions/upload-artifact@v3  # https://github.com/actions/upload-artifact
         with:
           name: package-${{ github.job }}
           path: build/ci/*.tar.xz
+    needs: cfg
+    env:
+      BUILD_TYPE: ${{ needs.cfg.outputs.build-type }}
 
   native-macos:
+    if: contains('native-macos', needs.cfg.outputs.job-filter)
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - name: Test & package
         run: |
-          cmake -S . -B build/ci -DCMAKE_BUILD_TYPE=Release
+          cmake -S . -B build/ci -DCMAKE_BUILD_TYPE=$BUILD_TYPE
           cmake --build build/ci --parallel --target all-unit build-package
       - uses: actions/upload-artifact@v3
         with:
           name: package-${{ github.job }}
           path: build/ci/*.tar.xz
+    needs: cfg
+    env:
+      BUILD_TYPE: ${{ needs.cfg.outputs.build-type }}
 
   native-linux:
+    if: contains('native-linux', needs.cfg.outputs.job-filter)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -53,9 +98,8 @@ jobs:
           
           retries=5
           while [ $retries -gt 0 ]; do
-            #xdpyinfo -display $DISPLAY > /dev/null 2>&1 && break
             printf "Awaiting virtual framebuffer... (%d)\n" $retries
-            xdpyinfo -display $DISPLAY && break
+            xdpyinfo -display $DISPLAY > /dev/null 2>&1 && break
             sleep 1
             retries=$((retries-1))
           done
@@ -65,11 +109,13 @@ jobs:
             exit 1
           fi
           
-          cmake -S . -B build/ci -DCMAKE_BUILD_TYPE=Release
+          cmake -S . -B build/ci -DCMAKE_BUILD_TYPE=$BUILD_TYPE
           cmake --build build/ci --parallel --target all-unit build-package
-#        env:
-#          GTEST_FILTER: "-Application.*:ApplicationImpl.*"
       - uses: actions/upload-artifact@v3
         with:
           name: package-${{ github.job }}
           path: build/ci/*.tar.xz
+
+    needs: cfg
+    env:
+      BUILD_TYPE: ${{ needs.cfg.outputs.build-type }}
