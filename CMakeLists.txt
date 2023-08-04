@@ -87,7 +87,7 @@ target_link_libraries(${target_name} PRIVATE ${libraries})
 #  Package  #
 #############
 
-add_custom_target(build-package cpack)
+add_custom_target(build-package cpack -C $<CONFIG>)
 add_dependencies(build-package
 	app-gui
 	app-console
