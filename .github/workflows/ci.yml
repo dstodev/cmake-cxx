@@ -48,15 +48,14 @@ env:
   DEFAULT_LOG_LEVEL: 'info'  # Only valid when BUILD_TYPE=Debug
   DEFAULT_VERBOSE: false
 
-  # Constants
-  RENDER_HEADLESS: true
-
 jobs:
   cfg:
     runs-on: ubuntu-latest
     outputs: # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
       build-type: ${{ steps.build-type.outputs.build-type }}
       job-filter: ${{ steps.job-filter.outputs.job-filter }}
+      log-level: ${{ steps.log-level.outputs.log-level }}
+      verbose: ${{ steps.verbose.outputs.verbose }}
     steps:
       - id: build-type
         name: build-type
