@@ -42,10 +42,13 @@ on:
         required: false
 
 env:
-  DEFAULT_BUILD_TYPE: 'Debug'
-  DEFAULT_JOB_FILTER: 'linux'
-  DEFAULT_LOG_LEVEL: 'trace'
-  DEFAULT_VERBOSE: true
+  # Defaults
+  DEFAULT_BUILD_TYPE: 'Release'
+  DEFAULT_JOB_FILTER: ''
+  DEFAULT_LOG_LEVEL: 'info'  # Only valid when BUILD_TYPE=Debug
+  DEFAULT_VERBOSE: false
+
+  # Constants
   RENDER_HEADLESS: true
 
 jobs:
