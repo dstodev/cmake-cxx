@@ -12,11 +12,12 @@ SceneInputVisitor::SceneInputVisitor(EventHandler& handler)
 void SceneInputVisitor::visit(Simulation& scene)
 {
 	auto& control = scene.control();
-	control.up = _handler.intent_up();
-	control.down = _handler.intent_down();
-	control.left = _handler.intent_left();
-	control.right = _handler.intent_right();
-	control.shift = _handler.intent_shift();
+	auto& handler = _handler.get();
+	control.up = handler.intent_up();
+	control.down = handler.intent_down();
+	control.left = handler.intent_left();
+	control.right = handler.intent_right();
+	control.shift = handler.intent_shift();
 }
 
 }  // namespace project

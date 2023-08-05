@@ -1,9 +1,0 @@
-target_sources(${target_name}
-	PRIVATE
-		scene-visitor.hxx
-		scene.hxx
-)
-target_include_directories(${target_name}
-	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
-)

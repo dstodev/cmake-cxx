@@ -45,13 +45,15 @@ void Renderer::clear()
 
 void Renderer::draw(Simulation const& simulation)
 {
+	auto const& handler = _handler.get();
 	_simulation = &simulation;
 	draw(simulation.player());
-	draw(_handler.mouse_pos());
+	draw(handler.mouse_pos());
 }
 
 void Renderer::draw(Player const& player)
 {
+	auto const& handler = _handler.get();
 	auto const& texture = textures::player;
 	auto const x = _simulation->width() / 2;
 	auto const y = _simulation->height() / 2;
@@ -61,12 +63,12 @@ void Renderer::draw(Player const& player)
 	int color_g = 0xff;
 	int color_b = 0x9f;
 
-	if (_handler.mouse_left()) {
+	if (handler.mouse_left()) {
 		color_r -= 0x40;
 		color_g -= 0x20;
 		color_b += 0x30;
 	}
-	if (_handler.mouse_right()) {
+	if (handler.mouse_right()) {
 		color_r -= 0x40;
 		color_g -= 0x20;
 		color_b += 0x30;
@@ -75,7 +77,7 @@ void Renderer::draw(Player const& player)
 	SDL_SetTextureColorMod(texture.data(), color_r, color_g, color_b);
 	SDL_RenderCopy(_renderer, texture.data(), nullptr, &rect);
 
-	if (_handler.intent_shift()) {
+	if (handler.intent_shift()) {
 		auto const& texture = textures::shift;
 		auto const rect = texture.rect_centered(x, y);
 

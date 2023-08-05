@@ -11,7 +11,6 @@ class DLL Application
 {
 public:
 	Application();
-	virtual ~Application();
 
 	void init();
 	int app_main(int argc, char* argv[]);
