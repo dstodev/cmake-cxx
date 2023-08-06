@@ -38,12 +38,11 @@ public:
 	void draw(Simulation const& simulation);
 
 protected:
-	void draw(Player const& player);
+	void draw(Player const& player, point_t<int> const& view_center);
 	void draw(point_t<int> const& point);
 
 private:
 	std::reference_wrapper<EventHandler const> _handler;
-	Simulation const* _simulation;  // TODO: Remove this member
 	SDL_Renderer* _renderer;
 };
 

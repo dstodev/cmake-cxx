@@ -12,7 +12,6 @@ namespace project {
 
 Renderer::Renderer(EventHandler const& handler)
     : _handler(handler)
-    , _simulation(nullptr)
     , _renderer(nullptr)
 {}
 
@@ -46,18 +45,15 @@ void Renderer::clear()
 void Renderer::draw(Simulation const& simulation)
 {
 	auto const& handler = _handler.get();
-	_simulation = &simulation;
-	draw(simulation.player());
+	draw(simulation.player(), simulation.center());
 	draw(handler.mouse_pos());
 }
 
-void Renderer::draw(Player const& player)
+void Renderer::draw(Player const& player, point_t<int> const& view_center)
 {
 	auto const& handler = _handler.get();
-	auto const& texture = textures::player;
-	auto const x = _simulation->width() / 2;
-	auto const y = _simulation->height() / 2;
-	auto const rect = texture.rect_centered(x, y);
+	auto const& player_texture = textures::player;
+	auto rect = player_texture.rect_centered(view_center);
 
 	int color_r = 0x80;
 	int color_g = 0xff;
@@ -74,18 +70,18 @@ void Renderer::draw(Player const& player)
 		color_b += 0x30;
 	}
 
-	SDL_SetTextureColorMod(texture.data(), color_r, color_g, color_b);
-	SDL_RenderCopy(_renderer, texture.data(), nullptr, &rect);
+	SDL_SetTextureColorMod(player_texture.data(), color_r, color_g, color_b);
+	SDL_RenderCopy(_renderer, player_texture.data(), nullptr, &rect);
 
 	if (handler.intent_shift()) {
-		auto const& texture = textures::shift;
-		auto const rect = texture.rect_centered(x, y);
+		auto const& shift_texture = textures::shift;
+		rect = shift_texture.rect_centered(view_center);
 
-		SDL_SetTextureColorMod(texture.data(), 0xe0, 0x11, 0x5f);
-		SDL_RenderCopy(_renderer, texture.data(), nullptr, &rect);
+		SDL_SetTextureColorMod(shift_texture.data(), 0xe0, 0x11, 0x5f);
+		SDL_RenderCopy(_renderer, shift_texture.data(), nullptr, &rect);
 	}
 
-	draw(player.position().cast<int>() + _simulation->center());
+	draw(player.position().cast<int>() + view_center);
 }
 
 void Renderer::draw(point_t<int> const& point)
