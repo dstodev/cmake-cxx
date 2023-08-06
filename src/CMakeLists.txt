@@ -5,7 +5,6 @@ add_library(${target_name})
 add_subdirectory(application)
 add_subdirectory(input)
 add_subdirectory(render)
-add_subdirectory(scene)
 add_subdirectory(simulation)
 add_subdirectory(utility)
 

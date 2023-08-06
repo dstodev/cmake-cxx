@@ -47,4 +47,9 @@ SDL_Rect Texture::rect_centered(int x, int y) const
 	return rect;
 }
 
+SDL_Rect Texture::rect_centered(point_t<int> const& point) const
+{
+	return rect_centered(point.x(), point.y());
+}
+
 }  // namespace project

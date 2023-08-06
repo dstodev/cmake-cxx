@@ -8,8 +8,6 @@ Application::Application()
     : _impl(&ApplicationImpl::instance())
 {}
 
-Application::~Application() = default;
-
 void Application::init()
 {
 	_impl->init();

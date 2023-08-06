@@ -7,6 +7,7 @@
 #include <SDL_render.h>
 
 #include <dll-export.h>
+#include <point_t.hxx>
 
 namespace project {
 
@@ -26,6 +27,7 @@ public:
 
 	SDL_Rect rect() const;
 	SDL_Rect rect_centered(int x, int y) const;
+	SDL_Rect rect_centered(point_t<int> const& point) const;
 
 private:
 	Initializer _initializer;

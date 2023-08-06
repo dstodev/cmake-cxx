@@ -1,6 +1,8 @@
 #ifndef RENDERER_HXX
 #define RENDERER_HXX
 
+#include <functional>
+
 struct SDL_Renderer;
 
 namespace project {
@@ -24,7 +26,7 @@ public:
 	Renderer(Renderer&& move) = default;
 
 	Renderer& operator=(Renderer const& copy) = delete;
-	Renderer& operator=(Renderer&& move) = delete;
+	Renderer& operator=(Renderer&& move) = default;
 
 	void init(SDL_Renderer* renderer);
 	void deinit();
@@ -36,12 +38,11 @@ public:
 	void draw(Simulation const& simulation);
 
 protected:
-	void draw(Player const& player);
+	void draw(Player const& player, point_t<int> const& view_center);
 	void draw(point_t<int> const& point);
 
 private:
-	EventHandler const& _handler;
-	Simulation const* _simulation;
+	std::reference_wrapper<EventHandler const> _handler;
 	SDL_Renderer* _renderer;
 };
 

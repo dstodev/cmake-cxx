@@ -66,3 +66,21 @@ TEST(ApplicationImpl, set_state_across_instances)
 	EXPECT_EQ(app1.state(), ApplicationState::INITIALIZED);
 	EXPECT_EQ(app2.state(), ApplicationState::INITIALIZED);
 }
+
+TEST(ApplicationImpl, move_constructible)
+{
+	auto& app = ApplicationImpl::instance();
+	app.reset();
+	app.state(ApplicationState::INITIALIZED);
+	ApplicationImpl app2(std::move(app));
+	EXPECT_EQ(app2.state(), ApplicationState::INITIALIZED);
+}
+
+TEST(ApplicationImpl, move_assignable)
+{
+	auto& app = ApplicationImpl::instance();
+	app.reset();
+	app.state(ApplicationState::INITIALIZED);
+	app = std::move(ApplicationImpl::instance());
+	EXPECT_EQ(app.state(), ApplicationState::INITIALIZED);
+}

@@ -1,6 +1,8 @@
 #ifndef SCENE_INPUT_VISITOR_HXX
 #define SCENE_INPUT_VISITOR_HXX
 
+#include <functional>
+
 #include <scene-visitor.hxx>
 
 namespace project {
@@ -17,7 +19,7 @@ public:
 	void visit(Simulation& scene) override;
 
 private:
-	EventHandler& _handler;
+	std::reference_wrapper<EventHandler> _handler;
 };
 
 }  // namespace project

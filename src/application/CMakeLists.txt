@@ -5,6 +5,8 @@ target_sources(${target_name}
 		application-state.hxx
 		application.cxx
 		application.hxx
+		scene-visitor.hxx
+		scene.hxx
 )
 target_include_directories(${target_name}
 	PUBLIC

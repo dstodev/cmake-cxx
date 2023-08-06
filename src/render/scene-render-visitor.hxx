@@ -1,6 +1,8 @@
 #ifndef SCENE_RENDER_VISITOR_HXX
 #define SCENE_RENDER_VISITOR_HXX
 
+#include <functional>
+
 #include <scene-visitor.hxx>
 
 struct SDL_Renderer;
@@ -19,7 +21,7 @@ public:
 	void visit(Simulation& scene) override;
 
 private:
-	Renderer& _renderer;
+	std::reference_wrapper<Renderer> _renderer;
 };
 
 }  // namespace project
