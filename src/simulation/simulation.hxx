@@ -3,7 +3,7 @@
 
 #include <dll-export.h>
 #include <player.hxx>
-#include <point_t.hxx>
+#include <point-t.hxx>
 #include <scene.hxx>
 
 namespace project {

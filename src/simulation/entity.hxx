@@ -2,7 +2,7 @@
 #define ENTITY_HXX
 
 #include <dll-export.h>
-#include <point_t.hxx>
+#include <point-t.hxx>
 
 namespace project {
 

@@ -4,7 +4,7 @@
 
 #include <event-handler.hxx>
 #include <player.hxx>
-#include <point_t.hxx>
+#include <point-t.hxx>
 #include <simulation.hxx>
 #include <texture-cache.hxx>
 

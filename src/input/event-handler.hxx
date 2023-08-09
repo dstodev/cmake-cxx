@@ -3,7 +3,7 @@
 
 #include <SDL_events.h>
 
-#include <point_t.hxx>
+#include <point-t.hxx>
 
 namespace project {
 

@@ -4,10 +4,11 @@ target_sources(${target_name}
 		log.cxx
 		log.hxx
 		notify-assignment.hxx
-		placeholder_t.hxx
-		point_t.hxx
+		placeholder-t.hxx
+		point-t.hxx
 		shear.cxx
 		shear.hxx
+		thread-pool-t.hxx
 )
 target_include_directories(${target_name}
 	PUBLIC
@@ -37,5 +38,5 @@ target_compile_definitions(${target_name}
 ]]
 target_precompile_headers(${target_name}
 	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/placeholder_t.hxx>
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/placeholder-t.hxx>
 )

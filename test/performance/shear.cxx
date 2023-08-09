@@ -1,6 +1,6 @@
 #include <benchmark/benchmark.h>
 
-#include <point_t.hxx>
+#include <point-t.hxx>
 #include <shear.hxx>
 
 using namespace project;

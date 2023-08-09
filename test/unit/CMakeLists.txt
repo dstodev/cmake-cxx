@@ -5,11 +5,12 @@ add_google_executable(unit-project TEST
 		grid_t.cxx
 		log.cxx
 		notify-assignment.cxx
-		placeholder_t.cxx
+		placeholder-t.cxx
 		player.cxx
-		point_t.cxx
+		point-t.cxx
 		shear.cxx
 		simulation.cxx
+		thread-pool-t.cxx
 
 	LIBRARIES
 		project

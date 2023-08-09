@@ -1,6 +1,6 @@
 #include "shear.hxx"
 
-#include <point_t.hxx>
+#include <point-t.hxx>
 
 using namespace Eigen;
 

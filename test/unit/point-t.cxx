@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <point_t.hxx>
+#include <point-t.hxx>
 
 using namespace project;
 

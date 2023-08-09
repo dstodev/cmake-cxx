@@ -50,11 +50,11 @@ public:
 	auto y() const -> value_type const&;
 	auto y() -> value_type&;
 
-	friend auto operator+=<>(point_t& lhs, point_t const& rhs) -> point_t&;
-	friend auto operator-=<>(point_t& lhs, point_t const& rhs) -> point_t&;
+	friend auto operator+= <>(point_t& lhs, point_t const& rhs) -> point_t&;
+	friend auto operator-= <>(point_t& lhs, point_t const& rhs) -> point_t&;
 
-	friend auto operator+<>(point_t lhs, point_t const& rhs) -> point_t;
-	friend auto operator-<>(point_t lhs, point_t const& rhs) -> point_t;
+	friend auto operator+ <>(point_t lhs, point_t const& rhs) -> point_t;
+	friend auto operator- <>(point_t lhs, point_t const& rhs) -> point_t;
 
 	auto operator*=(value_type const& rhs) -> point_t&;
 	auto operator/=(value_type const& rhs) -> point_t&;
@@ -62,7 +62,7 @@ public:
 	auto operator*(value_type const& rhs) -> point_t;
 	auto operator/(value_type const& rhs) -> point_t;
 
-	friend bool operator==<>(point_t const& lhs, point_t const& rhs);
+	friend bool operator== <>(point_t const& lhs, point_t const& rhs);
 	friend auto operator<< <>(std::ostream& os, point_t<value_type> const& point) -> std::ostream&;
 
 	/* explicit */ operator container_type const&() const;
