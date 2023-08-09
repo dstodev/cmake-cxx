@@ -15,72 +15,86 @@ class thread_pool_t
 {
 public:
 	using return_type = R;
-	using task_type = std::packaged_task<R()>;  // https://en.cppreference.com/w/cpp/thread/packaged_task
+	using task_type = std::packaged_task<return_type()>;  // https://en.cppreference.com/w/cpp/thread/packaged_task
 
-	explicit thread_pool_t(int num_threads = 1)
-	    : _tasks {}
-	    , _mutex {}
-	    , _condition {}
-	    , _continue {true}
-	{
-		for (int i {0}; i < num_threads; ++i) {
-			_threads.emplace_back([this]() {  // https://en.cppreference.com/w/cpp/thread/thread/thread
-				while (_continue) {
-					task_type task;
-					{
-						std::unique_lock<std::mutex> lock {_mutex};
-						_condition.wait(lock, [this]() { return !_continue || !_tasks.empty(); });
-
-						if (!_tasks.empty()) {
-							task = std::move(_tasks.front());
-							_tasks.pop_front();
-						}
-						else if (!_continue) {
-							// Told to stop & nothing left to do.
-							break;
-						}
-						// else, spurious wakeup
-					}
-					task();
-				}
-			});
-		}
-	}
-
-	~thread_pool_t()
-	{
-		stop();
-	}
+	explicit thread_pool_t(int num_threads = 1);
+	~thread_pool_t();
 
 	template <typename F, typename... Args>
-	auto add_task(F task, Args&&... args) -> std::future<return_type>
-	{
-		auto pack = task_type(std::bind(task, std::forward<Args>(args)...));
-		auto future = pack.get_future();
-		{
-			std::unique_lock<std::mutex> lock {_mutex};
-			_tasks.push_back(std::move(pack));
-		}
-		_condition.notify_one();
-		return future;
-	}
+	auto add_task(F task, Args&&... args) -> std::future<return_type>;
 
-	void stop()
-	{
-		_continue = false;
-		_condition.notify_all();
-		for (auto& thread : _threads) {
-			thread.join();
-		}
-	}
+	void stop();
 
 private:
-	std::vector<std::thread> _threads;  // https://en.cppreference.com/w/cpp/container/vector
-	std::deque<task_type> _tasks;  // https://en.cppreference.com/w/cpp/container/deque
-	std::mutex _mutex;  // https://en.cppreference.com/w/cpp/thread/mutex
-	std::condition_variable _condition;  // https://en.cppreference.com/w/cpp/thread/condition_variable
+	std::vector<std::thread> _threads;  // https://en.cppreference.com/w/cpp/thread/thread
+	std::deque<task_type> _tasks;
+	std::mutex _mutex;
+	std::condition_variable _condition;
 	std::atomic_bool _continue;
 };
+
+template <typename R>
+thread_pool_t<R>::thread_pool_t(int num_threads)
+    : _tasks {}
+    , _mutex {}
+    , _condition {}
+    , _continue {true}
+{
+	for (int i {0}; i < num_threads; ++i) {
+		_threads.emplace_back([this]() {
+			while (_continue) {
+				task_type task;
+				{
+					std::unique_lock<std::mutex> lock {_mutex};
+					_condition.wait(lock, [this]() { return !_continue || !_tasks.empty(); });
+
+					if (!_tasks.empty()) {
+						task = std::move(_tasks.front());
+						_tasks.pop_front();
+					}
+					else if (!_continue) {
+						// Told to stop & nothing left to do.
+						break;
+					}
+					// else, spurious wakeup
+				}
+				task();
+			}
+		});
+	}
+}
+
+template <typename R>
+thread_pool_t<R>::~thread_pool_t()
+{
+	stop();
+}
+
+template <typename R>
+template <typename F, typename... Args>
+auto thread_pool_t<R>::add_task(F task, Args&&... args) -> std::future<return_type>
+{
+	auto zero_arg_task = std::bind(task, std::forward<Args>(args)...);
+	auto async_task = std::packaged_task<return_type()>(std::move(zero_arg_task));
+	auto future = async_task.get_future();
+	{
+		std::unique_lock<std::mutex> lock {_mutex};
+		_tasks.emplace_back(std::move(async_task));
+	}
+	_condition.notify_one();
+	return future;
+}
+
+template <typename R>
+void thread_pool_t<R>::stop()
+{
+	_continue = false;
+	_condition.notify_all();
+
+	for (auto& thread : _threads) {
+		thread.join();
+	}
+}
 
 }  // namespace project
 
