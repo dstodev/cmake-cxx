@@ -41,7 +41,7 @@ TEST(ThreadPool, add_task_with_lambda_and_arguments)
 
 TEST(ThreadPool, tasks_run_in_parallel)
 {
-	int const num_threads = 4;
+	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
 	thread_pool_t pool(num_threads);
@@ -70,6 +70,10 @@ TEST(ThreadPool, modulo_math)
 {
 	for (int i = 0; i < 16; ++i) {
 		int tier = i - i % 4;
-		std::cout << tier << std::endl;
+		std::cout << tier << (tier > 9 ? " " : "  ");
+
+		if ((i + 1) % 4 == 0) {
+			std::cout << std::endl;
+		}
 	}
 }
