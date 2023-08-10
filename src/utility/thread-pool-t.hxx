@@ -15,7 +15,7 @@ class thread_pool_t
 {
 public:
 	using return_type = R;
-	using task_type = std::packaged_task<return_type()>;  // https://en.cppreference.com/w/cpp/thread/packaged_task
+	using task_type = std::packaged_task<return_type()>;
 
 	explicit thread_pool_t(int num_threads = 1);
 	~thread_pool_t();
@@ -26,7 +26,7 @@ public:
 	void stop();
 
 private:
-	std::vector<std::thread> _threads;  // https://en.cppreference.com/w/cpp/thread/thread
+	std::vector<std::thread> _threads;
 	std::deque<task_type> _tasks;
 	std::mutex _mutex;
 	std::condition_variable _condition;
@@ -42,7 +42,7 @@ thread_pool_t<R>::thread_pool_t(int num_threads)
 {
 	for (int i {0}; i < num_threads; ++i) {
 		_threads.emplace_back([this]() {
-			while (_continue) {
+			while (_continue || !_tasks.empty()) {
 				task_type task;
 				{
 					std::unique_lock<std::mutex> lock {_mutex};
@@ -67,7 +67,9 @@ thread_pool_t<R>::thread_pool_t(int num_threads)
 template <typename R>
 thread_pool_t<R>::~thread_pool_t()
 {
-	stop();
+	if (_continue) {
+		stop();
+	}
 }
 
 template <typename R>
