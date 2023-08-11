@@ -50,16 +50,17 @@ thread_pool_t<R>::thread_pool_t(int num_threads)
 template <typename R>
 void thread_pool_t<R>::process_tasks()
 {
+	auto const has_tasks = [this]() { return !_tasks.empty(); };
+	auto const stop_waiting = [this, has_tasks]() { return !_continue || has_tasks(); };
+
 	while (true) {
 		std::unique_ptr<task_type> task;
 		{
 			std::unique_lock<std::mutex> lock {_mutex};
 
-			_condition.wait(lock, [this]() {
-				return !(_continue && _tasks.empty());
-			});  // if continue && queue-is-empty, keep waiting
+			_condition.wait(lock, stop_waiting);
 
-			if (!_tasks.empty()) {
+			if (has_tasks()) {
 				task = std::make_unique<task_type>(std::move(_tasks.front()));
 				_tasks.pop_front();
 			}
