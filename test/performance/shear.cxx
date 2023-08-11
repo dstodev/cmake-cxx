@@ -1,11 +1,10 @@
 #include <benchmark/benchmark.h>
 
-#include <point-t.hxx>
 #include <shear.hxx>
 
 using namespace project;
 
-void static run_shear(benchmark::State& state, float x, float y, float x_mag, float y_mag)
+static void run_shear(benchmark::State& state, float x, float y, float x_mag, float y_mag)
 {
 	point_t point {x, y};
 
