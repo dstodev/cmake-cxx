@@ -1,7 +1,6 @@
 #ifndef THREAD_POOL_T_HXX
 #define THREAD_POOL_T_HXX
 
-#include <barrier>
 #include <deque>
 #include <functional>
 #include <future>
@@ -18,12 +17,19 @@ public:
 	using task_type = std::packaged_task<return_type()>;
 
 	explicit thread_pool_t(int num_threads = 1);
+
 	~thread_pool_t();
+	thread_pool_t(thread_pool_t const&) = delete;
+	thread_pool_t(thread_pool_t&&) = default;
+	auto operator=(thread_pool_t const&) -> thread_pool_t& = delete;
+	auto operator=(thread_pool_t&&) -> thread_pool_t& = default;
 
 	template <typename F, typename... Args>
 	auto add_task(F task, Args&&... args) -> std::future<return_type>;
 
 	void stop();
+
+	auto thread_task_contributions() const -> std::vector<int> const&;
 
 private:
 	void process_tasks();
@@ -33,14 +39,20 @@ private:
 	std::mutex _mutex;
 	std::condition_variable _condition;
 	std::atomic_bool _continue;
+
+	std::atomic_int _last_id;
+	std::vector<int> _thread_contributions;
 };
 
 template <typename R>
 thread_pool_t<R>::thread_pool_t(int num_threads)
-    : _tasks {}
+    : _threads {}
+    , _tasks {}
     , _mutex {}
     , _condition {}
     , _continue {true}
+    , _last_id {0}
+    , _thread_contributions(num_threads, 0)
 {
 	for (int i {0}; i < num_threads; ++i) {
 		_threads.emplace_back([this]() { process_tasks(); });
@@ -52,6 +64,8 @@ void thread_pool_t<R>::process_tasks()
 {
 	auto const has_tasks = [this]() { return !_tasks.empty(); };
 	auto const stop_waiting = [this, has_tasks]() { return !_continue || has_tasks(); };
+
+	int id = ++_last_id;
 
 	while (true) {
 		std::unique_ptr<task_type> task;
@@ -71,6 +85,8 @@ void thread_pool_t<R>::process_tasks()
 		}
 		if (task) {
 			(*task)();
+			_thread_contributions[id - 1] += 1;
+			std::this_thread::yield();
 		}
 	}
 }
@@ -110,6 +126,12 @@ void thread_pool_t<R>::stop()
 	for (auto& thread : _threads) {
 		thread.join();
 	}
+}
+
+template <typename R>
+auto thread_pool_t<R>::thread_task_contributions() const -> std::vector<int> const&
+{
+	return _thread_contributions;
 }
 
 }  // namespace project
