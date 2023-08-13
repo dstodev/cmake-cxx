@@ -20,7 +20,7 @@ class DLL ApplicationImpl
 {
 public:
 	static ApplicationImpl& instance();
-	~ApplicationImpl() = default;
+	virtual ~ApplicationImpl() = default;
 
 	ApplicationImpl(ApplicationImpl const& copy) = delete;
 	ApplicationImpl(ApplicationImpl&& move) = default;

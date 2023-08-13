@@ -6,6 +6,8 @@ target_sources(${target_name}
 		notify-assignment.hxx
 		placeholder-t.hxx
 		point-t.hxx
+		priority-mutex-t.cxx
+		priority-mutex-t.hxx
 		shear.cxx
 		shear.hxx
 		thread-pool-t.hxx

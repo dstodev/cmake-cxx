@@ -51,16 +51,14 @@ TEST(ThreadPool, tasks_run_in_parallel)
 	std::barrier barrier(num_threads);
 	std::atomic_int count = 0;
 
-	auto gauss_sum = [](int n) { return (n * (n + 1)) / 2; };
-
 	for (int i = 0; i < num_tasks; ++i) {
-		pool.add_task([&barrier, &count, i, gauss_sum]() {
+		pool.add_task([&barrier, &count, i]() {
 			barrier.arrive_and_wait();
 			int tier = i - i % num_threads;
-			EXPECT_EQ(gauss_sum(tier), count);
+			EXPECT_EQ(tier, count);
 
 			barrier.arrive_and_wait();
-			count += (i + 1);
+			count += 1;
 		});
 	}
 
@@ -70,7 +68,7 @@ TEST(ThreadPool, tasks_run_in_parallel)
 		EXPECT_EQ(num_tasks / num_threads, contribution);
 	}
 
-	ASSERT_EQ(gauss_sum(num_tasks), count);
+	ASSERT_EQ(num_tasks, count);
 }
 
 TEST(ThreadPool, modulo_math)
@@ -95,17 +93,15 @@ TEST(ThreadPool, tasks_run_in_parallel_pass_i_as_argument)
 	std::barrier barrier(num_threads);
 	std::atomic_int count = 0;
 
-	auto gauss_sum = [](int n) { return (n * (n + 1)) / 2; };
-
 	for (int i = 0; i < num_tasks; ++i) {
 		pool.add_task(
-		    [&barrier, &count, gauss_sum](int i) {
+		    [&barrier, &count](int i) {
 			    barrier.arrive_and_wait();
 			    int tier = i - i % num_threads;
-			    EXPECT_EQ(gauss_sum(tier), count);
+			    EXPECT_EQ(tier, count);
 
 			    barrier.arrive_and_wait();
-			    count += (i + 1);
+			    count += 1;
 		    },
 		    i);
 	}
@@ -116,7 +112,7 @@ TEST(ThreadPool, tasks_run_in_parallel_pass_i_as_argument)
 		EXPECT_EQ(num_tasks / num_threads, contribution);
 	}
 
-	ASSERT_EQ(gauss_sum(num_tasks), count);
+	ASSERT_EQ(num_tasks, count);
 }
 
 TEST(ThreadPool, unconstrained_thread_distribution)
@@ -127,18 +123,16 @@ TEST(ThreadPool, unconstrained_thread_distribution)
 	thread_pool_t pool(num_threads);
 	std::atomic_int count = 0;
 
-	auto gauss_sum = [](int n) { return (n * (n + 1)) / 2; };
-
 	for (int i = 0; i < num_tasks; ++i) {
-		pool.add_task([&count, i]() { count += (i + 1); });
+		pool.add_task([&count]() { count += 1; });
 	}
 
 	pool.stop();
 
 	auto const& contributions = pool.thread_task_contributions();
-	int const tasks_completed = std::accumulate(contributions.begin(), contributions.end(), 0);
-	int const max_contribution = *std::max_element(contributions.begin(), contributions.end());
-	int const min_contribution = *std::min_element(contributions.begin(), contributions.end());
+	auto const tasks_completed = std::accumulate(contributions.begin(), contributions.end(), 0U);
+	auto const max_contribution = *std::max_element(contributions.begin(), contributions.end());
+	auto const min_contribution = *std::min_element(contributions.begin(), contributions.end());
 
 	EXPECT_EQ(num_tasks, tasks_completed);
 
@@ -148,12 +142,13 @@ TEST(ThreadPool, unconstrained_thread_distribution)
 	std::cout << "  Delta (max - min): " << max_contribution - min_contribution << "\n";
 
 	for (int id = 0; auto const& contribution : contributions) {
-		std::cout << "    id " << ++id << ":" << (id > 9 ? " " : "  ") << contribution << "\n";
+		std::cout << "    id " << id << ":" << (id > 9 ? " " : "  ") << contribution << "\n";
+		id += 1;
 	}
 
 	std::cout << std::endl;
 
-	ASSERT_EQ(gauss_sum(num_tasks), count);
+	ASSERT_EQ(num_tasks, count);
 }
 
 TEST(ThreadPool, multiple_thread_pool_instances)
@@ -171,17 +166,15 @@ TEST(ThreadPool, multiple_thread_pool_instances)
 		barriers[i] = std::make_unique<std::barrier<>>(num_threads);
 	}
 
-	auto gauss_sum = [](int n) { return (n * (n + 1)) / 2; };
-
 	for (int pool_index = 0; auto& pool : pools) {
 		for (int i = 0; i < num_tasks; ++i) {
-			pool->add_task([&barriers, &counts, pool_index, i, gauss_sum]() {
+			pool->add_task([&barriers, &counts, pool_index, i]() {
 				barriers[pool_index]->arrive_and_wait();
 				int tier = i - i % num_threads;
-				EXPECT_EQ(gauss_sum(tier), counts[pool_index]);
+				EXPECT_EQ(tier, counts[pool_index]);
 
 				barriers[pool_index]->arrive_and_wait();
-				counts[pool_index] += (i + 1);
+				counts[pool_index] += 1;
 			});
 		}
 		pool_index += 1;
@@ -193,7 +186,22 @@ TEST(ThreadPool, multiple_thread_pool_instances)
 			EXPECT_EQ(num_tasks / num_threads, contribution);
 		}
 	});
-	std::for_each(counts.begin(), counts.end(), [gauss_sum](auto const& count) {
-		EXPECT_EQ(gauss_sum(num_tasks), count);
-	});
+	std::for_each(counts.begin(), counts.end(), [&](auto const& count) { EXPECT_EQ(num_tasks, count); });
+}
+
+TEST(ThreadPool, wait)
+{
+	int const num_threads = 40;
+	int const num_tasks = num_threads * 100;
+
+	thread_pool_t pool(num_threads);
+	std::atomic_int count = 0;
+
+	for (int i = 0; i < num_tasks; ++i) {
+		pool.add_task([&count]() { count += 1; });
+	}
+
+	pool.wait();
+
+	ASSERT_EQ(num_tasks, count);
 }

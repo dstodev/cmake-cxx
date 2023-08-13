@@ -8,6 +8,7 @@ add_google_executable(unit-project TEST
 		placeholder-t.cxx
 		player.cxx
 		point-t.cxx
+		priority-mutex-t.cxx
 		shear.cxx
 		simulation.cxx
 		thread-pool-t.cxx
