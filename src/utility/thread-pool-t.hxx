@@ -6,11 +6,15 @@
 #include <functional>
 #include <future>
 #include <thread>
+#include <type_traits>
 #include <vector>
 
 #include <priority-mutex-t.hxx>
 
 namespace project {
+
+template <typename R, typename F, typename... Args>
+concept Task = std::is_same_v<R, std::invoke_result_t<F, Args...>>;
 
 template <typename R = void>
 class thread_pool_t
@@ -27,12 +31,15 @@ public:
 	auto operator=(thread_pool_t const& copy) -> thread_pool_t& = delete;
 	auto operator=(thread_pool_t&& move) -> thread_pool_t& = default;
 
+	/// Accepts any F(Args...) -> R
 	template <typename F, typename... Args>
+	    requires Task<R, F, Args...>
 	auto add_task(F task, Args&&... args) -> std::shared_future<return_type>;
 
 	void wait();
 	void stop();
 
+	// TODO: Only do this in a child class for testing?
 	auto thread_task_contributions() const -> std::vector<unsigned int> const&;
 
 protected:
@@ -106,6 +113,7 @@ thread_pool_t<R>::~thread_pool_t()
 
 template <typename R>
 template <typename F, typename... Args>
+    requires Task<R, F, Args...>
 auto thread_pool_t<R>::add_task(F task, Args&&... args) -> std::shared_future<return_type>
 {
 	auto zero_arg_task = std::bind(task, std::forward<Args>(args)...);

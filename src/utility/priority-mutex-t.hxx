@@ -7,6 +7,9 @@
 
 namespace project {
 
+// Satisfies BasicLockable
+// https://en.cppreference.com/w/cpp/named_req/BasicLockable
+
 class DLL priority_mutex_t
 {
 public:
