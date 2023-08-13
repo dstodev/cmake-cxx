@@ -75,7 +75,7 @@ void thread_pool_t<R>::process_tasks()
 	while (true) {
 		std::unique_ptr<task_type> task;
 		{
-			std::unique_lock<priority_mutex_t> lock {_mutex};
+			std::unique_lock lock {_mutex};
 			_task_added.wait(lock, stop_waiting);
 
 			if (has_tasks()) {

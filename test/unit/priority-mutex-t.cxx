@@ -37,14 +37,31 @@ TEST(PriorityMutex, construct)
 	priority_mutex_t mutex;
 }
 
-TEST(PriorityMutex, low_priority_lock)
+static void TEST_simple_lock(bool high_priority)
 {
-	const int num_threads = 4;
-	const int num_tasks = num_threads * 10;
-	const int num_additions = 10;
+	priority_mutex_t mutex(high_priority);
+	mutex.lock();
+	mutex.unlock();
+}
+
+TEST(PriorityMutex, low_priority_simple_lock)
+{
+	TEST_simple_lock(false);
+}
+
+TEST(PriorityMutex, high_priority_simple_lock)
+{
+	TEST_simple_lock(true);
+}
+
+static void TEST_lock(bool high_priority)
+{
+	int const num_threads = 4;
+	int const num_tasks = num_threads * 10;
+	int const num_additions = 10;
 
 	thread_pool_t pool(num_threads);
-	priority_mutex_t mutex;
+	priority_mutex_t mutex(high_priority);
 	std::barrier barrier(num_threads);
 	volatile int value = 0;
 
@@ -68,42 +85,20 @@ TEST(PriorityMutex, low_priority_lock)
 	ASSERT_EQ(expected, value) << "Race conditions: " << expected - value;
 }
 
+TEST(PriorityMutex, low_priority_lock)
+{
+	TEST_lock(false);
+}
+
 TEST(PriorityMutex, high_priority_lock)
 {
-	const int num_threads = 4;
-	const int num_tasks = num_threads * 10;
-	const int num_additions = 10;
-
-	thread_pool_t pool(num_threads);
-	priority_mutex_t mutex(true);
-	std::barrier barrier(num_threads);
-	volatile int value = 0;
-
-	// Assuming the mutex does not work, try to force a race condition.
-	for (int i = 0; i < num_tasks; ++i) {
-		pool.add_task([&]() {
-			barrier.arrive_and_wait();
-			jitter_sleep();
-			mutex.lock();
-
-			for (int j = 0; j < num_additions; ++j) {
-				value += 1;
-			}
-			mutex.unlock();
-		});
-	}
-
-	pool.stop();
-
-	int const expected = num_tasks * num_additions;
-
-	ASSERT_EQ(expected, value) << "Race conditions: " << expected - value;
+	TEST_lock(true);
 }
 
 TEST(PriorityMutex, high_priority_lock_takes_priority)
 {
-	const int num_threads = 10;
-	const int num_cycles = 10;
+	int const num_threads = 10;
+	int const num_cycles = 10;
 
 	for (int cycles = 0; cycles < num_cycles; ++cycles) {
 		thread_pool_t pool(num_threads);
