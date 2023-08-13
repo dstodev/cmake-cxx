@@ -37,7 +37,7 @@ TEST(PriorityMutex, construct)
 	priority_mutex_t mutex;
 }
 
-TEST(PriorityMutex, lock)
+TEST(PriorityMutex, low_priority_lock)
 {
 	const int num_threads = 4;
 	const int num_tasks = num_threads * 10;
@@ -53,7 +53,7 @@ TEST(PriorityMutex, lock)
 		pool.add_task([&]() {
 			barrier.arrive_and_wait();
 			jitter_sleep();
-			auto lock = mutex.lock();
+			std::unique_lock lock(mutex);
 
 			for (int j = 0; j < num_additions; ++j) {
 				value += 1;
@@ -75,7 +75,7 @@ TEST(PriorityMutex, high_priority_lock)
 	const int num_additions = 10;
 
 	thread_pool_t pool(num_threads);
-	priority_mutex_t mutex;
+	priority_mutex_t mutex(true);
 	std::barrier barrier(num_threads);
 	volatile int value = 0;
 
@@ -84,11 +84,12 @@ TEST(PriorityMutex, high_priority_lock)
 		pool.add_task([&]() {
 			barrier.arrive_and_wait();
 			jitter_sleep();
-			auto lock = mutex.high_priority_lock();
+			mutex.lock();
 
 			for (int j = 0; j < num_additions; ++j) {
 				value += 1;
 			}
+			mutex.unlock();
 		});
 	}
 
@@ -114,18 +115,20 @@ TEST(PriorityMutex, high_priority_lock_takes_priority)
 		for (int i = 0; i < num_threads - 1; ++i) {
 			pool.add_task([&]() {
 				barrier.arrive_and_wait();
-				auto lock = mutex.lock();
+				mutex.lock();
 				values.push_back('l');
 				gate.acquire();
+				mutex.unlock();
 			});
 		}
 
 		pool.add_task([&]() {
 			{
 				barrier.arrive_and_wait();
-				auto lock = mutex.high_priority_lock();
+				mutex.lock(true);
 				values.push_back('h');
 				gate.acquire();
+				mutex.unlock(true);
 			}
 		});
 
