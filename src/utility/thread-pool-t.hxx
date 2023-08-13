@@ -1,6 +1,7 @@
 #ifndef THREAD_POOL_T_HXX
 #define THREAD_POOL_T_HXX
 
+#include <condition_variable>
 #include <deque>
 #include <functional>
 #include <future>

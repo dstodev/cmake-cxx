@@ -100,12 +100,13 @@ TEST(PriorityMutex, high_priority_lock_takes_priority)
 	int const num_threads = 10;
 	int const num_cycles = 10;
 
+	thread_pool_t pool(num_threads);
+	priority_mutex_t mutex(false);
+	std::counting_semaphore<num_threads> gate(0);
+	std::barrier barrier(num_threads + 1);
+
 	for (int cycles = 0; cycles < num_cycles; ++cycles) {
-		thread_pool_t pool(num_threads);
-		priority_mutex_t mutex;
 		std::vector<char> values;
-		std::counting_semaphore<num_threads> gate(0);
-		std::barrier barrier(num_threads + 1);
 
 		for (int i = 0; i < num_threads - 1; ++i) {
 			pool.add_task([&]() {
@@ -130,7 +131,7 @@ TEST(PriorityMutex, high_priority_lock_takes_priority)
 		barrier.arrive_and_wait();
 
 		// Give time for threads to reach their mutex locks
-		std::this_thread::sleep_for(std::chrono::microseconds(100));
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 		gate.release(num_threads);
 		pool.wait();
