@@ -4,9 +4,10 @@
 #include <deque>
 #include <functional>
 #include <future>
-#include <mutex>
 #include <thread>
 #include <vector>
+
+#include <priority-mutex-t.hxx>
 
 namespace project {
 
@@ -39,8 +40,8 @@ protected:
 	std::vector<std::thread> _threads;
 	std::deque<task_type> _tasks;
 	std::vector<std::shared_future<return_type>> _futures;
-	std::mutex _mutex;
-	std::condition_variable _task_added;
+	priority_mutex_t _mutex;
+	std::condition_variable_any _task_added;
 	std::atomic_bool _continue;
 
 	std::atomic_uint _next_id;
@@ -74,8 +75,7 @@ void thread_pool_t<R>::process_tasks()
 	while (true) {
 		std::unique_ptr<task_type> task;
 		{
-			std::unique_lock<std::mutex> lock {_mutex};
-
+			std::unique_lock<priority_mutex_t> lock {_mutex};
 			_task_added.wait(lock, stop_waiting);
 
 			if (has_tasks()) {
@@ -110,11 +110,12 @@ auto thread_pool_t<R>::add_task(F task, Args&&... args) -> std::shared_future<re
 	auto zero_arg_task = std::bind(task, std::forward<Args>(args)...);
 	auto async_task = std::packaged_task<return_type()>(std::move(zero_arg_task));
 	auto future = std::shared_future(async_task.get_future());
-	{
-		std::unique_lock<std::mutex> lock {_mutex};
-		_futures.push_back(future);
-		_tasks.emplace_back(std::move(async_task));
-	}
+
+	_mutex.lock();
+	_futures.push_back(future);
+	_tasks.emplace_back(std::move(async_task));
+	_mutex.unlock();
+
 	_task_added.notify_one();
 	return future;
 }
@@ -131,10 +132,9 @@ void thread_pool_t<R>::wait()
 template <typename R>
 void thread_pool_t<R>::stop()
 {
-	{
-		std::unique_lock<std::mutex> lock {_mutex};
-		_continue = false;
-	}
+	_mutex.lock(true);
+	_continue = false;
+	_mutex.unlock(true);
 
 	// Notify all condition variables to wake up & exit
 	_task_added.notify_all();
