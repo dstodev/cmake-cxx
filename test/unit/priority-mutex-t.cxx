@@ -130,7 +130,7 @@ TEST(PriorityMutex, high_priority_lock_takes_priority)
 		barrier.arrive_and_wait();
 
 		// Give time for threads to reach their mutex locks
-		std::this_thread::sleep_for(std::chrono::microseconds(1));
+		std::this_thread::sleep_for(std::chrono::microseconds(100));
 
 		gate.release(num_threads);
 		pool.wait();
