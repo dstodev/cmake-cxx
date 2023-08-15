@@ -33,7 +33,7 @@ public:
 	/// Accepts any F(Args...) -> R
 	template <typename F, typename... Args>
 	    requires Task<R, F, Args...>
-	auto add_task(F task, Args&&... args) -> std::shared_future<return_type>;
+	auto add_task(F task, Args&&... args) -> std::future<return_type>;
 
 	void wait();
 	void stop();
@@ -42,17 +42,18 @@ public:
 	auto thread_task_contributions() const -> std::vector<unsigned int> const&;
 
 protected:
-	void process_tasks(unsigned int with_id);
+	void process_tasks(unsigned int with_thread_index);
 	auto pop_task() -> std::unique_ptr<task_type>;
+	virtual void task_completed(unsigned int thread_index);
 
 	std::vector<std::thread> _threads;
 	std::deque<task_type> _tasks;
-	std::vector<std::shared_future<return_type>> _futures;
+	std::atomic_uint _tasks_queued;
 	std::mutex _mutex;
-	std::condition_variable_any _task_added;
+	std::condition_variable _task_added;
+	std::condition_variable _queue_empty;
 	std::atomic_bool _continue;
 
-	std::atomic_uint _next_id;
 	std::vector<unsigned int> _thread_contributions;
 };
 
@@ -60,29 +61,26 @@ template <typename R>
 thread_pool_t<R>::thread_pool_t(unsigned int num_threads)
     : _threads {}
     , _tasks {}
-    , _futures {}
+    , _tasks_queued {0}
     , _mutex {}
     , _task_added {}
+    , _queue_empty {}
     , _continue {true}
-    , _next_id {0}
     , _thread_contributions(num_threads, 0)
 {
 	for (unsigned int i {0}; i < num_threads; ++i) {
-		_threads.emplace_back([this]() {
-			auto const with_id = _next_id++;
-			process_tasks(with_id);
-		});
+		_threads.emplace_back([this, i]() { process_tasks(i); });
 	}
 }
 
 template <typename R>
-void thread_pool_t<R>::process_tasks(unsigned int with_id)
+void thread_pool_t<R>::process_tasks(unsigned int with_thread_index)
 {
 	while (true) {
 		auto task = pop_task();
 		if (task) {
 			(*task)();
-			_thread_contributions[with_id] += 1;
+			task_completed(with_thread_index);
 			std::this_thread::yield();
 		}
 		else if (!_continue) {
@@ -95,20 +93,32 @@ void thread_pool_t<R>::process_tasks(unsigned int with_id)
 template <typename R>
 auto thread_pool_t<R>::pop_task() -> std::unique_ptr<task_type>
 {
-	auto const has_tasks = [this]() { return !_tasks.empty(); };
-	auto const stop_waiting = [this, has_tasks]() { return !_continue || has_tasks(); };
+	auto const stop_waiting = [this]() { return !_continue || !_tasks.empty(); };
 
 	std::unique_ptr<task_type> task;
 	{
 		std::unique_lock lock(_mutex);
 		_task_added.wait(lock, stop_waiting);
 
-		if (has_tasks()) {
+		if (!_tasks.empty()) {
 			task = std::make_unique<task_type>(std::move(_tasks.front()));
 			_tasks.pop_front();
 		}
 	}
+
 	return task;
+}
+
+template <typename R>
+void thread_pool_t<R>::task_completed(unsigned int thread_index)
+{
+	_tasks_queued -= 1;
+
+	_thread_contributions[thread_index] += 1;
+
+	if (_tasks_queued == 0) {
+		_queue_empty.notify_all();
+	}
 }
 
 template <typename R>
@@ -122,15 +132,16 @@ thread_pool_t<R>::~thread_pool_t()
 template <typename R>
 template <typename F, typename... Args>
     requires Task<R, F, Args...>
-auto thread_pool_t<R>::add_task(F task, Args&&... args) -> std::shared_future<return_type>
+auto thread_pool_t<R>::add_task(F task, Args&&... args) -> std::future<return_type>
 {
 	auto zero_arg_task = std::bind(task, std::forward<Args>(args)...);
 	auto async_task = std::packaged_task<return_type()>(std::move(zero_arg_task));
-	auto future = std::shared_future(async_task.get_future());
+	auto future = async_task.get_future();
+
+	_tasks_queued += 1;
 
 	{
 		std::unique_lock lock(_mutex);
-		_futures.push_back(future);
 		_tasks.emplace_back(std::move(async_task));
 	}
 
@@ -141,10 +152,8 @@ auto thread_pool_t<R>::add_task(F task, Args&&... args) -> std::shared_future<re
 template <typename R>
 void thread_pool_t<R>::wait()
 {
-	for (auto& future : _futures) {
-		future.wait();
-	}
-	_futures.clear();
+	std::unique_lock lock(_mutex);
+	_queue_empty.wait(lock, [this]() { return _tasks_queued == 0; });
 }
 
 template <typename R>
@@ -155,7 +164,7 @@ void thread_pool_t<R>::stop()
 		_continue = false;
 	}
 
-	// Notify all condition variables to wake up & exit
+	// Notify condition variables to wake up & exit
 	_task_added.notify_all();
 
 	for (auto& thread : _threads) {
@@ -163,7 +172,6 @@ void thread_pool_t<R>::stop()
 	}
 
 	_threads.clear();
-	_futures.clear();
 }
 
 template <typename R>

@@ -76,10 +76,6 @@ TEST(ThreadPool, wait)
 	ASSERT_EQ(num_tasks, count);
 }
 
-
-std::atomic_uint _next_id;
-std::vector<unsigned int> _thread_contributions;
-
 TEST(ThreadPool, tasks_run_in_parallel)
 {
 	int const num_threads = 40;
