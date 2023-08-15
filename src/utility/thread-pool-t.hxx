@@ -106,6 +106,8 @@ auto thread_pool_t<R>::pop_task() -> std::unique_ptr<task_type>
 template <typename R>
 void thread_pool_t<R>::task_completed(unsigned int thread_index)
 {
+	(void) thread_index;  // Unused but useful in derived classes
+
 	_tasks_queued -= 1;
 
 	if (_tasks_queued == 0) {
