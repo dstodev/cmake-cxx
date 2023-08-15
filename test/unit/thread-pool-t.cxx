@@ -42,6 +42,44 @@ TEST(ThreadPool, add_task_with_lambda_and_arguments)
 	ASSERT_EQ(1, future.get());
 }
 
+TEST(ThreadPool, stop)
+{
+	int const num_threads = 40;
+	int const num_tasks = num_threads * 100;
+
+	thread_pool_t pool(num_threads);
+	std::atomic_int count = 0;
+
+	for (int i = 0; i < num_tasks; ++i) {
+		pool.add_task([&count]() { count += 1; });
+	}
+
+	pool.stop();
+
+	ASSERT_EQ(num_tasks, count);
+}
+
+TEST(ThreadPool, wait)
+{
+	int const num_threads = 40;
+	int const num_tasks = num_threads * 100;
+
+	thread_pool_t pool(num_threads);
+	std::atomic_int count = 0;
+
+	for (int i = 0; i < num_tasks; ++i) {
+		pool.add_task([&count]() { count += 1; });
+	}
+
+	pool.wait();
+
+	ASSERT_EQ(num_tasks, count);
+}
+
+
+std::atomic_uint _next_id;
+std::vector<unsigned int> _thread_contributions;
+
 TEST(ThreadPool, tasks_run_in_parallel)
 {
 	int const num_threads = 40;
@@ -187,21 +225,4 @@ TEST(ThreadPool, multiple_thread_pool_instances)
 		}
 	});
 	std::for_each(counts.begin(), counts.end(), [&](auto const& count) { EXPECT_EQ(num_tasks, count); });
-}
-
-TEST(ThreadPool, wait)
-{
-	int const num_threads = 40;
-	int const num_tasks = num_threads * 100;
-
-	thread_pool_t pool(num_threads);
-	std::atomic_int count = 0;
-
-	for (int i = 0; i < num_tasks; ++i) {
-		pool.add_task([&count]() { count += 1; });
-	}
-
-	pool.wait();
-
-	ASSERT_EQ(num_tasks, count);
 }
