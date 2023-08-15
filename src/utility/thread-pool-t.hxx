@@ -43,7 +43,8 @@ public:
 	auto thread_task_contributions() const -> std::vector<unsigned int> const&;
 
 protected:
-	void process_tasks();
+	void process_tasks(unsigned int with_id);
+	auto pop_task() -> std::unique_ptr<task_type>;
 
 	std::vector<std::thread> _threads;
 	std::deque<task_type> _tasks;
@@ -68,39 +69,47 @@ thread_pool_t<R>::thread_pool_t(unsigned int num_threads)
     , _thread_contributions(num_threads, 0)
 {
 	for (unsigned int i {0}; i < num_threads; ++i) {
-		_threads.emplace_back([this]() { process_tasks(); });
+		_threads.emplace_back([this]() {
+			auto const with_id = _next_id++;
+			process_tasks(with_id);
+		});
 	}
 }
 
 template <typename R>
-void thread_pool_t<R>::process_tasks()
+void thread_pool_t<R>::process_tasks(unsigned int with_id)
+{
+	while (true) {
+		auto task = pop_task();
+		if (task) {
+			(*task)();
+			_thread_contributions[with_id] += 1;
+			std::this_thread::yield();
+		}
+		else if (!_continue) {
+			// Told to stop with no tasks left
+			break;
+		}
+	}
+}
+
+template <typename R>
+auto thread_pool_t<R>::pop_task() -> std::unique_ptr<task_type>
 {
 	auto const has_tasks = [this]() { return !_tasks.empty(); };
 	auto const stop_waiting = [this, has_tasks]() { return !_continue || has_tasks(); };
 
-	auto id = _next_id++;
+	std::unique_ptr<task_type> task;
+	{
+		std::unique_lock lock(_mutex);
+		_task_added.wait(lock, stop_waiting);
 
-	while (true) {
-		std::unique_ptr<task_type> task;
-		{
-			std::unique_lock lock {_mutex};
-			_task_added.wait(lock, stop_waiting);
-
-			if (has_tasks()) {
-				task = std::make_unique<task_type>(std::move(_tasks.front()));
-				_tasks.pop_front();
-			}
-			else if (!_continue) {
-				// Told to stop and nothing left to do
-				break;
-			}
-		}
-		if (task) {
-			(*task)();
-			_thread_contributions[id] += 1;
-			std::this_thread::yield();
+		if (has_tasks()) {
+			task = std::make_unique<task_type>(std::move(_tasks.front()));
+			_tasks.pop_front();
 		}
 	}
+	return task;
 }
 
 template <typename R>
