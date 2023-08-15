@@ -76,12 +76,38 @@ TEST(ThreadPool, wait)
 	ASSERT_EQ(num_tasks, count);
 }
 
+template <typename R = void>
+class thread_telemetry_t : public thread_pool_t<R>
+{
+public:
+	using base_type = thread_pool_t<R>;
+
+	explicit thread_telemetry_t(unsigned int num_threads = 1)
+	    : base_type(num_threads)
+	    , _thread_contributions(num_threads, 0)
+	{}
+
+	auto thread_task_contributions() const -> std::vector<unsigned int> const&
+	{
+		return _thread_contributions;
+	}
+
+private:
+	void task_completed(unsigned int thread_index) override
+	{
+		_thread_contributions[thread_index] += 1;
+		base_type::task_completed(thread_index);
+	}
+
+	std::vector<unsigned int> _thread_contributions;
+};
+
 TEST(ThreadPool, tasks_run_in_parallel)
 {
 	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
-	thread_pool_t pool(num_threads);
+	thread_telemetry_t pool(num_threads);
 	std::barrier barrier(num_threads);
 	std::atomic_int count = 0;
 
@@ -123,7 +149,7 @@ TEST(ThreadPool, tasks_run_in_parallel_pass_i_as_argument)
 	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
-	thread_pool_t pool(num_threads);
+	thread_telemetry_t pool(num_threads);
 	std::barrier barrier(num_threads);
 	std::atomic_int count = 0;
 
@@ -154,7 +180,7 @@ TEST(ThreadPool, unconstrained_thread_distribution)
 	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
-	thread_pool_t pool(num_threads);
+	thread_telemetry_t pool(num_threads);
 	std::atomic_int count = 0;
 
 	for (int i = 0; i < num_tasks; ++i) {
@@ -191,12 +217,12 @@ TEST(ThreadPool, multiple_thread_pool_instances)
 	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
-	std::unique_ptr<thread_pool_t<>> pools[num_pools];
+	std::unique_ptr<thread_telemetry_t<>> pools[num_pools];
 	std::unique_ptr<std::barrier<>> barriers[num_pools];
 	std::array<std::atomic_int, num_pools> counts;
 
 	for (int i = 0; i < num_pools; ++i) {
-		pools[i] = std::make_unique<thread_pool_t<>>(num_threads);
+		pools[i] = std::make_unique<thread_telemetry_t<>>(num_threads);
 		barriers[i] = std::make_unique<std::barrier<>>(num_threads);
 	}
 

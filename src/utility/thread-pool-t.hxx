@@ -38,9 +38,6 @@ public:
 	void wait();
 	void stop();
 
-	// TODO: Only do this in a child class for testing?
-	auto thread_task_contributions() const -> std::vector<unsigned int> const&;
-
 protected:
 	void process_tasks(unsigned int with_thread_index);
 	auto pop_task() -> std::unique_ptr<task_type>;
@@ -53,8 +50,6 @@ protected:
 	std::condition_variable _task_added;
 	std::condition_variable _queue_empty;
 	std::atomic_bool _continue;
-
-	std::vector<unsigned int> _thread_contributions;
 };
 
 template <typename R>
@@ -66,7 +61,6 @@ thread_pool_t<R>::thread_pool_t(unsigned int num_threads)
     , _task_added {}
     , _queue_empty {}
     , _continue {true}
-    , _thread_contributions(num_threads, 0)
 {
 	for (unsigned int i {0}; i < num_threads; ++i) {
 		_threads.emplace_back([this, i]() { process_tasks(i); });
@@ -113,8 +107,6 @@ template <typename R>
 void thread_pool_t<R>::task_completed(unsigned int thread_index)
 {
 	_tasks_queued -= 1;
-
-	_thread_contributions[thread_index] += 1;
 
 	if (_tasks_queued == 0) {
 		_queue_empty.notify_all();
@@ -172,12 +164,6 @@ void thread_pool_t<R>::stop()
 	}
 
 	_threads.clear();
-}
-
-template <typename R>
-auto thread_pool_t<R>::thread_task_contributions() const -> std::vector<unsigned int> const&
-{
-	return _thread_contributions;
 }
 
 }  // namespace project
