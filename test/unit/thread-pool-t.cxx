@@ -61,19 +61,28 @@ TEST(ThreadPool, stop)
 
 TEST(ThreadPool, wait)
 {
+	int const num_cycles = 10;
 	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
 	thread_pool_t pool(num_threads);
-	std::atomic_int count = 0;
+	std::atomic_uint count = 0;
 
-	for (int i = 0; i < num_tasks; ++i) {
-		pool.add_task([&count]() { count += 1; });
+	for (int cycle = 0; cycle < num_cycles; ++cycle) {
+		for (int i = 0; i < num_tasks; ++i) {
+			pool.add_task([&count]() { count += 1; });
+		}
+		pool.wait();
+		ASSERT_EQ((cycle + 1) * num_tasks, static_cast<unsigned int>(count));
 	}
 
-	pool.wait();
+	ASSERT_EQ(num_cycles * num_tasks, static_cast<unsigned int>(count));
+}
 
-	ASSERT_EQ(num_tasks, count);
+TEST(ThreadPool, wait_when_empty)
+{
+	thread_pool_t pool;
+	pool.wait();
 }
 
 template <typename R = void>
@@ -82,8 +91,8 @@ class thread_telemetry_t : public thread_pool_t<R>
 public:
 	using base_type = thread_pool_t<R>;
 
-	explicit thread_telemetry_t(unsigned int num_threads = 1)
-	    : base_type(num_threads)
+	explicit thread_telemetry_t(unsigned int num_threads = 1, bool deferred = false)
+	    : base_type(num_threads, deferred)
 	    , _thread_contributions(num_threads, 0)
 	{}
 
@@ -190,7 +199,7 @@ TEST(ThreadPool, unconstrained_thread_distribution)
 	pool.stop();
 
 	auto const& contributions = pool.thread_task_contributions();
-	auto const tasks_completed = std::accumulate(contributions.begin(), contributions.end(), 0U);
+	auto const tasks_completed = std::accumulate(contributions.begin(), contributions.end(), 0u);
 	auto const max_contribution = *std::max_element(contributions.begin(), contributions.end());
 	auto const min_contribution = *std::min_element(contributions.begin(), contributions.end());
 
@@ -247,4 +256,67 @@ TEST(ThreadPool, multiple_thread_pool_instances)
 		}
 	});
 	std::for_each(counts.begin(), counts.end(), [&](auto const& count) { EXPECT_EQ(num_tasks, count); });
+}
+
+TEST(ThreadPool, deferred_start)
+{
+	int const num_threads = 40;
+	int const num_tasks = num_threads * 100;
+
+	thread_telemetry_t pool(num_threads, true);
+	std::atomic_int count = 0;
+
+	for (int i = 0; i < num_tasks; ++i) {
+		pool.add_task([&count]() { count += 1; });
+	}
+
+	// Give the threads a chance to run
+	std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+	// The threads should not have started yet
+	ASSERT_EQ(0, count);
+
+	pool.start();
+	pool.stop();
+
+	ASSERT_EQ(num_tasks, count);
+}
+
+TEST(ThreadPool, tasks_added_after_start)
+{
+	int const num_threads = 40;
+	int const num_tasks = num_threads * 100;
+
+	thread_telemetry_t pool(num_threads, true);
+	std::atomic_int count = 0;
+
+	pool.start();
+
+	for (int i = 0; i < num_tasks; ++i) {
+		pool.add_task([&count]() { count += 1; });
+	}
+
+	pool.stop();
+
+	ASSERT_EQ(num_tasks, count);
+}
+
+TEST(ThreadPool, stop_twice)
+{
+	thread_pool_t pool;
+	pool.stop();
+	pool.stop();
+}
+
+TEST(ThreadPool, start_in_non_deferred_mode)
+{
+	thread_pool_t pool;
+	pool.start();
+}
+
+TEST(ThreadPool, start_twice)
+{
+	thread_pool_t pool(1, true);
+	pool.start();
+	pool.start();
 }

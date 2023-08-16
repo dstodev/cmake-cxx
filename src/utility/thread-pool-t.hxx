@@ -1,6 +1,7 @@
 #ifndef THREAD_POOL_T_HXX
 #define THREAD_POOL_T_HXX
 
+#include <barrier>
 #include <condition_variable>
 #include <deque>
 #include <functional>
@@ -22,7 +23,7 @@ public:
 	using return_type = R;
 	using task_type = std::packaged_task<return_type()>;
 
-	explicit thread_pool_t(unsigned int num_threads = 1);
+	explicit thread_pool_t(unsigned int num_threads = 1, bool deferred = false);
 
 	virtual ~thread_pool_t();
 	thread_pool_t(thread_pool_t const& copy) = delete;
@@ -35,36 +36,58 @@ public:
 	    requires Task<R, F, Args...>
 	auto add_task(F task, Args&&... args) -> std::future<return_type>;
 
+	/// If constructed with deferred = true, call start() to begin processing tasks
+	void start();
+
 	void wait();
 	void stop();
 
 protected:
+	enum class state_t
+	{
+		Deferred,
+		Running,
+		Stopped
+	};
+
 	void process_tasks(unsigned int with_thread_index);
 	auto pop_task() -> std::unique_ptr<task_type>;
 	virtual void task_completed(unsigned int thread_index);
 
+	state_t _state;
+
+	std::atomic_bool _continue;
 	std::vector<std::thread> _threads;
 	std::deque<task_type> _tasks;
-	std::atomic_uint _tasks_queued;
 	std::mutex _mutex;
 	std::condition_variable _task_added;
-	std::condition_variable _queue_empty;
-	std::atomic_bool _continue;
+	std::condition_variable _task_completed;
+	unsigned int _tasks_queued;
+	std::barrier<> _barrier;
 };
 
 template <typename R>
-thread_pool_t<R>::thread_pool_t(unsigned int num_threads)
-    : _threads {}
+thread_pool_t<R>::thread_pool_t(unsigned int num_threads, bool deferred)
+    : _state {state_t::Stopped}
+    , _continue {true}
+    , _threads {}
     , _tasks {}
-    , _tasks_queued {0}
     , _mutex {}
     , _task_added {}
-    , _queue_empty {}
-    , _continue {true}
+    , _task_completed {}
+    , _tasks_queued {0}
+    , _barrier {num_threads + static_cast<unsigned int>(deferred)}
 {
+	std::barrier barrier(num_threads + static_cast<unsigned int>(deferred));
+
 	for (unsigned int i {0}; i < num_threads; ++i) {
-		_threads.emplace_back([this, i]() { process_tasks(i); });
+		_threads.emplace_back([this, i]() {
+			_barrier.arrive_and_wait();
+			process_tasks(i);
+		});
 	}
+
+	_state = deferred ? state_t::Deferred : state_t::Running;
 }
 
 template <typename R>
@@ -108,19 +131,22 @@ void thread_pool_t<R>::task_completed(unsigned int thread_index)
 {
 	(void) thread_index;  // Unused but useful in derived classes
 
-	_tasks_queued -= 1;
+	int remaining;
+	{
+		// Without locking around _tasks_queued, even if atomic, wait() may freeze
+		std::unique_lock<std::mutex> lock(_mutex);
+		remaining = --_tasks_queued;
+	}
 
-	if (_tasks_queued == 0) {
-		_queue_empty.notify_all();
+	if (remaining == 0) {
+		_task_completed.notify_all();
 	}
 }
 
 template <typename R>
 thread_pool_t<R>::~thread_pool_t()
 {
-	if (_continue) {
-		stop();
-	}
+	stop();
 }
 
 template <typename R>
@@ -132,10 +158,9 @@ auto thread_pool_t<R>::add_task(F task, Args&&... args) -> std::future<return_ty
 	auto async_task = std::packaged_task<return_type()>(std::move(zero_arg_task));
 	auto future = async_task.get_future();
 
-	_tasks_queued += 1;
-
 	{
 		std::unique_lock lock(_mutex);
+		_tasks_queued += 1;
 		_tasks.emplace_back(std::move(async_task));
 	}
 
@@ -144,10 +169,19 @@ auto thread_pool_t<R>::add_task(F task, Args&&... args) -> std::future<return_ty
 }
 
 template <typename R>
+void thread_pool_t<R>::start()
+{
+	if (_state == state_t::Deferred) {
+		_barrier.arrive_and_wait();
+		_state = state_t::Running;
+	}
+}
+
+template <typename R>
 void thread_pool_t<R>::wait()
 {
 	std::unique_lock lock(_mutex);
-	_queue_empty.wait(lock, [this]() { return _tasks_queued == 0; });
+	_task_completed.wait(lock, [this]() { return _tasks_queued == 0; });
 }
 
 template <typename R>
@@ -166,6 +200,7 @@ void thread_pool_t<R>::stop()
 	}
 
 	_threads.clear();
+	_state = state_t::Stopped;
 }
 
 }  // namespace project

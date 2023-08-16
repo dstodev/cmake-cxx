@@ -73,7 +73,7 @@ BENCHMARK(count_single_threaded_atomic);
 
 BENCHMARK(count_multithreaded)
     ->RangeMultiplier(2)
-    ->Range(2, 2 << 2)
+    ->Range(2, 2 << 4)
     ->Unit(benchmark::kMillisecond)
     ->Iterations(1000);
 
