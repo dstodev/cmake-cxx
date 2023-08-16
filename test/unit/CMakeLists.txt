@@ -2,7 +2,7 @@ add_google_executable(unit-project TEST
 	SOURCES
 		assertions.hxx
 		entity.cxx
-		grid_t.cxx
+		grid-t.cxx
 		log.cxx
 		notify-assignment.cxx
 		placeholder-t.cxx

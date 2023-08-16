@@ -1,6 +1,6 @@
 target_sources(${target_name}
 	PRIVATE
-		grid_t.hxx
+		grid-t.hxx
 		log.cxx
 		log.hxx
 		notify-assignment.hxx

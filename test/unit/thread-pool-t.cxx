@@ -305,18 +305,18 @@ TEST(ThreadPool, stop_twice)
 {
 	thread_pool_t pool;
 	pool.stop();
-	pool.stop();
+	pool.stop();  // should do nothing
 }
 
 TEST(ThreadPool, start_in_non_deferred_mode)
 {
 	thread_pool_t pool;
-	pool.start();
+	pool.start();  // should do nothing
 }
 
 TEST(ThreadPool, start_twice)
 {
 	thread_pool_t pool(1, true);
 	pool.start();
-	pool.start();
+	pool.start();  // should do nothing
 }

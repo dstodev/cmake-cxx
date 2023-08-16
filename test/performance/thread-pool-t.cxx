@@ -79,6 +79,7 @@ static void count_multithreaded_initialized(benchmark::State& state)
 		}
 
 		pool.wait();
+
 		(void) count;
 	}
 }

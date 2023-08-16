@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "assertions.hxx"
-#include <grid_t.hxx>
+#include <grid-t.hxx>
 
 using namespace project;
 
