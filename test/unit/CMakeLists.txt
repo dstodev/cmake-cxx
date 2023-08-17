@@ -2,7 +2,7 @@ add_google_executable(unit-project TEST
 	SOURCES
 		assertions.hxx
 		entity.cxx
-		grid-t.cxx
+		grid.cxx
 		log.cxx
 		notify-assignment.cxx
 		placeholder-t.cxx
@@ -11,7 +11,7 @@ add_google_executable(unit-project TEST
 		priority-mutex-t.cxx
 		shear.cxx
 		simulation.cxx
-		thread-pool-t.cxx
+		thread-pool.cxx
 
 	LIBRARIES
 		project

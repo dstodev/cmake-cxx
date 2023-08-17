@@ -6,8 +6,8 @@
 #include <semaphore>
 #include <string>
 
-#include <priority-mutex-t.hxx>
-#include <thread-pool-t.hxx>
+#include <priority-mutex.hxx>
+#include <thread-pool.hxx>
 
 using namespace project;
 
@@ -34,12 +34,12 @@ std::string to_string(std::vector<char> const& values)
 
 TEST(PriorityMutex, construct)
 {
-	priority_mutex_t mutex;
+	PriorityMutex mutex;
 }
 
 static void TEST_simple_lock(bool high_priority)
 {
-	priority_mutex_t mutex(high_priority);
+	PriorityMutex mutex(high_priority);
 	mutex.lock();
 	mutex.unlock();
 }
@@ -60,8 +60,8 @@ static void TEST_lock(bool high_priority)
 	int const num_tasks = num_threads * 10;
 	int const num_additions = 10;
 
-	thread_pool_t pool(num_threads);
-	priority_mutex_t mutex(high_priority);
+	ThreadPool pool(num_threads);
+	PriorityMutex mutex(high_priority);
 	std::barrier barrier(num_threads);
 	volatile int value = 0;
 
@@ -100,8 +100,8 @@ TEST(PriorityMutex, high_priority_lock_takes_priority)
 	int const num_threads = 10;
 	int const num_cycles = 10;
 
-	thread_pool_t pool(num_threads);
-	priority_mutex_t mutex(false);
+	ThreadPool pool(num_threads);
+	PriorityMutex mutex(false);
 	std::counting_semaphore<num_threads> gate(0);
 	std::barrier barrier(num_threads + 1);
 

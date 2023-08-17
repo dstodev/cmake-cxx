@@ -6,18 +6,18 @@
 #include <iostream>
 #include <numeric>
 
-#include <thread-pool-t.hxx>
+#include <thread-pool.hxx>
 
 using namespace project;
 
 TEST(ThreadPool, construct)
 {
-	thread_pool_t pool;
+	ThreadPool pool;
 }
 
 TEST(ThreadPool, construct_with_four_threads)
 {
-	thread_pool_t pool(4);
+	ThreadPool pool(4);
 }
 
 void do_nothing()
@@ -25,19 +25,19 @@ void do_nothing()
 
 TEST(ThreadPool, add_task)
 {
-	thread_pool_t pool(4);
+	ThreadPool pool(4);
 	pool.add_task(do_nothing);
 }
 
 TEST(ThreadPool, add_task_with_lambda)
 {
-	thread_pool_t pool(4);
+	ThreadPool pool(4);
 	pool.add_task([]() {});
 }
 
 TEST(ThreadPool, add_task_with_lambda_and_arguments)
 {
-	thread_pool_t<int> pool(4);
+	ThreadPool<int> pool(4);
 	auto future = pool.add_task([](int value) { return value; }, 1);
 	ASSERT_EQ(1, future.get());
 }
@@ -47,7 +47,7 @@ TEST(ThreadPool, stop)
 	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
-	thread_pool_t pool(num_threads);
+	ThreadPool pool(num_threads);
 	std::atomic_int count = 0;
 
 	for (int i = 0; i < num_tasks; ++i) {
@@ -65,7 +65,7 @@ TEST(ThreadPool, wait)
 	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
-	thread_pool_t pool(num_threads);
+	ThreadPool pool(num_threads);
 	std::atomic_uint count = 0;
 
 	for (int cycle = 0; cycle < num_cycles; ++cycle) {
@@ -81,15 +81,15 @@ TEST(ThreadPool, wait)
 
 TEST(ThreadPool, wait_when_empty)
 {
-	thread_pool_t pool;
+	ThreadPool pool;
 	pool.wait();
 }
 
 template <typename R = void>
-class thread_telemetry_t : public thread_pool_t<R>
+class thread_telemetry_t : public ThreadPool<R>
 {
 public:
-	using base_type = thread_pool_t<R>;
+	using base_type = ThreadPool<R>;
 
 	explicit thread_telemetry_t(unsigned int num_threads = 1, bool deferred = false)
 	    : base_type(num_threads, deferred)
@@ -304,20 +304,20 @@ TEST(ThreadPool, tasks_added_after_start)
 
 TEST(ThreadPool, stop_twice)
 {
-	thread_pool_t pool;
+	ThreadPool pool;
 	pool.stop();
 	pool.stop();  // should do nothing
 }
 
 TEST(ThreadPool, start_in_non_deferred_mode)
 {
-	thread_pool_t pool;
+	ThreadPool pool;
 	pool.start();  // should do nothing
 }
 
 TEST(ThreadPool, start_twice)
 {
-	thread_pool_t pool(1, true);
+	ThreadPool pool(1, true);
 	pool.start();
 	pool.start();  // should do nothing
 }

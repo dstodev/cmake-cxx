@@ -1,6 +1,6 @@
 #include <benchmark/benchmark.h>
 
-#include <thread-pool-t.hxx>
+#include <thread-pool.hxx>
 
 using namespace project;
 
@@ -54,7 +54,7 @@ static void count_multithreaded(benchmark::State& state)
 	int const num_tasks = 1000;
 
 	for (auto _ : state) {
-		thread_pool_t pool(state.range(0));
+		ThreadPool pool(state.range(0));
 		volatile std::atomic_int count = 0;
 
 		for (int i = 0; i < num_tasks; ++i) {
@@ -69,7 +69,7 @@ static void count_multithreaded_initialized(benchmark::State& state)
 {
 	int const num_tasks = 1000;
 
-	thread_pool_t pool(state.range(0));
+	ThreadPool pool(state.range(0));
 
 	for (auto _ : state) {
 		volatile std::atomic_int count = 0;

@@ -1,5 +1,5 @@
-#ifndef THREAD_POOL_T_HXX
-#define THREAD_POOL_T_HXX
+#ifndef THREAD_POOL_HXX
+#define THREAD_POOL_HXX
 
 #include <barrier>
 #include <condition_variable>
@@ -17,19 +17,19 @@ template <typename R, typename F, typename... Args>
 concept Task = std::is_same_v<R, std::invoke_result_t<F, Args...>>;
 
 template <typename R = void>
-class thread_pool_t
+class ThreadPool
 {
 public:
 	using return_type = R;
 	using task_type = std::packaged_task<return_type()>;
 
-	explicit thread_pool_t(unsigned int num_threads = 1, bool deferred = false);
+	explicit ThreadPool(unsigned int num_threads = 1, bool deferred = false);
 
-	virtual ~thread_pool_t();
-	thread_pool_t(thread_pool_t const& copy) = delete;
-	thread_pool_t(thread_pool_t&& move) = default;
-	auto operator=(thread_pool_t const& copy) -> thread_pool_t& = delete;
-	auto operator=(thread_pool_t&& move) -> thread_pool_t& = default;
+	virtual ~ThreadPool();
+	ThreadPool(ThreadPool const& copy) = delete;
+	ThreadPool(ThreadPool&& move) = default;
+	auto operator=(ThreadPool const& copy) -> ThreadPool& = delete;
+	auto operator=(ThreadPool&& move) -> ThreadPool& = default;
 
 	/// Accepts any F(Args...) -> R
 	template <typename F, typename... Args>
@@ -69,7 +69,7 @@ protected:
 };
 
 template <typename R>
-thread_pool_t<R>::thread_pool_t(unsigned int num_threads, bool deferred)
+ThreadPool<R>::ThreadPool(unsigned int num_threads, bool deferred)
     : _state {state_t::Stopped}
     , _continue {true}
     , _threads {}
@@ -94,7 +94,7 @@ thread_pool_t<R>::thread_pool_t(unsigned int num_threads, bool deferred)
 }
 
 template <typename R>
-void thread_pool_t<R>::process_tasks(unsigned int with_thread_index)
+void ThreadPool<R>::process_tasks(unsigned int with_thread_index)
 {
 	while (true) {
 		auto task = pop_task();
@@ -111,7 +111,7 @@ void thread_pool_t<R>::process_tasks(unsigned int with_thread_index)
 }
 
 template <typename R>
-auto thread_pool_t<R>::pop_task() -> std::unique_ptr<task_type>
+auto ThreadPool<R>::pop_task() -> std::unique_ptr<task_type>
 {
 	auto const stop_waiting = [this]() { return !_continue || !_task_queue.empty(); };
 
@@ -130,7 +130,7 @@ auto thread_pool_t<R>::pop_task() -> std::unique_ptr<task_type>
 }
 
 template <typename R>
-void thread_pool_t<R>::task_completed(unsigned int thread_index)
+void ThreadPool<R>::task_completed(unsigned int thread_index)
 {
 	(void) thread_index;  // Unused but useful in derived classes
 
@@ -149,7 +149,7 @@ void thread_pool_t<R>::task_completed(unsigned int thread_index)
 }
 
 template <typename R>
-thread_pool_t<R>::~thread_pool_t()
+ThreadPool<R>::~ThreadPool()
 {
 	stop();
 }
@@ -157,7 +157,7 @@ thread_pool_t<R>::~thread_pool_t()
 template <typename R>
 template <typename F, typename... Args>
     requires Task<R, F, Args...>
-auto thread_pool_t<R>::add_task(F task, Args&&... args) -> std::future<return_type>
+auto ThreadPool<R>::add_task(F task, Args&&... args) -> std::future<return_type>
 {
 	auto zero_arg_task = std::bind(task, std::forward<Args>(args)...);
 	auto async_task = std::packaged_task<return_type()>(std::move(zero_arg_task));
@@ -177,7 +177,7 @@ auto thread_pool_t<R>::add_task(F task, Args&&... args) -> std::future<return_ty
 }
 
 template <typename R>
-void thread_pool_t<R>::start()
+void ThreadPool<R>::start()
 {
 	if (_state == state_t::Deferred) {
 		_barrier.arrive_and_wait();
@@ -186,14 +186,14 @@ void thread_pool_t<R>::start()
 }
 
 template <typename R>
-void thread_pool_t<R>::wait()
+void ThreadPool<R>::wait()
 {
 	std::unique_lock lock(_task_count_mutex);
 	_task_completed.wait(lock, [this]() { return _task_count == 0; });
 }
 
 template <typename R>
-void thread_pool_t<R>::stop()
+void ThreadPool<R>::stop()
 {
 	{
 		std::lock_guard lock(_task_queue_mutex);
@@ -213,4 +213,4 @@ void thread_pool_t<R>::stop()
 
 }  // namespace project
 
-#endif  // THREAD_POOL_T_HXX
+#endif  // THREAD_POOL_HXX

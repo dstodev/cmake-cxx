@@ -1,19 +1,19 @@
-#include "priority-mutex-t.hxx"
+#include "priority-mutex.hxx"
 
 // Using triple-mutex based on https://stackoverflow.com/a/11673600 (7/7/2023)
 
 namespace project {
 
-priority_mutex_t::priority_mutex_t(bool default_high_priority)
+PriorityMutex::PriorityMutex(bool default_high_priority)
     : _default_priority(default_high_priority)
 {}
 
-void priority_mutex_t::lock()
+void PriorityMutex::lock()
 {
 	lock(_default_priority);
 }
 
-void priority_mutex_t::lock(bool high_priority)
+void PriorityMutex::lock(bool high_priority)
 {
 	if (!high_priority) {
 		_low_priority_access.lock();
@@ -24,12 +24,12 @@ void priority_mutex_t::lock(bool high_priority)
 	_next_to_access.unlock();
 }
 
-void priority_mutex_t::unlock()
+void PriorityMutex::unlock()
 {
 	unlock(_default_priority);
 }
 
-void priority_mutex_t::unlock(bool high_priority)
+void PriorityMutex::unlock(bool high_priority)
 {
 	_access.unlock();
 

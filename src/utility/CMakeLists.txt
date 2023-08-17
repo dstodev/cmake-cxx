@@ -1,16 +1,16 @@
 target_sources(${target_name}
 	PRIVATE
-		grid-t.hxx
+		grid.hxx
 		log.cxx
 		log.hxx
 		notify-assignment.hxx
 		placeholder-t.hxx
 		point-t.hxx
-		priority-mutex-t.cxx
-		priority-mutex-t.hxx
+		priority-mutex.cxx
+		priority-mutex.hxx
 		shear.cxx
 		shear.hxx
-		thread-pool-t.hxx
+		thread-pool.hxx
 )
 target_include_directories(${target_name}
 	PUBLIC

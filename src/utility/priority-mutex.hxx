@@ -1,5 +1,5 @@
-#ifndef PRIORITY_MUTEX_T_HXX
-#define PRIORITY_MUTEX_T_HXX
+#ifndef PRIORITY_MUTEX_HXX
+#define PRIORITY_MUTEX_HXX
 
 #include <mutex>
 
@@ -10,10 +10,10 @@ namespace project {
 // Satisfies BasicLockable
 // https://en.cppreference.com/w/cpp/named_req/BasicLockable
 
-class DLL priority_mutex_t
+class DLL PriorityMutex
 {
 public:
-	explicit priority_mutex_t(bool default_high_priority = false);
+	explicit PriorityMutex(bool default_high_priority = false);
 
 	void lock();
 	void lock(bool high_priority);
@@ -31,4 +31,4 @@ protected:
 
 }  // namespace project
 
-#endif  // PRIORITY_MUTEX_T_HXX
+#endif  // PRIORITY_MUTEX_HXX
