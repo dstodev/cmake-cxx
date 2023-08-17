@@ -36,7 +36,7 @@ public:
 	    requires Task<R, F, Args...>
 	auto add_task(F task, Args&&... args) -> std::future<return_type>;
 
-	/// If constructed with deferred = true, call start() to begin processing tasks
+	/// If constructed with deferred = true, call start() to begin processing tasks.
 	void start();
 
 	void wait();
@@ -58,11 +58,13 @@ protected:
 
 	std::atomic_bool _continue;
 	std::vector<std::thread> _threads;
-	std::deque<task_type> _tasks;
-	std::mutex _mutex;
+	std::deque<task_type> _task_queue;
+	/// Incremented before added to queue & decremented after task is executed
+	unsigned int _task_count;
+	std::mutex _task_queue_mutex;
+	std::mutex _task_count_mutex;
 	std::condition_variable _task_added;
 	std::condition_variable _task_completed;
-	unsigned int _tasks_queued;
 	std::barrier<> _barrier;
 };
 
@@ -71,11 +73,12 @@ thread_pool_t<R>::thread_pool_t(unsigned int num_threads, bool deferred)
     : _state {state_t::Stopped}
     , _continue {true}
     , _threads {}
-    , _tasks {}
-    , _mutex {}
+    , _task_queue {}
+    , _task_count {0}
+    , _task_queue_mutex {}
+    , _task_count_mutex {}
     , _task_added {}
     , _task_completed {}
-    , _tasks_queued {0}
     , _barrier {num_threads + static_cast<unsigned int>(deferred)}
 {
 	std::barrier barrier(num_threads + static_cast<unsigned int>(deferred));
@@ -101,7 +104,7 @@ void thread_pool_t<R>::process_tasks(unsigned int with_thread_index)
 			std::this_thread::yield();
 		}
 		else if (!_continue) {
-			// Told to stop with no tasks left
+			// Told to stop with no tasks left.
 			break;
 		}
 	}
@@ -110,16 +113,16 @@ void thread_pool_t<R>::process_tasks(unsigned int with_thread_index)
 template <typename R>
 auto thread_pool_t<R>::pop_task() -> std::unique_ptr<task_type>
 {
-	auto const stop_waiting = [this]() { return !_continue || !_tasks.empty(); };
+	auto const stop_waiting = [this]() { return !_continue || !_task_queue.empty(); };
 
 	std::unique_ptr<task_type> task;
 	{
-		std::unique_lock lock(_mutex);
+		std::unique_lock lock(_task_queue_mutex);
 		_task_added.wait(lock, stop_waiting);
 
-		if (!_tasks.empty()) {
-			task = std::make_unique<task_type>(std::move(_tasks.front()));
-			_tasks.pop_front();
+		if (!_task_queue.empty()) {
+			task = std::make_unique<task_type>(std::move(_task_queue.front()));
+			_task_queue.pop_front();
 		}
 	}
 
@@ -133,9 +136,11 @@ void thread_pool_t<R>::task_completed(unsigned int thread_index)
 
 	int remaining;
 	{
-		// Without locking around _tasks_queued, even if atomic, wait() may freeze
-		std::unique_lock<std::mutex> lock(_mutex);
-		remaining = --_tasks_queued;
+		// Without locking around _tasks_queued, even if atomic, wait() may freeze.
+		// This may be because the value could change even when the wait() predicate
+		// has the mutex lock.
+		std::lock_guard<std::mutex> lock(_task_count_mutex);
+		remaining = --_task_count;
 	}
 
 	if (remaining == 0) {
@@ -159,9 +164,12 @@ auto thread_pool_t<R>::add_task(F task, Args&&... args) -> std::future<return_ty
 	auto future = async_task.get_future();
 
 	{
-		std::unique_lock lock(_mutex);
-		_tasks_queued += 1;
-		_tasks.emplace_back(std::move(async_task));
+		std::lock_guard lock(_task_count_mutex);
+		_task_count += 1;
+	}
+	{
+		std::lock_guard lock(_task_queue_mutex);
+		_task_queue.emplace_back(std::move(async_task));
 	}
 
 	_task_added.notify_one();
@@ -180,15 +188,15 @@ void thread_pool_t<R>::start()
 template <typename R>
 void thread_pool_t<R>::wait()
 {
-	std::unique_lock lock(_mutex);
-	_task_completed.wait(lock, [this]() { return _tasks_queued == 0; });
+	std::unique_lock lock(_task_count_mutex);
+	_task_completed.wait(lock, [this]() { return _task_count == 0; });
 }
 
 template <typename R>
 void thread_pool_t<R>::stop()
 {
 	{
-		std::unique_lock lock(_mutex);
+		std::lock_guard lock(_task_queue_mutex);
 		_continue = false;
 	}
 

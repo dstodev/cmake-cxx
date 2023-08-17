@@ -144,6 +144,7 @@ TEST(ThreadPool, modulo_math)
 {
 	for (int i = 0; i < 16; ++i) {
 		int tier = i - i % 4;
+
 		std::cout << tier << (tier > 9 ? " " : "  ");
 
 		if ((i + 1) % 4 == 0) {
