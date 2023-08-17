@@ -8,9 +8,10 @@ add_google_executable(unit-project TEST
 		placeholder-t.cxx
 		player.cxx
 		point-t.cxx
-		priority-mutex-t.cxx
+		priority-mutex.cxx
 		shear.cxx
 		simulation.cxx
+		thread-deque.cxx
 		thread-pool.cxx
 
 	LIBRARIES

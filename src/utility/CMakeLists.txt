@@ -10,6 +10,7 @@ target_sources(${target_name}
 		priority-mutex.hxx
 		shear.cxx
 		shear.hxx
+		thread-deque.hxx
 		thread-pool.hxx
 )
 target_include_directories(${target_name}

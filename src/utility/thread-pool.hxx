@@ -1,11 +1,11 @@
 #ifndef THREAD_POOL_HXX
 #define THREAD_POOL_HXX
 
-#include <barrier>
 #include <condition_variable>
 #include <deque>
 #include <functional>
 #include <future>
+#include <latch>
 #include <mutex>
 #include <thread>
 #include <type_traits>
@@ -65,7 +65,7 @@ protected:
 	std::mutex _task_count_mutex;
 	std::condition_variable _task_added;
 	std::condition_variable _task_completed;
-	std::barrier<> _barrier;
+	std::latch _latch;
 };
 
 template <typename R>
@@ -79,13 +79,13 @@ ThreadPool<R>::ThreadPool(unsigned int num_threads, bool deferred)
     , _task_count_mutex {}
     , _task_added {}
     , _task_completed {}
-    , _barrier {num_threads + static_cast<unsigned int>(deferred)}
+    , _latch {num_threads + static_cast<unsigned int>(deferred)}
 {
-	std::barrier barrier(num_threads + static_cast<unsigned int>(deferred));
+	std::latch latch(num_threads + static_cast<unsigned int>(deferred));
 
 	for (unsigned int i {0}; i < num_threads; ++i) {
 		_threads.emplace_back([this, i]() {
-			_barrier.arrive_and_wait();
+			_latch.arrive_and_wait();
 			process_tasks(i);
 		});
 	}
@@ -136,7 +136,7 @@ void ThreadPool<R>::task_completed(unsigned int thread_index)
 
 	int remaining;
 	{
-		// Without locking around _tasks_queued, even if atomic, wait() may freeze.
+		// Without locking around _task_count_mutex, even if atomic, wait() may freeze.
 		// This may be because the value could change even when the wait() predicate
 		// has the mutex lock.
 		std::lock_guard<std::mutex> lock(_task_count_mutex);
@@ -180,7 +180,7 @@ template <typename R>
 void ThreadPool<R>::start()
 {
 	if (_state == state_t::Deferred) {
-		_barrier.arrive_and_wait();
+		_latch.arrive_and_wait();
 		_state = state_t::Running;
 	}
 }

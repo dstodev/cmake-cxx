@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <barrier>
+#include <chrono>
 #include <iostream>
 #include <numeric>
 
@@ -86,13 +87,13 @@ TEST(ThreadPool, wait_when_empty)
 }
 
 template <typename R = void>
-class thread_telemetry_t : public ThreadPool<R>
+class ThreadTelemetry : public ThreadPool<R>
 {
 public:
-	using base_type = ThreadPool<R>;
+	using BaseType = ThreadPool<R>;
 
-	explicit thread_telemetry_t(unsigned int num_threads = 1, bool deferred = false)
-	    : base_type(num_threads, deferred)
+	explicit ThreadTelemetry(unsigned int num_threads = 1, bool deferred = false)
+	    : BaseType(num_threads, deferred)
 	    , _thread_contributions(num_threads, 0)
 	{}
 
@@ -105,39 +106,61 @@ private:
 	void task_completed(unsigned int thread_index) override
 	{
 		_thread_contributions[thread_index] += 1;
-		base_type::task_completed(thread_index);
+		BaseType::task_completed(thread_index);
 	}
 
 	std::vector<unsigned int> _thread_contributions;
 };
 
-TEST(ThreadPool, tasks_run_in_parallel)
+TEST(ThreadPool, tasks_run_asynchronously)
 {
 	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
-	thread_telemetry_t pool(num_threads);
+	ThreadTelemetry pool(num_threads);
 	std::barrier barrier(num_threads);
 	std::atomic_int count = 0;
 
+	auto gauss_sum = [](int n) { return n * (n + 1) / 2; };
+
+	std::vector<int> addends;
+	std::mutex mutex;
+
 	for (int i = 0; i < num_tasks; ++i) {
-		pool.add_task([&barrier, &count, i]() {
-			barrier.arrive_and_wait();
-			int tier = i - i % num_threads;
-			EXPECT_EQ(tier, count);
+		pool.add_task([&barrier, &count, &gauss_sum, i, &addends, &mutex]() {
+			int const tier = i - i % num_threads;
+			auto const addend = i + 1;
 
 			barrier.arrive_and_wait();
-			count += 1;
+			EXPECT_EQ(gauss_sum(tier), count);
+			barrier.arrive_and_wait();
+
+			count += addend;
+			{
+				std::lock_guard lock(mutex);
+				addends.push_back(addend);
+			}
 		});
 	}
 
 	pool.stop();
 
+	// Each thread is adding a unique number. Assert they are added
+	// in undefined order. Make sure at least one number is out of order.
+	EXPECT_EQ(num_tasks, addends.size());
+	auto out_of_order_count = 0;
+	for (int i = 0; i < num_tasks; ++i) {
+		if (i + 1 != addends[i]) {
+			out_of_order_count += 1;
+		}
+	}
+	EXPECT_GT(out_of_order_count, 0);
+
 	for (auto const& contribution : pool.thread_task_contributions()) {
 		EXPECT_EQ(num_tasks / num_threads, contribution);
 	}
 
-	ASSERT_EQ(num_tasks, count);
+	ASSERT_EQ(gauss_sum(num_tasks), count);
 }
 
 TEST(ThreadPool, modulo_math)
@@ -154,12 +177,37 @@ TEST(ThreadPool, modulo_math)
 	std::cout << std::endl;
 }
 
+TEST(ThreadPool, threads_run_concurrently)
+{
+	int const num_threads = 10;
+	int const sleep_for_ms = 10;
+
+	auto const sleep_duration = std::chrono::milliseconds(sleep_for_ms);
+
+	ThreadPool pool(num_threads, true);
+
+	for (int i = 0; i < num_threads; ++i) {
+		pool.add_task([=]() { std::this_thread::sleep_for(sleep_duration); });
+	}
+
+	auto const before = std::chrono::steady_clock::now();
+
+	pool.start();
+	pool.stop();
+
+	auto const after = std::chrono::steady_clock::now();
+	auto const elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(after - before).count();
+
+	int const tolerance = (num_threads / 2) * sleep_for_ms;
+	EXPECT_LT(elapsed, tolerance);
+}
+
 TEST(ThreadPool, tasks_run_in_parallel_pass_i_as_argument)
 {
 	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
-	thread_telemetry_t pool(num_threads);
+	ThreadTelemetry pool(num_threads);
 	std::barrier barrier(num_threads);
 	std::atomic_int count = 0;
 
@@ -190,7 +238,7 @@ TEST(ThreadPool, unconstrained_thread_distribution)
 	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
-	thread_telemetry_t pool(num_threads);
+	ThreadTelemetry pool(num_threads);
 	std::atomic_int count = 0;
 
 	for (int i = 0; i < num_tasks; ++i) {
@@ -227,12 +275,12 @@ TEST(ThreadPool, multiple_thread_pool_instances)
 	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
-	std::unique_ptr<thread_telemetry_t<>> pools[num_pools];
+	std::unique_ptr<ThreadTelemetry<>> pools[num_pools];
 	std::unique_ptr<std::barrier<>> barriers[num_pools];
 	std::array<std::atomic_int, num_pools> counts;
 
 	for (int i = 0; i < num_pools; ++i) {
-		pools[i] = std::make_unique<thread_telemetry_t<>>(num_threads);
+		pools[i] = std::make_unique<ThreadTelemetry<>>(num_threads);
 		barriers[i] = std::make_unique<std::barrier<>>(num_threads);
 	}
 
@@ -264,7 +312,7 @@ TEST(ThreadPool, deferred_start)
 	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
-	thread_telemetry_t pool(num_threads, true);
+	ThreadTelemetry pool(num_threads, true);
 	std::atomic_int count = 0;
 
 	for (int i = 0; i < num_tasks; ++i) {
@@ -288,7 +336,7 @@ TEST(ThreadPool, tasks_added_after_start)
 	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
-	thread_telemetry_t pool(num_threads, true);
+	ThreadTelemetry pool(num_threads, true);
 	std::atomic_int count = 0;
 
 	pool.start();
