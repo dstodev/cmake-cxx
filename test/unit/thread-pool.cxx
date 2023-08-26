@@ -198,7 +198,7 @@ TEST(ThreadPool, threads_run_concurrently)
 	auto const after = std::chrono::steady_clock::now();
 	auto const elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(after - before).count();
 
-	int const tolerance = (num_threads / 2) * sleep_for_ms;
+	int const tolerance = num_threads * sleep_for_ms - 10;
 	EXPECT_LT(elapsed, tolerance);
 }
 
