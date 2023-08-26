@@ -43,7 +43,7 @@ public:
 	void stop();
 
 protected:
-	enum class state_t
+	enum class State
 	{
 		Deferred,
 		Running,
@@ -54,7 +54,7 @@ protected:
 	auto pop_task() -> std::unique_ptr<task_type>;
 	virtual void task_completed(unsigned int thread_index);
 
-	state_t _state;
+	State _state;
 
 	std::atomic_bool _continue;
 	std::vector<std::thread> _threads;
@@ -70,7 +70,7 @@ protected:
 
 template <typename R>
 ThreadPool<R>::ThreadPool(unsigned int num_threads, bool deferred)
-    : _state {state_t::Stopped}
+    : _state {State::Stopped}
     , _continue {true}
     , _threads {}
     , _task_queue {}
@@ -90,7 +90,7 @@ ThreadPool<R>::ThreadPool(unsigned int num_threads, bool deferred)
 		});
 	}
 
-	_state = deferred ? state_t::Deferred : state_t::Running;
+	_state = deferred ? State::Deferred : State::Running;
 }
 
 template <typename R>
@@ -179,15 +179,18 @@ auto ThreadPool<R>::add_task(F task, Args&&... args) -> std::future<return_type>
 template <typename R>
 void ThreadPool<R>::start()
 {
-	if (_state == state_t::Deferred) {
+	if (_state == State::Deferred) {
 		_latch.arrive_and_wait();
-		_state = state_t::Running;
+		_state = State::Running;
 	}
 }
 
 template <typename R>
 void ThreadPool<R>::wait()
 {
+	// TODO: make start() optional here?
+	start();  // In case constructed with deferred = true but not yet started
+
 	std::unique_lock lock(_task_count_mutex);
 	_task_completed.wait(lock, [this]() { return _task_count == 0; });
 }
@@ -204,13 +207,14 @@ void ThreadPool<R>::stop()
 
 	// Notify condition variables to wake up & exit
 	_task_added.notify_all();
+	/* _task_completed.notify_all();  Let threads wait for empty queue */
 
 	for (auto& thread : _threads) {
 		thread.join();
 	}
 
 	_threads.clear();
-	_state = state_t::Stopped;
+	_state = State::Stopped;
 }
 
 }  // namespace project

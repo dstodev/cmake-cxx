@@ -98,6 +98,7 @@ class ThreadTelemetry : public ThreadPool<R>
 {
 public:
 	using BaseType = ThreadPool<R>;
+	using State = typename BaseType::State;
 
 	explicit ThreadTelemetry(unsigned int num_threads = 1, bool deferred = false)
 	    : BaseType(num_threads, deferred)
@@ -107,6 +108,11 @@ public:
 	auto thread_task_contributions() const -> std::vector<unsigned int> const&
 	{
 		return _thread_contributions;
+	}
+
+	auto state() const -> typename BaseType::State
+	{
+		return BaseType::_state;
 	}
 
 private:
@@ -276,7 +282,6 @@ TEST(ThreadPool, unconstrained_thread_distribution)
 	ASSERT_EQ(num_tasks, count);
 }
 
-// This test has the benefit of adding all the tasks before starting execution.
 TEST(ThreadPool, unconstrained_thread_distribution_deferred)
 {
 	int const num_threads = 40;
@@ -370,8 +375,11 @@ TEST(ThreadPool, deferred_start)
 	// The threads should not have started yet
 	ASSERT_EQ(0, count);
 
+	ASSERT_EQ(decltype(pool)::State::Deferred, pool.state());
 	pool.start();
+	ASSERT_EQ(decltype(pool)::State::Running, pool.state());
 	pool.stop();
+	ASSERT_EQ(decltype(pool)::State::Stopped, pool.state());
 
 	ASSERT_EQ(num_tasks, count);
 }
@@ -384,34 +392,44 @@ TEST(ThreadPool, tasks_added_after_start)
 	ThreadTelemetry pool(num_threads, true);
 	std::atomic_int count = 0;
 
+	ASSERT_EQ(decltype(pool)::State::Deferred, pool.state());
 	pool.start();
+	ASSERT_EQ(decltype(pool)::State::Running, pool.state());
 
 	for (int i = 0; i < num_tasks; ++i) {
 		pool.add_task([&count]() { count += 1; });
 	}
 
 	pool.stop();
+	ASSERT_EQ(decltype(pool)::State::Stopped, pool.state());
 
 	ASSERT_EQ(num_tasks, count);
 }
 
 TEST(ThreadPool, start_in_non_deferred_mode)
 {
-	ThreadPool pool;
+	ThreadTelemetry pool;
+	ASSERT_EQ(decltype(pool)::State::Running, pool.state());
 	pool.start();  // should do nothing
+	ASSERT_EQ(decltype(pool)::State::Running, pool.state());
 }
 
 TEST(ThreadPool, start_twice)
 {
-	ThreadPool pool(1, true);
+	ThreadTelemetry pool(1, true);
+	ASSERT_EQ(decltype(pool)::State::Deferred, pool.state());
 	pool.start();
+	ASSERT_EQ(decltype(pool)::State::Running, pool.state());
 	pool.start();  // should do nothing
+	ASSERT_EQ(decltype(pool)::State::Running, pool.state());
 }
 
 TEST(ThreadPool, stop_before_start_exits_gracefully)
 {
-	ThreadPool pool(1, true);
+	ThreadTelemetry pool(1, true);
+	ASSERT_EQ(decltype(pool)::State::Deferred, pool.state());
 	pool.stop();
+	ASSERT_EQ(decltype(pool)::State::Stopped, pool.state());
 }
 
 TEST(ThreadPool, stop_before_start_processes_all_tasks)
@@ -419,14 +437,35 @@ TEST(ThreadPool, stop_before_start_processes_all_tasks)
 	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
-	ThreadPool pool(num_threads, true);
+	ThreadTelemetry pool(num_threads, true);
 	std::atomic_int count = 0;
 
 	for (int i = 0; i < num_tasks; ++i) {
 		pool.add_task([&count]() { count += 1; });
 	}
 
+	ASSERT_EQ(decltype(pool)::State::Deferred, pool.state());
 	pool.stop();
+	ASSERT_EQ(decltype(pool)::State::Stopped, pool.state());
+
+	ASSERT_EQ(num_tasks, count);
+}
+
+TEST(ThreadPool, wait_before_start_calls_start)
+{
+	int const num_threads = 40;
+	int const num_tasks = num_threads * 100;
+
+	ThreadTelemetry pool(num_threads, true);
+	std::atomic_int count = 0;
+
+	for (int i = 0; i < num_tasks; ++i) {
+		pool.add_task([&count]() { count += 1; });
+	}
+
+	ASSERT_EQ(decltype(pool)::State::Deferred, pool.state());
+	pool.wait();
+	ASSERT_EQ(decltype(pool)::State::Running, pool.state());
 
 	ASSERT_EQ(num_tasks, count);
 }

@@ -5,7 +5,7 @@ add_google_executable(unit-project TEST
 		grid.cxx
 		log.cxx
 		notify-assignment.cxx
-		placeholder-t.cxx
+		placeholder.cxx
 		player.cxx
 		point-t.cxx
 		priority-mutex.cxx

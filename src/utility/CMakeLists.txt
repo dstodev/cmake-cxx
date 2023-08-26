@@ -4,7 +4,7 @@ target_sources(${target_name}
 		log.cxx
 		log.hxx
 		notify-assignment.hxx
-		placeholder-t.hxx
+		placeholder.hxx
 		point-t.hxx
 		priority-mutex.cxx
 		priority-mutex.hxx
@@ -41,5 +41,5 @@ target_compile_definitions(${target_name}
 ]]
 target_precompile_headers(${target_name}
 	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/placeholder-t.hxx>
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/placeholder.hxx>
 )
