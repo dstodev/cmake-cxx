@@ -195,6 +195,8 @@ void ThreadPool<R>::wait()
 template <typename R>
 void ThreadPool<R>::stop()
 {
+	start();  // In case constructed with deferred = true but not yet started
+
 	{
 		std::lock_guard lock(_task_queue_mutex);
 		_continue = false;

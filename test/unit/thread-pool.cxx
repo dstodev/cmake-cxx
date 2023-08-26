@@ -60,6 +60,13 @@ TEST(ThreadPool, stop)
 	ASSERT_EQ(num_tasks, count);
 }
 
+TEST(ThreadPool, stop_twice)
+{
+	ThreadPool pool;
+	pool.stop();
+	pool.stop();  // should do nothing
+}
+
 TEST(ThreadPool, wait)
 {
 	int const num_cycles = 10;
@@ -236,7 +243,7 @@ TEST(ThreadPool, tasks_run_in_parallel_pass_i_as_argument)
 TEST(ThreadPool, unconstrained_thread_distribution)
 {
 	int const num_threads = 40;
-	int const num_tasks = num_threads * 100;
+	int const num_tasks = num_threads * 1000;
 
 	ThreadTelemetry pool(num_threads);
 	std::atomic_int count = 0;
@@ -255,6 +262,44 @@ TEST(ThreadPool, unconstrained_thread_distribution)
 	EXPECT_EQ(num_tasks, tasks_completed);
 
 	std::cout << "Threads completed " << tasks_completed << " total tasks:\n";
+	std::cout << "  Max contribution: " << max_contribution << "\n";
+	std::cout << "  Min contribution: " << min_contribution << "\n";
+	std::cout << "  Delta (max - min): " << max_contribution - min_contribution << "\n";
+
+	for (int id = 0; auto const& contribution : contributions) {
+		std::cout << "    id " << id << ":" << (id > 9 ? " " : "  ") << contribution << "\n";
+		id += 1;
+	}
+
+	std::cout << std::endl;
+
+	ASSERT_EQ(num_tasks, count);
+}
+
+// This test has the benefit of adding all the tasks before starting execution.
+TEST(ThreadPool, unconstrained_thread_distribution_deferred)
+{
+	int const num_threads = 40;
+	int const num_tasks = num_threads * 1000;
+
+	ThreadTelemetry pool(num_threads, true);
+	std::atomic_int count = 0;
+
+	for (int i = 0; i < num_tasks; ++i) {
+		pool.add_task([&count]() { count += 1; });
+	}
+
+	pool.start();
+	pool.stop();
+
+	auto const& contributions = pool.thread_task_contributions();
+	auto const tasks_completed = std::accumulate(contributions.begin(), contributions.end(), 0u);
+	auto const max_contribution = *std::max_element(contributions.begin(), contributions.end());
+	auto const min_contribution = *std::min_element(contributions.begin(), contributions.end());
+
+	EXPECT_EQ(num_tasks, tasks_completed);
+
+	std::cout << "Threads completed " << tasks_completed << " total tasks (deferred start):\n";
 	std::cout << "  Max contribution: " << max_contribution << "\n";
 	std::cout << "  Min contribution: " << min_contribution << "\n";
 	std::cout << "  Delta (max - min): " << max_contribution - min_contribution << "\n";
@@ -350,13 +395,6 @@ TEST(ThreadPool, tasks_added_after_start)
 	ASSERT_EQ(num_tasks, count);
 }
 
-TEST(ThreadPool, stop_twice)
-{
-	ThreadPool pool;
-	pool.stop();
-	pool.stop();  // should do nothing
-}
-
 TEST(ThreadPool, start_in_non_deferred_mode)
 {
 	ThreadPool pool;
@@ -368,4 +406,27 @@ TEST(ThreadPool, start_twice)
 	ThreadPool pool(1, true);
 	pool.start();
 	pool.start();  // should do nothing
+}
+
+TEST(ThreadPool, stop_before_start_exits_gracefully)
+{
+	ThreadPool pool(1, true);
+	pool.stop();
+}
+
+TEST(ThreadPool, stop_before_start_processes_all_tasks)
+{
+	int const num_threads = 40;
+	int const num_tasks = num_threads * 100;
+
+	ThreadPool pool(num_threads, true);
+	std::atomic_int count = 0;
+
+	for (int i = 0; i < num_tasks; ++i) {
+		pool.add_task([&count]() { count += 1; });
+	}
+
+	pool.stop();
+
+	ASSERT_EQ(num_tasks, count);
 }
