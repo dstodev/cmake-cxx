@@ -5,7 +5,7 @@ target_sources(${target_name}
 		log.hxx
 		notify-assignment.hxx
 		placeholder.hxx
-		point-t.hxx
+		point.hxx
 		priority-mutex.cxx
 		priority-mutex.hxx
 		shear.cxx

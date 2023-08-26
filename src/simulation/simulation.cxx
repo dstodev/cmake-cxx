@@ -83,9 +83,9 @@ Player& Simulation::player()
 	return _player;
 }
 
-point_t<int> Simulation::center() const
+Point<int> Simulation::center() const
 {
-	return point_t<int> {_width / 2, _height / 2};
+	return Point<int> {_width / 2, _height / 2};
 }
 
 auto Simulation::control() const -> const Simulation::Control&

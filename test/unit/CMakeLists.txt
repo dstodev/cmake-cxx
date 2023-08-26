@@ -7,7 +7,7 @@ add_google_executable(unit-project TEST
 		notify-assignment.cxx
 		placeholder.cxx
 		player.cxx
-		point-t.cxx
+		point.cxx
 		priority-mutex.cxx
 		shear.cxx
 		simulation.cxx

@@ -4,7 +4,7 @@
 
 #include <event-handler.hxx>
 #include <player.hxx>
-#include <point-t.hxx>
+#include <point.hxx>
 #include <simulation.hxx>
 #include <texture-cache.hxx>
 
@@ -49,7 +49,7 @@ void Renderer::draw(Simulation const& simulation)
 	draw(handler.mouse_pos());
 }
 
-void Renderer::draw(Player const& player, point_t<int> const& view_center)
+void Renderer::draw(Player const& player, Point<int> const& view_center)
 {
 	auto const& handler = _handler.get();
 	auto const& player_texture = textures::player;
@@ -84,7 +84,7 @@ void Renderer::draw(Player const& player, point_t<int> const& view_center)
 	draw(player.position().cast<int>() + view_center);
 }
 
-void Renderer::draw(point_t<int> const& point)
+void Renderer::draw(Point<int> const& point)
 {
 	SDL_Rect const square {static_cast<int>(point.x() - 1), static_cast<int>(point.y() - 1), 3, 3};
 

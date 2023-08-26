@@ -6,7 +6,7 @@ using namespace project;
 
 static void run_shear(benchmark::State& state, float x, float y, float x_mag, float y_mag)
 {
-	point_t point {x, y};
+	Point point {x, y};
 
 	for (auto _ : state) {
 		shear(point, x_mag, y_mag);

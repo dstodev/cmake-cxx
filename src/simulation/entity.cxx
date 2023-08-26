@@ -6,12 +6,12 @@ Entity::Entity()
     : _position()
 {}
 
-auto Entity::position() const -> point_t<float> const&
+auto Entity::position() const -> Point<float> const&
 {
 	return _position;
 }
 
-auto Entity::position() -> point_t<float>&
+auto Entity::position() -> Point<float>&
 {
 	return _position;
 }
