@@ -23,6 +23,10 @@ public:
 	using return_type = R;
 	using task_type = std::packaged_task<return_type()>;
 
+	/** @brief Construct a thread pool.
+	    @param num_threads Number of threads executing tasks
+	    @param deferred If true, threads will not start until start() is called
+	 */
 	explicit ThreadPool(unsigned int num_threads = 1, bool deferred = false);
 
 	virtual ~ThreadPool();
@@ -31,7 +35,16 @@ public:
 	auto operator=(ThreadPool const& copy) -> ThreadPool& = delete;
 	auto operator=(ThreadPool&& move) -> ThreadPool& = default;
 
-	/// Accepts any F(Args...) -> R
+	/** @brief Add a task to the queue.
+	    @param task Task to add
+	    @param args Arguments to pass to task
+	    @return Future to task result
+
+	    Accepts any function to eventually execute. When it does, the returned
+	    future will contain the result of the function.
+
+	    Accepts any F(Args...) -> R
+	 */
 	template <typename F, typename... Args>
 	    requires Task<R, F, Args...>
 	auto add_task(F task, Args&&... args) -> std::future<return_type>;
@@ -39,7 +52,10 @@ public:
 	/// If constructed with deferred = true, call start() to begin processing tasks.
 	void start();
 
+	/// Wait for all added tasks to complete.
 	void wait();
+
+	/// Wait for all added tasks to complete then stop all threads.
 	void stop();
 
 protected:
@@ -188,7 +204,6 @@ void ThreadPool<R>::start()
 template <typename R>
 void ThreadPool<R>::wait()
 {
-	// TODO: make start() optional here?
 	start();  // In case constructed with deferred = true but not yet started
 
 	std::unique_lock lock(_task_count_mutex);

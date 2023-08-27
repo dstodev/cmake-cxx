@@ -1,3 +1,4 @@
+add_subdirectory(etc)
 add_subdirectory(link)
 add_subdirectory(performance)
 add_subdirectory(unit)

@@ -7,6 +7,14 @@
 
 using namespace project;
 
+template <typename T>
+class DequeAccessor : public ThreadDeque<T>
+{
+public:
+	using ThreadDeque<T>::front;
+	using ThreadDeque<T>::back;
+};
+
 TEST(ThreadDeque, construct)
 {
 	ThreadDeque<int> deque;
@@ -31,14 +39,14 @@ TEST(ThreadDeque, size)
 
 TEST(ThreadDeque, emplace_front)
 {
-	ThreadDeque<int> deque;
+	DequeAccessor<int> deque;
 	deque.emplace_front(1);
 	ASSERT_EQ(1, deque.front());
 }
 
 TEST(ThreadDeque, push_front)
 {
-	ThreadDeque<int> deque;
+	DequeAccessor<int> deque;
 	deque.push_front(1);  // rvalue overload
 	int const value = deque.front();
 	deque.push_front(value);  // lvalue overload
@@ -58,7 +66,7 @@ TEST(ThreadDeque, front_is_thread_safe)
 	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
-	ThreadDeque<int> deque;
+	DequeAccessor<int> deque;
 	ThreadPool pool(num_threads);
 	std::barrier barrier(num_threads);
 
@@ -82,14 +90,14 @@ TEST(ThreadDeque, front_is_thread_safe)
 
 TEST(ThreadDeque, emplace_back)
 {
-	ThreadDeque<int> deque;
+	DequeAccessor<int> deque;
 	deque.emplace_back(1);
 	ASSERT_EQ(1, deque.back());
 }
 
 TEST(ThreadDeque, push_back)
 {
-	ThreadDeque<int> deque;
+	DequeAccessor<int> deque;
 	deque.push_back(1);  // rvalue overload
 	int const value = deque.back();
 	deque.push_back(value);  // lvalue overload
@@ -109,7 +117,7 @@ TEST(ThreadDeque, back_is_thread_safe)
 	int const num_threads = 40;
 	int const num_tasks = num_threads * 100;
 
-	ThreadDeque<int> deque;
+	DequeAccessor<int> deque;
 	ThreadPool pool(num_threads);
 	std::barrier barrier(num_threads);
 

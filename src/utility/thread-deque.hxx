@@ -7,10 +7,10 @@
 
 namespace project {
 
-// https://en.cppreference.com/w/cpp/container/deque
-
-/** @brief Extends std::deque with thread-safe operations.
+/** @brief Exposes some of the same behavior as std::deque with thread-safe operations.
     @tparam T Element type
+
+    See std::deque documentation for details: https://en.cppreference.com/w/cpp/container/deque
  */
 template <typename T>
 class ThreadDeque
@@ -20,37 +20,46 @@ public:
 	using container_type = std::deque<T>;
 	using size_type = typename container_type::size_type;
 
-	ThreadDeque();
-
 	bool empty() const;
 	auto size() const -> size_type;
 
-	auto front() const -> decltype(std::declval<container_type const>().front());
 	template <typename... Args>
 	void emplace_front(Args&&... args);
 	void push_front(value_type const& value);
 	void push_front(value_type&& value);
+	/** @brief Remove and return an element from the front of the deque.
+	    @return Popped value
+
+	    If empty, blocks until an element is available.
+	    This function differs from the std::deque interface by returning the popped value.
+	    This is so threads can conveniently pop values in a thread-safe manner.
+	 */
 	auto pop_front() -> value_type;
 
-	auto back() const -> decltype(std::declval<container_type const>().back());
 	template <typename... Args>
 	void emplace_back(Args&&... args);
 	void push_back(value_type const& value);
 	void push_back(value_type&& value);
+	/** @brief Remove and return an element from the back of the deque.
+	    @return Popped value
+
+	    If empty, blocks until an element is available.
+	    This function differs from the std::deque interface by returning the popped value.
+	    This is so threads can conveniently pop values in a thread-safe manner.
+	 */
 	auto pop_back() -> value_type;
 
 protected:
+	/* Because front() and back() return references, they probably do not function
+	   as expected between multiple threads. They are useful for testing, so protect them.
+	 */
+	auto front() const -> decltype(std::declval<container_type const>().front());
+	auto back() const -> decltype(std::declval<container_type const>().back());
+
 	container_type _data;
 	mutable std::mutex _mutex;
 	std::condition_variable _element_added;
 };
-
-template <typename T>
-ThreadDeque<T>::ThreadDeque()
-    : _data()
-    , _mutex()
-    , _element_added()
-{}
 
 template <typename T>
 bool ThreadDeque<T>::empty() const
