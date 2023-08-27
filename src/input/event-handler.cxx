@@ -93,7 +93,7 @@ bool EventHandler::signal_window_resized() const
 	return _signal_window_resized;
 }
 
-auto EventHandler::mouse_pos() const -> point_t<int> const&
+auto EventHandler::mouse_pos() const -> Point<int> const&
 {
 	return _mouse_pos;
 }

@@ -8,15 +8,15 @@ struct SDL_Renderer;
 namespace project {
 
 template <typename T>
-class point_t;
+class Point;
 
 class EventHandler;
 class Player;
 class Simulation;
 
-/*  This class cannot be const-correct because the SDL render functions do not
-    take const pointers.
-*/
+/* This class cannot be const-correct because the SDL render functions do not
+   take const pointers.
+ */
 class Renderer
 {
 public:
@@ -38,8 +38,8 @@ public:
 	void draw(Simulation const& simulation);
 
 protected:
-	void draw(Player const& player, point_t<int> const& view_center);
-	void draw(point_t<int> const& point);
+	void draw(Player const& player, Point<int> const& view_center);
+	void draw(Point<int> const& point);
 
 private:
 	std::reference_wrapper<EventHandler const> _handler;

@@ -1,33 +1,33 @@
-#ifndef PLACEHOLDER_T_HXX
-#define PLACEHOLDER_T_HXX
+#ifndef PLACEHOLDER_HXX
+#define PLACEHOLDER_HXX
 
 #include <compare>  // Required for operator<=>
 
-class placeholder_t
+class Placeholder
 {
 public:
-	virtual ~placeholder_t() = default;
+	virtual ~Placeholder() = default;
 
 	template <typename... Args>
-	explicit constexpr placeholder_t([[maybe_unused]] Args&&... args)
+	explicit constexpr Placeholder([[maybe_unused]] Args&&... args)
 	{}
 
-	constexpr placeholder_t(placeholder_t const& copy) = default;
-	constexpr placeholder_t(placeholder_t&& move) = default;
+	constexpr Placeholder(Placeholder const& copy) = default;
+	constexpr Placeholder(Placeholder&& move) = default;
 
-	placeholder_t& operator=(placeholder_t const& copy) = default;
-	placeholder_t& operator=(placeholder_t&& move) = default;
+	Placeholder& operator=(Placeholder const& copy) = default;
+	Placeholder& operator=(Placeholder&& move) = default;
 
-	auto operator<=>(placeholder_t const& rhs) const = default;
+	auto operator<=>(Placeholder const& rhs) const = default;
 
 	template <typename T>
-	placeholder_t const& operator[](T) const
+	Placeholder const& operator[](T) const
 	{
 		return *this;
 	}
 
 	template <typename... Ts>
-	placeholder_t const& operator()(Ts...) const
+	Placeholder const& operator()(Ts...) const
 	{
 		return *this;
 	}
@@ -52,4 +52,4 @@ public:
 	generic_operator(%=);
 };
 
-#endif  // PLACEHOLDER_T_HXX
+#endif  // PLACEHOLDER_HXX

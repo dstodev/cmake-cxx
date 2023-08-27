@@ -2,7 +2,7 @@
 #define ENTITY_HXX
 
 #include <dll-export.h>
-#include <point_t.hxx>
+#include <point.hxx>
 
 namespace project {
 
@@ -12,13 +12,13 @@ public:
 	Entity();
 	virtual ~Entity() = default;
 
-	auto position() const -> point_t<float> const&;
-	auto position() -> point_t<float>&;
+	auto position() const -> Point<float> const&;
+	auto position() -> Point<float>&;
 
 	bool operator==(Entity const& rhs) const = default;
 
 protected:
-	point_t<float> _position;
+	Point<float> _position;
 };
 
 }  // namespace project

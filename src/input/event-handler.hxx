@@ -3,7 +3,7 @@
 
 #include <SDL_events.h>
 
-#include <point_t.hxx>
+#include <point.hxx>
 
 namespace project {
 
@@ -17,7 +17,7 @@ public:
 	bool signal_refresh_render() const;
 	bool signal_window_resized() const;
 
-	auto mouse_pos() const -> point_t<int> const&;
+	auto mouse_pos() const -> Point<int> const&;
 	bool mouse_left() const;
 	bool mouse_right() const;
 
@@ -40,7 +40,7 @@ private:
 	bool _signal_render_targets_reset {};
 	bool _signal_render_device_reset {};
 
-	point_t<int> _mouse_pos {};
+	Point<int> _mouse_pos {};
 	bool _mouse_left {};
 	bool _mouse_right {};
 

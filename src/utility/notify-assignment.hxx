@@ -8,9 +8,8 @@
 
 namespace project {
 
-/**
- * @brief Owns a value and notifies observers when the value changes.
- * @tparam T
+/** @brief Owns a value and notifies observers when the value changes.
+    @tparam T
  */
 template <typename T>
 class NotifyAssignment

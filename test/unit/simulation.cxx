@@ -32,14 +32,14 @@ TEST(Simulation, resize)
 TEST(Simulation, player)
 {
 	Simulation simulation;
-	simulation.player().position() = point_t {0.0f, 0.0f};
+	simulation.player().position() = Point {0.0f, 0.0f};
 	ASSERT_EQ(Player(), simulation.player());
 }
 
 TEST(Simulation, player_moves)
 {
 	Simulation simulation;
-	simulation.player().position() = point_t {0.0f, 0.0f};
+	simulation.player().position() = Point {0.0f, 0.0f};
 	simulation.tick(1000);
 	ASSERT_EQ(Player(), simulation.player());
 
@@ -56,7 +56,7 @@ struct PlayerMoveTestParams
 	                     bool left,
 	                     bool right,
 	                     bool shift,
-	                     point_t<float> const& expected)
+	                     Point<float> const& expected)
 	    : delta_ms(delta_ms)
 	    , up(up)
 	    , down(down)
@@ -72,7 +72,7 @@ struct PlayerMoveTestParams
 	bool left;
 	bool right;
 	bool shift;
-	point_t<float> expected;
+	Point<float> expected;
 };
 
 class PlayerMoveTests : public ::testing::TestWithParam<PlayerMoveTestParams>
@@ -82,7 +82,7 @@ TEST_P(PlayerMoveTests, player_moves_adjusted_for_time)
 {
 	Simulation simulation;
 	auto& control = simulation.control();
-	simulation.player().position() = point_t {0.0f, 0.0f};
+	simulation.player().position() = Point {0.0f, 0.0f};
 	control.up = GetParam().up;
 	control.down = GetParam().down;
 	control.left = GetParam().left;
@@ -99,37 +99,37 @@ INSTANTIATE_TEST_SUITE_P(
     AdjustForTime,
     PlayerMoveTests,
     ::testing::Values(
-        PlayerMoveTestParams(1000, true, false, false, false, false, point_t {0.0f, -1.0f * Player::base_speed_pps}),
-        PlayerMoveTestParams(500, true, false, false, false, false, point_t {0.0f, -0.5f * Player::base_speed_pps}),
-        PlayerMoveTestParams(0, true, false, false, false, false, point_t {0.0f, 0.0f})));
+        PlayerMoveTestParams(1000, true, false, false, false, false, Point {0.0f, -1.0f * Player::base_speed_pps}),
+        PlayerMoveTestParams(500, true, false, false, false, false, Point {0.0f, -0.5f * Player::base_speed_pps}),
+        PlayerMoveTestParams(0, true, false, false, false, false, Point {0.0f, 0.0f})));
 
 // clang-format off
 INSTANTIATE_TEST_SUITE_P(AdjustForDirection, PlayerMoveTests, ::testing::Values(
     // up
     PlayerMoveTestParams(1000, true, false, false, false, false,
-                         point_t {0.0f, -1.0f * Player::base_speed_pps}),
+                         Point {0.0f, -1.0f * Player::base_speed_pps}),
 
     // up + down
     PlayerMoveTestParams(1000, true, true, false, false, false,
-                         point_t {0.0f, 0.0f}),
+                         Point {0.0f, 0.0f}),
 
     // up + down + left
     PlayerMoveTestParams(1000, true, true, true, false, false,
-                         point_t {-1.0f * Player::base_speed_pps, 0.0f}),
+                         Point {-1.0f * Player::base_speed_pps, 0.0f}),
 
     // up + down + left + right
     PlayerMoveTestParams(1000, true, true, true, true, false,
-                         point_t {0.0f, 0.0f}),
+                         Point {0.0f, 0.0f}),
 
     // up + left
     // cos(45deg) = sin(45deg) = 0.70710678118
     PlayerMoveTestParams(1000, true, false, true, false, false,
-                         point_t {-0.70710678118f * Player::base_speed_pps,
+                         Point {-0.70710678118f * Player::base_speed_pps,
                                   -0.70710678118f * Player::base_speed_pps}),
 
     // up + shift
     PlayerMoveTestParams(1000, true, false, false, false, true,
-                         point_t {0.0f, -1.0f * Player::base_speed_pps
+                         Point {0.0f, -1.0f * Player::base_speed_pps
                                               * Player::shift_multiplier})
 ));
 // clang-format on

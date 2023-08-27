@@ -7,38 +7,38 @@
 
 TEST(Placeholder, constructor_default)
 {
-	placeholder_t o;
+	Placeholder o;
 }
 
 TEST(Placeholder, constructor_copy)
 {
-	placeholder_t o;
-	placeholder_t i(o);
+	Placeholder o;
+	Placeholder i(o);
 }
 
 TEST(Placeholder, constructor_move)
 {
-	placeholder_t o(std::move(placeholder_t {}));  // using std::move to avoid copy-elision
+	Placeholder o(std::move(Placeholder {}));  // using std::move to avoid copy-elision
 }
 
 TEST(Placeholder, constructor_single_int)
 {
-	placeholder_t o(0);
+	Placeholder o(0);
 }
 
 TEST(Placeholder, constructor_two_int)
 {
-	placeholder_t o(0, 1);
+	Placeholder o(0, 1);
 }
 
 TEST(Placeholder, constructor_int_and_char)
 {
-	placeholder_t o(0, 'a');
+	Placeholder o(0, 'a');
 }
 
 TEST(Placeholder, operators_assignment)
 {
-	placeholder_t o, i;
+	Placeholder o, i;
 	o = i;  // copy
 	o = std::move(i);
 }
@@ -49,12 +49,12 @@ TEST(Placeholder, operators_assignment)
 	o symbol 'a';
 
 /* These tests basically assert that the placeholder type can be used
- * in various situations and still compile.
+   in various situations and still compile.
  */
 
 TEST(Placeholder, operators_arithmetic)
 {
-	placeholder_t o, i;
+	Placeholder o, i;
 	operate(+);
 	operate(-);
 	operate(*);
@@ -64,7 +64,7 @@ TEST(Placeholder, operators_arithmetic)
 
 TEST(Placeholder, operators_compound)
 {
-	placeholder_t o, i;
+	Placeholder o, i;
 	operate(+=);
 	operate(-=);
 	operate(*=);
@@ -76,7 +76,7 @@ TEST(Placeholder, operators_compound)
 
 TEST(Placeholder, operators_comparison)
 {
-	placeholder_t o, i;
+	Placeholder o, i;
 	ASSERT_TRUE(o == i);
 	ASSERT_FALSE(o != i);
 	ASSERT_FALSE(o < i);
@@ -87,18 +87,18 @@ TEST(Placeholder, operators_comparison)
 
 TEST(Placeholder, operator_brackets)
 {
-	placeholder_t o;
+	Placeholder o;
 	ASSERT_EQ(o, o["abc"]);
 }
 
 TEST(Placeholder, operator_call_empty)
 {
-	placeholder_t o;
+	Placeholder o;
 	ASSERT_EQ(o, o());
 }
 
 TEST(Placeholder, operator_call)
 {
-	placeholder_t o;
+	Placeholder o;
 	ASSERT_EQ(o, o("abc", 123));
 }

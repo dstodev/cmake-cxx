@@ -3,7 +3,7 @@
 
 #include <dll-export.h>
 #include <player.hxx>
-#include <point_t.hxx>
+#include <point.hxx>
 #include <scene.hxx>
 
 namespace project {
@@ -24,7 +24,7 @@ public:
 	auto player() const -> Player const&;
 	auto player() -> Player&;
 
-	point_t<int> center() const;
+	Point<int> center() const;
 
 	struct Control
 	{
