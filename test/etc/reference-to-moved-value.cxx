@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <string>
+
 TEST(Etcetera, reference_to_moved_value)
 {
 	std::string value = "test";
