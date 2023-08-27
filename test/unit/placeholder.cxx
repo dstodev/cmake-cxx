@@ -49,7 +49,7 @@ TEST(Placeholder, operators_assignment)
 	o symbol 'a';
 
 /* These tests basically assert that the placeholder type can be used
- * in various situations and still compile.
+   in various situations and still compile.
  */
 
 TEST(Placeholder, operators_arithmetic)

@@ -189,14 +189,14 @@ auto Grid<T>::at(size_t row, size_t column) const -> value_type const&
 template <typename T>
 auto Grid<T>::at(size_t row, size_t column) -> value_type&
 {
-	/*  To reduce code duplication between `at()` and `at() const`,
-	    add const to `this` pointer to unambiguously call `at() const`,
-	    call it, then const_cast<> away the const.
+	/* To reduce code duplication between `at()` and `at() const`,
+	   add const to `this` pointer to unambiguously call `at() const`,
+	   call it, then const_cast<> away the const.
 
-	    This is safe because this function is not const (`at()` not `at() const`).
-	    The only way to call this is via non-const instance or reference,
-	    guaranteeing that calling const_cast<> to remove const here is safe.
-	*/
+	   This is safe because this function is not const (`at()` not `at() const`).
+	   The only way to call this is via non-const instance or reference,
+	   guaranteeing that calling const_cast<> to remove const here is safe.
+	 */
 	return const_cast<value_type&>(std::as_const(*this).at(row, column));
 }
 
