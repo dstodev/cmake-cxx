@@ -1,6 +1,6 @@
 #[[
 	log_vars(var_names...) will print a readout of all given variables
-	and their values. Message modes are supported like MODE FATAL_ERROR.
+	and their values. Message modes are supported e.g.: log_vars(... MODE STATUS)
 
 	Parameters
 	----------
@@ -15,7 +15,6 @@
 ]]
 function(log_vars)
 	cmake_parse_arguments(PARSE_ARGV 0 args "SPLIT_LISTS" "MODE" "")
-	set(list_line "")
 	foreach(var IN LISTS args_UNPARSED_ARGUMENTS)
 		if("${${var}}" STREQUAL "")
 			set(${var} "(empty)")  # value replacement lost outside function scope
@@ -23,13 +22,15 @@ function(log_vars)
 		if(args_SPLIT_LISTS)
 			list(LENGTH ${var} length)
 			if(length GREATER 1)
-				string(PREPEND ${var} ";")
-				string(REPLACE ";" "\n    - " ${var} "${${var}}")
+				string(PREPEND ${var} "(list:);")
+				string(REPLACE ";" "\n  - " ${var} "${${var}}")
 			endif()
 		endif()
-		set(message "${message} <> ${var} : ${${var}}\n")
+		set(message "${message} \${${var}} : ${${var}}\n")
 	endforeach()
-	message(${args_MODE} "${message}")
+	if(message)
+		message(${args_MODE} ${message})
+	endif()
 endfunction()
 
 # For immediate developer utility, force_log_vars() calls log_vars() in FATAL_ERROR mode.
@@ -37,6 +38,22 @@ function(force_log_vars)
 	list(APPEND ARGV "MODE" "FATAL_ERROR")
 	log_vars(${ARGV})
 endfunction()
+
+macro(log_all_vars)
+	get_cmake_property(_vars VARIABLES)
+	cmake_parse_arguments(_args "" "FILTER" "" ${ARGN})
+	set(_notice "All variables")
+	if(_args_FILTER)
+		set(_notice "${_notice} matching regex '${_args_FILTER}'")
+		list(FILTER _vars INCLUDE REGEX "${_args_FILTER}")
+	endif()
+	if(_vars)
+		message(STATUS "${_notice}:")
+		log_vars(${_vars} SPLIT_LISTS)
+	else()
+		message(STATUS "${_notice}: (none)")
+	endif()
+endmacro()
 
 include_guard(GLOBAL)  # Always put this before expect() tests to run them only once
 

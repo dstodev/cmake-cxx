@@ -26,3 +26,11 @@ string(JOIN "\n " msg " "
 )
 expect(output_hash STREQUAL expected_hash REQUIRED MESSAGE ${msg})
 include(${output_path})
+
+unset(output_root)
+unset(output_path)
+unset(version)
+unset(url)
+unset(expected_hash)
+unset(output_hash)
+unset(msg)

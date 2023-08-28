@@ -52,6 +52,7 @@ set(CPACK_VERBATIM_VARIABLES TRUE)
 include(CPack)
 
 set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)  # Do not populate CTest/CDash targets
+
 include(CTest)  # This is used instead of `enable_testing()` for better IDE compatibility
 #enable_testing()
 

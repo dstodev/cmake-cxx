@@ -4,6 +4,7 @@ find_package(LogVars CONFIG REQUIRED)
 find_package(MessageGate CONFIG REQUIRED)
 find_package(ProjectDllExport CONFIG REQUIRED)
 find_package(SetupBuildMode CONFIG REQUIRED)
+find_package(TargetUtilities CONFIG REQUIRED)
 
 function(configure_rpath_variables)
 	if(UNIX)
