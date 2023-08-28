@@ -469,3 +469,21 @@ TEST(ThreadPool, wait_before_start_calls_start)
 
 	ASSERT_EQ(num_tasks, count);
 }
+
+TEST(ThreadPool, is_running)
+{
+	ThreadPool pool;
+	ASSERT_TRUE(pool.is_running());
+	pool.stop();
+	ASSERT_FALSE(pool.is_running());
+}
+
+TEST(ThreadPool, is_running_deferred)
+{
+	ThreadPool pool(1, true);
+	ASSERT_FALSE(pool.is_running());
+	pool.start();
+	ASSERT_TRUE(pool.is_running());
+	pool.stop();
+	ASSERT_FALSE(pool.is_running());
+}

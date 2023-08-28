@@ -4,6 +4,7 @@
 #include <functional>
 
 struct SDL_Renderer;
+struct SDL_Window;
 
 namespace project {
 
@@ -28,7 +29,7 @@ public:
 	Renderer& operator=(Renderer const& copy) = delete;
 	Renderer& operator=(Renderer&& move) = default;
 
-	void init(SDL_Renderer* renderer);
+	void init(SDL_Window* window);
 	void deinit();
 
 	void refresh();

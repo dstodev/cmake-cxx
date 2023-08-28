@@ -49,6 +49,7 @@ void EventHandler::update_event_state()
 			default: break;
 			}
 			break;
+
 		default: break;
 		}
 	}

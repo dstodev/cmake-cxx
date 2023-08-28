@@ -58,6 +58,9 @@ public:
 	/// Wait for all added tasks to complete then stop all threads.
 	void stop();
 
+	/// @return True if threads are running, false otherwise.
+	bool is_running() const;
+
 protected:
 	enum class State
 	{
@@ -204,7 +207,7 @@ void ThreadPool<R>::start()
 template <typename R>
 void ThreadPool<R>::wait()
 {
-	start();  // In case constructed with deferred = true but not yet started
+	start();  // In case constructed with deferred=true but not yet started
 
 	std::unique_lock lock(_task_count_mutex);
 	_task_completed.wait(lock, [this]() { return _task_count == 0; });
@@ -213,7 +216,7 @@ void ThreadPool<R>::wait()
 template <typename R>
 void ThreadPool<R>::stop()
 {
-	start();  // In case constructed with deferred = true but not yet started
+	start();  // In case constructed with deferred=true but not yet started
 
 	{
 		std::lock_guard lock(_task_queue_mutex);
@@ -230,6 +233,12 @@ void ThreadPool<R>::stop()
 
 	_threads.clear();
 	_state = State::Stopped;
+}
+
+template <typename R>
+bool ThreadPool<R>::is_running() const
+{
+	return _state == State::Running;
 }
 
 }  // namespace project

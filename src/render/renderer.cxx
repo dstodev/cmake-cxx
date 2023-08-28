@@ -3,6 +3,7 @@
 #include <SDL_render.h>
 
 #include <event-handler.hxx>
+#include <log.hxx>
 #include <player.hxx>
 #include <point.hxx>
 #include <simulation.hxx>
@@ -15,8 +16,25 @@ Renderer::Renderer(EventHandler const& handler)
     , _renderer(nullptr)
 {}
 
-void Renderer::init(SDL_Renderer* renderer)
+void Renderer::init(SDL_Window* window)
 {
+	SDL_Renderer* renderer = nullptr;
+
+	int renderer_flag_attempt_order[] = {
+	    SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC,
+	    SDL_RENDERER_ACCELERATED,
+	    SDL_RENDERER_SOFTWARE,
+	};
+	for (auto renderer_flags : renderer_flag_attempt_order) {
+		if ((renderer = SDL_CreateRenderer(window, -1, renderer_flags)) != nullptr) {
+			break;
+		}
+		log::warn("SDL_CreateRenderer(., ., {}) failed because: {}\n", renderer_flags, SDL_GetError());
+	}
+	if (renderer == nullptr) {
+		throw std::runtime_error("Application failed to create renderer!");
+	}
+
 	_renderer = renderer;
 	refresh();
 }
