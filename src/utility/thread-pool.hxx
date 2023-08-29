@@ -24,6 +24,9 @@ public:
 	using task_type = std::packaged_task<return_type()>;
 
 	/** @brief Construct a thread pool.
+	    A thread pool consists of a number of threads that execute tasks added to
+	    the pool. The number of threads is specified by num_threads. If deferred
+	    is true, the threads will not begin executing tasks until start() is called.
 	    @param num_threads Number of threads executing tasks
 	    @param deferred If true, threads will not start until start() is called
 	 */
@@ -40,8 +43,8 @@ public:
 	    @param args Arguments to pass to task
 	    @return Future to task result
 
-	    Accepts any function to eventually execute. When it does, the returned
-	    future will contain the result of the function.
+	    Accepts any function to eventually execute (with optional provided args).
+	    When it does, the returned future will contain the result.
 
 	    Accepts any F(Args...) -> R
 	 */

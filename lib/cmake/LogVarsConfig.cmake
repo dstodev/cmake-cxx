@@ -39,6 +39,10 @@ function(force_log_vars)
 	log_vars(${ARGV})
 endfunction()
 
+#[[
+	Log all variables in the calling scope.
+	Pass a regular expression to FILTER to only log variables matching it.
+]]
 macro(log_all_vars)
 	get_cmake_property(_vars VARIABLES)
 	cmake_parse_arguments(_args "" "FILTER" "" ${ARGN})

@@ -1,12 +1,15 @@
 # Project
 
 This project serves as an opinionated template for C++ developers.
-It includes:
+
+It includes common libraries:
 
 - [GoogleTest](https://github.com/google/googletest/)
 - [Google Benchmark](https://github.com/google/benchmark/)
 - [CMake Package Manager "CPM"](https://github.com/cpm-cmake/CPM.cmake)
 - See [dependencies.cmake](dependencies.cmake) for more!
+
+And plenty of CMake & C++ utilities; see [FEATURES.md](FEATURES.md) for details!
 
 ## Build dependencies
 
@@ -72,7 +75,8 @@ Notes:
   One such issue is being tracked [here](https://github.com/microsoft/vscode-cmake-tools/issues/1178).
 - On Windows, make sure that you use the Ninja generator if you are able.  
   On other platforms, make sure that you use a Makefile generator.  
-  This is to [generate `compile_commands.json`](https://cmake.org/cmake/help/latest/variable/CMAKE_EXPORT_COMPILE_COMMANDS.html)
+  This is to
+  [generate `compile_commands.json`](https://cmake.org/cmake/help/latest/variable/CMAKE_EXPORT_COMPILE_COMMANDS.html)
   for automatic intellisense.
 - If CPM complains that a dependency's cache is dirty, you should delete the
   corresponding directory in `build/_dependency-cache/` and reconfigure.

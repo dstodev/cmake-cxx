@@ -1,5 +1,9 @@
+# CMake is a complicated language. This module is for developers to ensure their
+# CMake code is working as you expect it to. Use it to write "unit tests" for
+# CMake functions, or just to make sure your project is set up as you expect.
+
 #[[
-	expect(expr) asserts that expr evaluates TRUE. If expr instead evaluates FALSE, then
+	expect(expr...) asserts that expr evaluates TRUE. If expr instead evaluates FALSE, then
 	the expect() call "fails", and a warning message is immediately emitted.
 
 	Parameters
@@ -125,14 +129,14 @@ function(expect)
 		endif()
 	")
 	cmake_language(EVAL CODE "${code}")
-	if (print)
-		if (${${prefix}_REQUIRED})
+	if(print)
+		if(${${prefix}_REQUIRED})
 			set(message_mode FATAL_ERROR)
 		else()
 			set(message_mode AUTHOR_WARNING)
 		endif()
 
-		if (msg)
+		if(msg)
 			set(pretty_message "${msg}")
 		else()
 			string(REPLACE "\"" "\\\"" expr "${argv}")  # double-escape quotes for message

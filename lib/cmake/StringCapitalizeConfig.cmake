@@ -1,3 +1,7 @@
+#[[
+	string_capitalize(input_string result) uppercases the first letter of input_string,
+	lowercases all other letters, then stores the result in result.
+]]
 function(string_capitalize in_string out_var)
 	string(SUBSTRING ${in_string} 0 1 first_letter)
 	string(SUBSTRING ${in_string} 1 -1 rest_of_string)

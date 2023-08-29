@@ -1,17 +1,19 @@
 #[[
-	Parses function arguments past the last required function argument:
+	Parses function arguments past the last required function argument of the
+	function calling this macro.
 
+	Usage:
 		help_parse_arguments(prefix options one_value_keywords multi_value_keywords)
 
 	Helps parse arguments by abstracting technical details of CMake's builtin (>= CMake 3.5)
-	cmake_parse_arguments(). Automatically uses the more intuitive but harder to use PARSE_ARGV
-	variant of cmake_parse_arguments() to enable passing e.g. lists.
+	cmake_parse_arguments(). Automatically uses the more intuitive but harder to implement
+	PARSE_ARGV variant of cmake_parse_arguments() to enable passing e.g. lists.
 
 	Parameters
 	----------
 	prefix
 		String prefixed to each parsed argument variable delimited with '_',
-		e.g. myprefix_MYARG.
+		e.g. prefix=myprefix -> myprefix_MYARG.
 
 	options
 		List of option flags to parse for, e.g. "DO_STUFF;USE_THING"
