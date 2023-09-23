@@ -9,6 +9,8 @@
 // Must include GL/glew.h before GL/gl.h
 #include <GL/gl.h>
 
+#include <Eigen/Dense>
+
 #include <event-handler.hxx>
 #include <file-to-string.hxx>
 #include <log.hxx>
@@ -141,16 +143,15 @@ void Renderer::draw(Simulation const& simulation)
 	draw(simulation.player(), simulation.center());
 	draw(events.mouse_pos());
 
-	// clang-format off
-	static float constexpr square[] = {
-	    -0.5f, 0.5f, 0.0f,  // top-left
-	    0.5f, 0.5f, 0.0f,   // top-right
-	    0.5f, -0.5f, 0.0f,  // bottom-right
-	    -0.5f, -0.5f, 0.0f  // bottom-left
+	Eigen::Matrix<float, 4, 3, Eigen::RowMajor> full_square {
+	    {-1.0f, 1.0f, 0.0f},  // top-left
+	    {1.0f, 1.0f, 0.0f},  // top-right
+	    {1.0f, -1.0f, 0.0f},  // bottom-right
+	    {-1.0f, -1.0f, 0.0f}  // bottom-left
 	};
-	// clang-format on
+	full_square *= 0.9;
 
-	as_square.draw(square, GL_DYNAMIC_DRAW);
+	as_square.draw(full_square.data(), GL_DYNAMIC_DRAW);
 }
 
 void Renderer::draw(Player const& player, Point<int> const& view_center)

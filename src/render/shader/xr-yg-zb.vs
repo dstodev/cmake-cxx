@@ -3,11 +3,10 @@
 layout (location = 0)
 in vec3 Position;
 
-layout (location = 1)
-out vec3 Color;
+out vec3 PosColor;
 
 void main()
 {
     gl_Position = vec4(Position, 1.0);
-    Color = Position;
+    PosColor = (Position + 1) / 2;  // move range from [-1, 1] to [0, 1]
 }
