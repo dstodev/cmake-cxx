@@ -8,10 +8,14 @@
 
 namespace project {
 
+// 16:9 aspect ratio
+int constexpr DEFAULT_WIDTH = 1280;
+int constexpr DEFAULT_HEIGHT = 720;
+
 class DLL Simulation : public Scene
 {
 public:
-	explicit Simulation(int view_width = 640, int view_height = 480);
+	explicit Simulation(int view_width = DEFAULT_WIDTH, int view_height = DEFAULT_HEIGHT);
 
 	void tick(uint64_t delta_ms) override;
 	void accept(SceneVisitor& visitor) override;

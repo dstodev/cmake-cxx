@@ -1,5 +1,7 @@
 target_sources(${target_name}
 	PRIVATE
+		file-to-string.cxx
+		file-to-string.hxx
 		grid.hxx
 		log.cxx
 		log.hxx
@@ -10,6 +12,7 @@ target_sources(${target_name}
 		priority-mutex.hxx
 		shear.cxx
 		shear.hxx
+		this-file.hxx
 		thread-deque.hxx
 		thread-pool.hxx
 )

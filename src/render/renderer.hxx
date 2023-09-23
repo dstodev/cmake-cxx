@@ -3,8 +3,10 @@
 
 #include <functional>
 
-struct SDL_Renderer;
+#include <vao-square.hxx>
+
 struct SDL_Window;
+using SDL_GLContext = void*;  // from SDL_video.h
 
 namespace project {
 
@@ -22,6 +24,7 @@ class Renderer
 {
 public:
 	explicit Renderer(EventHandler const& handler);
+	~Renderer();
 
 	Renderer(Renderer const& copy) = delete;
 	Renderer(Renderer&& move) = default;
@@ -44,7 +47,13 @@ protected:
 
 private:
 	std::reference_wrapper<EventHandler const> _handler;
-	SDL_Renderer* _renderer;
+	SDL_Window* _window;
+	SDL_GLContext _context;
+
+	void compile_shaders();
+	unsigned int _shader_program;
+
+	vao::Square as_square;
 };
 
 }  // namespace project

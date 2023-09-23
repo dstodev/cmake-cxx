@@ -2,16 +2,11 @@
 
 #include <stdexcept>
 
+#include <GL/glew.h>
 #include <SDL.h>
 
 #include <log.hxx>
 #include <simulation.hxx>
-
-namespace {
-// 16:9 aspect ratio
-constexpr int WINDOW_WIDTH = 1280;
-constexpr int WINDOW_HEIGHT = 720;
-}  // namespace
 
 namespace project {
 
@@ -48,11 +43,11 @@ void ApplicationImpl::init()
 		return;
 	}
 
-	_current_scene = _scenes.emplace_back(std::make_unique<Simulation>(WINDOW_WIDTH, WINDOW_HEIGHT)).get();
+	_current_scene = _scenes.emplace_back(std::make_unique<Simulation>(DEFAULT_WIDTH, DEFAULT_HEIGHT)).get();
 
 	if (int status; (status = SDL_Init(SDL_INIT_VIDEO)) < 0) {
 		log::error("SDL_Init() returned {} because: {}\n", status, SDL_GetError());
-		throw std::runtime_error("Application failed to initialize!");
+		throw std::runtime_error("SDL2 failed to initialize!");
 	}
 
 	// TODO: This could be fun to set to "0"
@@ -60,12 +55,13 @@ void ApplicationImpl::init()
 		log::warn("SDL_SetHint() failed!\n");
 	}
 
+	auto const window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL;
 	if ((_window = SDL_CreateWindow("Project",
-	                                SDL_WINDOWPOS_UNDEFINED,
-	                                SDL_WINDOWPOS_UNDEFINED,
-	                                WINDOW_WIDTH,
-	                                WINDOW_HEIGHT,
-	                                SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE))
+	                                SDL_WINDOWPOS_CENTERED,
+	                                SDL_WINDOWPOS_CENTERED,
+	                                DEFAULT_WIDTH,
+	                                DEFAULT_HEIGHT,
+	                                window_flags))
 	    == nullptr) {
 		log::error("SDL_CreateWindow() failed because: {}\n", SDL_GetError());
 		throw std::runtime_error("Application failed to create window!");
@@ -103,6 +99,7 @@ void ApplicationImpl::handle_user_input()
 				SDL_GetWindowSize(_window, &width, &height);
 				simulation->resize(width, height);
 			}
+			_renderer.refresh();
 		}
 	}
 	_current_scene->accept(_scene_input_visitor);

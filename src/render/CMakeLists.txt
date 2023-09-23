@@ -4,10 +4,10 @@ target_sources(${target_name}
 		renderer.hxx
 		scene-render-visitor.cxx
 		scene-render-visitor.hxx
-		texture-cache.cxx
-		texture-cache.hxx
 		texture.cxx
 		texture.hxx
+		vao-square.cxx
+		vao-square.hxx
 )
 target_include_directories(${target_name}
 	PUBLIC

@@ -19,6 +19,8 @@ target_link_libraries(${target_name}
 
 	PRIVATE
 		SDL2::SDL2
+		OpenGL::GL
+		GLEW::GLEW
 )
 target_compile_features(${target_name}
 	PUBLIC
