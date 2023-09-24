@@ -4,6 +4,8 @@ target_sources(${target_name}
 		renderer.hxx
 		scene-render-visitor.cxx
 		scene-render-visitor.hxx
+		shader-program.cxx
+		shader-program.hxx
 		texture.cxx
 		texture.hxx
 		vao-square.cxx

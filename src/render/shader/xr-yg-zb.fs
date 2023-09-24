@@ -4,7 +4,9 @@ in vec3 PosColor;
 
 out vec4 FragColor;
 
+uniform float blue;
+
 void main()
 {
-    FragColor = vec4(PosColor, 1.0f);
+    FragColor = vec4(PosColor.xy, blue, 1.0f);
 }

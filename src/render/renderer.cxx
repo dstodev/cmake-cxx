@@ -1,5 +1,9 @@
 #include "renderer.hxx"
 
+#include <cmath>
+#include <filesystem>
+
+#include <Eigen/Dense>
 #include <SDL.h>
 
 #ifdef _WIN32
@@ -9,10 +13,7 @@
 // Must include GL/glew.h before GL/gl.h
 #include <GL/gl.h>
 
-#include <Eigen/Dense>
-
 #include <event-handler.hxx>
-#include <file-to-string.hxx>
 #include <log.hxx>
 #include <player.hxx>
 #include <point.hxx>
@@ -43,7 +44,10 @@ void Renderer::init(SDL_Window* window)
 	}
 
 	refresh();
+
 	compile_shaders();
+	_shader_programs.at("xr-yg-zb").use();
+
 	as_square.init();
 }
 
@@ -51,70 +55,27 @@ void Renderer::compile_shaders()
 {
 	auto const shader_dir = THIS_DIRECTORY() / "shader";
 
-	int success;
-	char info_log[512];
-
-	unsigned int shader_program = glCreateProgram();
-
 	for (auto const& shader_file : std::filesystem::directory_iterator(shader_dir)) {
 		auto const& shader_path = shader_file.path();
-		auto const extension = shader_path.extension();
-		auto const filename = shader_path.filename().string();
+		auto const shader_name = shader_path.stem().string();
 
-		unsigned int shader_type;
+		auto const& [iterator, inserted] = _shader_programs.try_emplace(shader_name, shader_path, shader_name);
 
-		if (extension == ".vs") {
-			log::info("Compiling vertex shader: {}\n", filename);
-			shader_type = GL_VERTEX_SHADER;
+		if (!inserted) {
+			auto& key_or_value = *iterator;
+			auto& program = key_or_value.second;
+
+			program.add_shader(shader_path);
 		}
-		else if (extension == ".fs") {
-			log::info("Compiling fragment shader: {}\n", filename);
-			shader_type = GL_FRAGMENT_SHADER;
-		}
-		else {
-			log::warn("Unknown shader file: {}\n", shader_path.string());
-			continue;
-		}
-
-		// The shader source is read as one single string (with multiple newlines),
-		// which is compilable by OpenGL.
-		auto shader_source = file_to_string(shader_path);
-		auto const* shader_source_ptr = shader_source.c_str();
-
-		unsigned int shader_id = glCreateShader(shader_type);
-		glShaderSource(shader_id, 1, &shader_source_ptr, nullptr);
-		glCompileShader(shader_id);
-
-		glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
-
-		if (!success) {
-			glGetShaderInfoLog(shader_id, sizeof(info_log), nullptr, info_log);
-			log::error("Shader compilation failed: {}\n", info_log);
-		}
-		else {
-			log::info("Shader compilation succeeded!\n");
-		}
-		glAttachShader(shader_program, shader_id);
-		glDeleteShader(shader_id);
 	}
 
-	glLinkProgram(shader_program);
-	glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
-
-	if (success) {
-		log::info("Shader linking succeeded!\n");
-		glUseProgram(shader_program);
-		_shader_program = shader_program;
-	}
-	else {
-		glGetProgramInfoLog(shader_program, sizeof(info_log), nullptr, info_log);
-		log::error("Shader linking failed: {}\n", info_log);
+	for (auto& [key, program] : _shader_programs) {
+		program.link();
 	}
 }
 
 void Renderer::deinit()
 {
-	glDeleteProgram(_shader_program);
 	SDL_GL_DeleteContext(_context);
 }
 
@@ -150,6 +111,10 @@ void Renderer::draw(Simulation const& simulation)
 	    {-1.0f, -1.0f, 0.0f}  // bottom-left
 	};
 	full_square *= 0.9;
+
+	auto blue = (sin(static_cast<float>(SDL_GetTicks64()) / 2000.0f) + 1) / 2.0f;
+	auto blue_uniform = _shader_programs.at("xr-yg-zb").get_uniform_location("blue");
+	glUniform1f(blue_uniform, blue);
 
 	as_square.draw(full_square.data(), GL_DYNAMIC_DRAW);
 }

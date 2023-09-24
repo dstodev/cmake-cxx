@@ -23,10 +23,16 @@ void Square::init()
 	// First shader parameter is 3-float position vector
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 	glEnableVertexAttribArray(0);
+
+//	// Second shader parameter is 3-float color vector
+//	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
+//	glEnableVertexAttribArray(1);
+
 	unbind();
 }
 
-void Square::init_indices() {
+void Square::init_indices()
+{
 	static unsigned constexpr indices[] = {
 	    // First triangle
 	    0,  // top-left

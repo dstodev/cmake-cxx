@@ -1,8 +1,10 @@
 #ifndef RENDERER_HXX
 #define RENDERER_HXX
 
-#include <functional>
+#include <string>
+#include <unordered_map>
 
+#include <shader-program.hxx>
 #include <vao-square.hxx>
 
 struct SDL_Window;
@@ -51,7 +53,8 @@ private:
 	SDL_GLContext _context;
 
 	void compile_shaders();
-	unsigned int _shader_program;
+
+	std::unordered_map<std::string, ShaderProgram> _shader_programs;
 
 	vao::Square as_square;
 };
