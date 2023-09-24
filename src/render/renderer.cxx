@@ -26,6 +26,9 @@ Renderer::Renderer(EventHandler const& handler)
     : _handler(handler)
     , _window(nullptr)
     , _context(nullptr)
+    , _shader_programs()
+    , _current_shader_program(nullptr)
+    , _as_square()
 {}
 
 Renderer::~Renderer()
@@ -44,11 +47,12 @@ void Renderer::init(SDL_Window* window)
 	}
 
 	refresh();
-
 	compile_shaders();
-	_shader_programs.at("xr-yg-zb").use();
 
-	as_square.init();
+	_current_shader_program = &_shader_programs.at("xr-yg-zb");
+	_current_shader_program->use();
+
+	_as_square.init();
 }
 
 void Renderer::compile_shaders()
@@ -57,7 +61,7 @@ void Renderer::compile_shaders()
 
 	for (auto const& shader_file : std::filesystem::directory_iterator(shader_dir)) {
 		auto const& shader_path = shader_file.path();
-		auto const shader_name = shader_path.stem().string();
+		auto const& shader_name = shader_path.stem().string();
 
 		auto const& [iterator, inserted] = _shader_programs.try_emplace(shader_name, shader_path, shader_name);
 
@@ -113,10 +117,10 @@ void Renderer::draw(Simulation const& simulation)
 	full_square *= 0.9;
 
 	auto blue = (sin(static_cast<float>(SDL_GetTicks64()) / 2000.0f) + 1) / 2.0f;
-	auto blue_uniform = _shader_programs.at("xr-yg-zb").get_uniform_location("blue");
+	auto blue_uniform = _current_shader_program->get_uniform_location("blue");
 	glUniform1f(blue_uniform, blue);
 
-	as_square.draw(full_square.data(), GL_DYNAMIC_DRAW);
+	_as_square.draw(full_square.data(), GL_DYNAMIC_DRAW);
 }
 
 void Renderer::draw(Player const& player, Point<int> const& view_center)

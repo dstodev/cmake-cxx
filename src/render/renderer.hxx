@@ -53,10 +53,10 @@ private:
 	SDL_GLContext _context;
 
 	void compile_shaders();
-
 	std::unordered_map<std::string, ShaderProgram> _shader_programs;
+	ShaderProgram* _current_shader_program;
 
-	vao::Square as_square;
+	vao::Square _as_square;
 };
 
 }  // namespace project
