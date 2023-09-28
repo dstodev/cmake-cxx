@@ -30,7 +30,7 @@ public:
 	    @param num_threads Number of threads executing tasks
 	    @param deferred If true, threads will not start until start() is called
 	 */
-	explicit ThreadPool(unsigned int num_threads = 1, bool deferred = false);
+	explicit ThreadPool(unsigned num_threads = 1, bool deferred = false);
 
 	virtual ~ThreadPool();
 	ThreadPool(ThreadPool const& copy) = delete;
@@ -72,9 +72,9 @@ protected:
 		Stopped
 	};
 
-	void process_tasks(unsigned int with_thread_index);
+	void process_tasks(unsigned with_thread_index);
 	auto pop_task() -> std::unique_ptr<task_type>;
-	virtual void task_completed(unsigned int thread_index);
+	virtual void task_completed(unsigned thread_index);
 
 	State _state;
 
@@ -82,7 +82,7 @@ protected:
 	std::vector<std::thread> _threads;
 	std::deque<task_type> _task_queue;
 	/// Incremented before added to queue & decremented after task is executed
-	unsigned int _task_count;
+	unsigned _task_count;
 	std::mutex _task_queue_mutex;
 	std::mutex _task_count_mutex;
 	std::condition_variable _task_added;
@@ -91,7 +91,7 @@ protected:
 };
 
 template <typename R>
-ThreadPool<R>::ThreadPool(unsigned int num_threads, bool deferred)
+ThreadPool<R>::ThreadPool(unsigned num_threads, bool deferred)
     : _state {State::Stopped}
     , _continue {true}
     , _threads {}
@@ -101,11 +101,11 @@ ThreadPool<R>::ThreadPool(unsigned int num_threads, bool deferred)
     , _task_count_mutex {}
     , _task_added {}
     , _task_completed {}
-    , _latch {num_threads + static_cast<unsigned int>(deferred)}
+    , _latch {num_threads + static_cast<unsigned>(deferred)}
 {
-	std::latch latch(num_threads + static_cast<unsigned int>(deferred));
+	std::latch latch(num_threads + static_cast<unsigned>(deferred));
 
-	for (unsigned int i {0}; i < num_threads; ++i) {
+	for (unsigned i {0}; i < num_threads; ++i) {
 		_threads.emplace_back([this, i]() {
 			_latch.arrive_and_wait();
 			process_tasks(i);
@@ -116,7 +116,7 @@ ThreadPool<R>::ThreadPool(unsigned int num_threads, bool deferred)
 }
 
 template <typename R>
-void ThreadPool<R>::process_tasks(unsigned int with_thread_index)
+void ThreadPool<R>::process_tasks(unsigned with_thread_index)
 {
 	while (true) {
 		auto task = pop_task();
@@ -152,7 +152,7 @@ auto ThreadPool<R>::pop_task() -> std::unique_ptr<task_type>
 }
 
 template <typename R>
-void ThreadPool<R>::task_completed(unsigned int thread_index)
+void ThreadPool<R>::task_completed(unsigned thread_index)
 {
 	(void) thread_index;  // Unused but useful in derived classes
 

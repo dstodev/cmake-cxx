@@ -28,7 +28,7 @@ Renderer::Renderer(EventHandler const& handler)
     , _context(nullptr)
     , _shader_programs()
     , _current_shader_program(nullptr)
-    , _as_square()
+    , _player()
 {}
 
 Renderer::~Renderer()
@@ -52,7 +52,7 @@ void Renderer::init(SDL_Window* window)
 	_current_shader_program = &_shader_programs.at("xr-yg-zb");
 	_current_shader_program->use();
 
-	_as_square.init();
+	_player.init();
 }
 
 void Renderer::compile_shaders()
@@ -68,7 +68,6 @@ void Renderer::compile_shaders()
 		if (!inserted) {
 			auto& key_or_value = *iterator;
 			auto& program = key_or_value.second;
-
 			program.add_shader(shader_path);
 		}
 	}
@@ -114,13 +113,13 @@ void Renderer::draw(Simulation const& simulation)
 	    {1.0f, -1.0f, 0.0f},  // bottom-right
 	    {-1.0f, -1.0f, 0.0f}  // bottom-left
 	};
-	full_square *= 0.9;
 
 	auto blue = (sin(static_cast<float>(SDL_GetTicks64()) / 2000.0f) + 1) / 2.0f;
 	auto blue_uniform = _current_shader_program->get_uniform_location("blue");
 	glUniform1f(blue_uniform, blue);
 
-	_as_square.draw(full_square.data(), GL_DYNAMIC_DRAW);
+	_player.set_vertices(full_square.data(), 1, GL_DYNAMIC_DRAW);
+	_player.draw();
 }
 
 void Renderer::draw(Player const& player, Point<int> const& view_center)

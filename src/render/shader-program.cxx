@@ -59,12 +59,12 @@ void ShaderProgram::add_shader(std::filesystem::path const& path)
 	glDeleteShader(shader_id);
 }
 
-unsigned int ShaderProgram::get_shader_type(std::filesystem::path const& path) const
+unsigned ShaderProgram::get_shader_type(std::filesystem::path const& path) const
 {
 	auto const extension = path.extension();
 	auto const filename = path.filename().string();
 
-	unsigned int shader_type = 0;
+	unsigned shader_type = 0;
 
 	if (extension == ".vs") {
 		log::info("Compiling vertex shader: {}\n", filename);

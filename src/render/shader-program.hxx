@@ -26,12 +26,12 @@ public:
 	std::string name() const;
 
 protected:
-	unsigned int _id;
+	unsigned _id;
 	std::string _name;
-	unsigned int _vertex;
-	unsigned int _fragment;
+	unsigned _vertex;
+	unsigned _fragment;
 
-	unsigned int get_shader_type(std::filesystem::path const& path) const;
+	unsigned get_shader_type(std::filesystem::path const& path) const;
 };
 
 }  // namespace project

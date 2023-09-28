@@ -6,10 +6,10 @@ target_sources(${target_name}
 		scene-render-visitor.hxx
 		shader-program.cxx
 		shader-program.hxx
+		square.cxx
+		square.hxx
 		texture.cxx
 		texture.hxx
-		vao-square.cxx
-		vao-square.hxx
 )
 target_include_directories(${target_name}
 	PUBLIC

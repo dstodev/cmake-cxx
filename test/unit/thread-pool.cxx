@@ -81,10 +81,10 @@ TEST(ThreadPool, wait)
 			pool.add_task([&count]() { count += 1; });
 		}
 		pool.wait();
-		ASSERT_EQ((cycle + 1) * num_tasks, static_cast<unsigned int>(count));
+		ASSERT_EQ((cycle + 1) * num_tasks, static_cast<unsigned>(count));
 	}
 
-	ASSERT_EQ(num_cycles * num_tasks, static_cast<unsigned int>(count));
+	ASSERT_EQ(num_cycles * num_tasks, static_cast<unsigned>(count));
 }
 
 TEST(ThreadPool, wait_when_empty)
@@ -100,12 +100,12 @@ public:
 	using BaseType = ThreadPool<R>;
 	using State = typename BaseType::State;
 
-	explicit ThreadTelemetry(unsigned int num_threads = 1, bool deferred = false)
+	explicit ThreadTelemetry(unsigned num_threads = 1, bool deferred = false)
 	    : BaseType(num_threads, deferred)
 	    , _thread_contributions(num_threads, 0)
 	{}
 
-	auto thread_task_contributions() const -> std::vector<unsigned int> const&
+	auto thread_task_contributions() const -> std::vector<unsigned> const&
 	{
 		return _thread_contributions;
 	}
@@ -116,13 +116,13 @@ public:
 	}
 
 private:
-	void task_completed(unsigned int thread_index) override
+	void task_completed(unsigned thread_index) override
 	{
 		_thread_contributions[thread_index] += 1;
 		BaseType::task_completed(thread_index);
 	}
 
-	std::vector<unsigned int> _thread_contributions;
+	std::vector<unsigned> _thread_contributions;
 };
 
 TEST(ThreadPool, tasks_run_asynchronously)

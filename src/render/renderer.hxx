@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #include <shader-program.hxx>
-#include <vao-square.hxx>
+#include <square.hxx>
 
 struct SDL_Window;
 using SDL_GLContext = void*;  // from SDL_video.h
@@ -25,6 +25,8 @@ class Simulation;
 class Renderer
 {
 public:
+	using ShaderMap = std::unordered_map<std::string, ShaderProgram>;
+
 	explicit Renderer(EventHandler const& handler);
 	~Renderer();
 
@@ -52,11 +54,12 @@ private:
 	SDL_Window* _window;
 	SDL_GLContext _context;
 
+	// TODO: Move shaders to render objects like Square?
 	void compile_shaders();
-	std::unordered_map<std::string, ShaderProgram> _shader_programs;
+	ShaderMap _shader_programs;
 	ShaderProgram* _current_shader_program;
 
-	vao::Square _as_square;
+	Square _player;
 };
 
 }  // namespace project
