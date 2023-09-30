@@ -87,15 +87,14 @@ message_gate_open()  # This should be at bottom of file
 if(WIN32)
 	# https://github.com/nigels-com/glew/releases
 	set(url "https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0-win32.zip")
-else()
 	# set(url "https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.tgz")
-endif()
-CPMAddPackage(NAME glew
-	URL ${url}
-	DOWNLOAD_ONLY TRUE
-)
-set(target_name GLEW::GLEW)
-if(WIN32)
+
+	CPMAddPackage(NAME glew
+		URL ${url}
+		DOWNLOAD_ONLY TRUE
+	)
+	set(target_name GLEW::GLEW)
+
 	add_library(${target_name} IMPORTED ${lib_type})
 	if(BUILD_SHARED_LIBS)
 		set_target_properties(${target_name} PROPERTIES
@@ -109,11 +108,16 @@ if(WIN32)
 			IMPORTED_LOCATION "${glew_SOURCE_DIR}/lib/Release/x64/glew32s.lib"
 		)
 	endif()
-else()
-	message(FATAL_ERROR "TODO")
+	target_include_directories(${target_name} INTERFACE
+		$<BUILD_INTERFACE:${glew_SOURCE_DIR}/include>
+		$<INSTALL_INTERFACE:include>
+	)
+	message(FORCE STATUS "Found GLEW: ${target_name}")
+elseif(APPLE)
+	find_package(GLEW)  # REQUIRED keyword is not respected by FindGLEW.cmake
+	if(GLEW_FOUND)
+		message(FORCE STATUS "Found GLEW: GLEW::GLEW")
+	else()
+		message(FATAL_ERROR " Could not find GLEW! Please install it e.g. brew install glew")
+	endif()
 endif()
-target_include_directories(${target_name} INTERFACE
-	$<BUILD_INTERFACE:${glew_SOURCE_DIR}/include>
-	$<INSTALL_INTERFACE:include>
-)
-message(FORCE STATUS "Found GLEW: ${target_name}")

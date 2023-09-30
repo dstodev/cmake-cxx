@@ -13,9 +13,16 @@ And plenty of CMake & C++ utilities; see [FEATURES.md](FEATURES.md) for details!
 
 ## Build dependencies
 
+### All platforms
+
 - [Git](https://git-scm.com/)
 - [CMake](https://cmake.org/)
 - [Docker](https://www.docker.com/) (to run Docker tests)
+
+### MacOS
+
+- [Homebrew](https://brew.sh/) (optional)
+- [GLEW](http://glew.sourceforge.net/) (`brew install glew`)
 
 ## Running tests
 

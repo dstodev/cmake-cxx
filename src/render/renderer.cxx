@@ -10,8 +10,6 @@
 #include <Windows.h>
 #endif
 #include <GL/glew.h>
-// Must include GL/glew.h before GL/gl.h
-#include <GL/gl.h>
 
 #include <event-handler.hxx>
 #include <log.hxx>

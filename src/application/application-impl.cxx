@@ -55,6 +55,10 @@ void ApplicationImpl::init()
 		log::warn("SDL_SetHint() failed!\n");
 	}
 
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+
 	auto const window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL;
 	if ((_window = SDL_CreateWindow("Project",
 	                                SDL_WINDOWPOS_CENTERED,
