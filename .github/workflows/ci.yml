@@ -24,7 +24,7 @@ on:
         required: false
 
       log-level:
-        description: 'Log level'
+        description: 'Log level (Debug only)'
         default: 'info'
         type: choice
         options:
@@ -36,7 +36,7 @@ on:
         required: false
 
       verbose:
-        description: 'Verbose build output'
+        description: 'Verbose build (MacOS & Linux)'
         default: false
         type: boolean
         required: false
@@ -45,7 +45,7 @@ env:
   # Defaults
   DEFAULT_BUILD_TYPE: 'Release'
   DEFAULT_JOB_FILTER: ''
-  DEFAULT_LOG_LEVEL: 'info'  # Only valid when build type is Debug
+  DEFAULT_LOG_LEVEL: 'info'
   DEFAULT_VERBOSE: false
 
 jobs:
@@ -105,7 +105,7 @@ jobs:
           cmake --build build/$env:BUILD_TYPE --target all-unit --config $env:BUILD_TYPE --parallel
       - name: Package
         run: |
-          cmake --build build/$BUILD_TYPE --target build-package --parallel
+          cmake --build build/$env:BUILD_TYPE --target build-package --parallel
       - uses: actions/upload-artifact@v3  # https://github.com/actions/upload-artifact
         with:
           name: package-${{ github.job }}

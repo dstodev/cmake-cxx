@@ -27,7 +27,7 @@ Level level_from(char const* level)
 	else if (level_lowercase == "debug") {
 		result = Level::Debug;
 	}
-	else if (level_lowercase == "info") {
+	else if (level_lowercase == "info" || level_lowercase == "status") {
 		result = Level::Info;
 	}
 	else if (level_lowercase == "warn" || level_lowercase == "warning") {

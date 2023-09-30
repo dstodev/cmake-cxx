@@ -51,6 +51,26 @@ The following scripts have been tested on MacOS Monterey and Windows 11.
 > Building the package requires CPack, normally included with CMake.  
 > If CMake is installed by an IDE, such as CLion, CPack may not be included.
 
+## Logging
+
+Tests and the main program log information to the console if `app-console` is
+launched instead of `app-gui` using a Debug build.
+
+Release builds of the main application optimize out logging statements, so this
+variable has no effect.
+
+The main program additionally respects the `LOG_LEVEL` environment variable.
+The value of `LOG_LEVEL` may be one of:
+
+| Level   | Description               |
+|---------|---------------------------|
+| (none)  | No logging.               |
+| ERROR   | Errors only               |
+| WARNING | Warnings and above        |
+| INFO    | Status messages and above |
+| DEBUG   | Debug messages and above  |
+| TRACE   | Trace messages and above  |
+
 ## Helper Commands
 
 Open terminal in docker build environment  
