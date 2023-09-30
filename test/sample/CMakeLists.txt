@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.18)
 project(SampleProject)
 
+cmake_policy(SET CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0091.html
+
 #[[
 	The following snippet looks for project.cmake anywhere in the primary
 	build directory.
@@ -32,6 +34,8 @@ include(${project_exports})
 get_filename_component(exports_dir "${project_exports}" DIRECTORY)
 set(package_root "${exports_dir}/..")
 set(CMAKE_MSVCIDE_RUN_PATH "${package_root}/bin")
+
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE STRING "MSVC runtime")
 
 add_executable(main WIN32 MACOSX_BUNDLE main.cxx)
 add_custom_target(run main)
