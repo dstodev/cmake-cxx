@@ -159,7 +159,7 @@ jobs:
           fi
           cmake -S . -B build/$BUILD_TYPE "${cmake_flags[@]}"
       - name: Run tests
-        run: cmake --build build/$BUILD_TYPE --target all-unit --parallel
+        run: cmake --build build/$BUILD_TYPE --target all-test --parallel
       - name: Build package
         run: cmake --build build/$BUILD_TYPE --target build-package --parallel
       - uses: actions/upload-artifact@v3
