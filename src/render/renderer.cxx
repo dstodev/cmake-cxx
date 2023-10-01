@@ -29,11 +29,6 @@ Renderer::Renderer(EventHandler const& handler)
     , _player()
 {}
 
-Renderer::~Renderer()
-{
-	deinit();
-}
-
 void Renderer::init(SDL_Window* window)
 {
 	_window = window;
@@ -78,7 +73,15 @@ void Renderer::compile_shaders()
 
 void Renderer::deinit()
 {
+	_shader_programs.clear();
+	_current_shader_program = nullptr;
+
+	_player.deinit();
+
 	SDL_GL_DeleteContext(_context);
+	_context = nullptr;
+
+	_window = nullptr;
 }
 
 void Renderer::refresh()

@@ -22,6 +22,8 @@ ApplicationImpl::ApplicationImpl()
     , _window(nullptr)
 {}
 
+ApplicationImpl::~ApplicationImpl() = default;
+
 ApplicationImpl& ApplicationImpl::instance()
 {
 	static ApplicationImpl instance;
@@ -31,7 +33,6 @@ ApplicationImpl& ApplicationImpl::instance()
 int ApplicationImpl::app_main(int argc, char* argv[])
 {
 	init();
-	_state = ApplicationState::RUNNING;
 	run_until_user_quit();
 	quit();
 	return 0;
@@ -78,6 +79,8 @@ void ApplicationImpl::init()
 
 void ApplicationImpl::run_until_user_quit()
 {
+	_state = ApplicationState::RUNNING;
+
 	while (handle_user_input(), _state == ApplicationState::RUNNING) {
 		tick();
 		render();

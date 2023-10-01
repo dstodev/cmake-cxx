@@ -370,7 +370,7 @@ TEST(ThreadPool, deferred_start)
 	}
 
 	// Give the threads a chance to run
-	std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 	// The threads should not have started yet
 	ASSERT_EQ(0, count);

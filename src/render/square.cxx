@@ -6,13 +6,6 @@
 
 namespace project {
 
-Square::~Square()
-{
-	glDeleteVertexArrays(1, &_vao);
-	glDeleteBuffers(1, &_vbo);
-	glDeleteBuffers(1, &_ebo);
-}
-
 void Square::init()
 {
 	glGenVertexArrays(1, &_vao);
@@ -32,6 +25,13 @@ void Square::init()
 	//	// Second shader parameter is 3-float color vector
 	//	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
 	//	glEnableVertexAttribArray(1);
+}
+
+void Square::deinit()
+{
+	glDeleteVertexArrays(1, &_vao);
+	glDeleteBuffers(1, &_vbo);
+	glDeleteBuffers(1, &_ebo);
 }
 
 void Square::bind() const

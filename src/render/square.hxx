@@ -14,9 +14,9 @@ public:
 	static unsigned constexpr shader_parameters_per_vertex = 3u;  ///< x y z
 	static unsigned constexpr shader_parameters_per_square = vertices_per_square * shader_parameters_per_vertex;
 
-	~Square();
-
 	void init();
+	void deinit();
+
 	void bind() const;
 
 	void set_vertices(const float vertices[], unsigned num_squares = 1, int gl_mode = GL_STATIC_DRAW);  ///< Calls bind() and sets the vertices

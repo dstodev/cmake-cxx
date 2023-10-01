@@ -28,7 +28,6 @@ public:
 	using ShaderMap = std::unordered_map<std::string, ShaderProgram>;
 
 	explicit Renderer(EventHandler const& handler);
-	~Renderer();
 
 	Renderer(Renderer const& copy) = delete;
 	Renderer(Renderer&& move) = default;
