@@ -7,13 +7,13 @@
 
 namespace project {
 
-ShaderProgram::ShaderProgram(std::filesystem::path const& path, std::string name)
+ShaderProgram::ShaderProgram(path_type const& first_shader, std::string&& name)
     : _id(glCreateProgram())
     , _name(std::move(name))
     , _vertex(0)
     , _fragment(0)
 {
-	add_shader(path);
+	add_shader(first_shader);
 }
 
 ShaderProgram::~ShaderProgram()
@@ -21,7 +21,12 @@ ShaderProgram::~ShaderProgram()
 	glDeleteProgram(_id);
 }
 
-void ShaderProgram::add_shader(std::filesystem::path const& path)
+std::string ShaderProgram::name() const
+{
+	return _name;
+}
+
+void ShaderProgram::add_shader(path_type const& path)
 {
 	auto const shader_type = get_shader_type(path);
 	int success;
@@ -59,28 +64,6 @@ void ShaderProgram::add_shader(std::filesystem::path const& path)
 	glDeleteShader(shader_id);
 }
 
-unsigned ShaderProgram::get_shader_type(std::filesystem::path const& path) const
-{
-	auto const extension = path.extension();
-	auto const filename = path.filename().string();
-
-	unsigned shader_type = 0;
-
-	if (extension == ".vs") {
-		log::info("Compiling vertex shader: {}\n", filename);
-		shader_type = GL_VERTEX_SHADER;
-	}
-	else if (extension == ".fs") {
-		log::info("Compiling fragment shader: {}\n", filename);
-		shader_type = GL_FRAGMENT_SHADER;
-	}
-	else {
-		log::warn("Unknown shader file: {}\n", path.string());
-	}
-
-	return shader_type;
-}
-
 void ShaderProgram::link() const
 {
 	int success;
@@ -108,9 +91,26 @@ int ShaderProgram::get_uniform_location(const char* name) const
 	return glGetUniformLocation(_id, name);
 }
 
-std::string ShaderProgram::name() const
+unsigned ShaderProgram::get_shader_type(path_type const& path) const
 {
-	return _name;
+	auto const extension = path.extension();
+	auto const filename = path.filename().string();
+
+	unsigned shader_type = 0;
+
+	if (extension == ".vs") {
+		log::info("Compiling vertex shader: {}\n", filename);
+		shader_type = GL_VERTEX_SHADER;
+	}
+	else if (extension == ".fs") {
+		log::info("Compiling fragment shader: {}\n", filename);
+		shader_type = GL_FRAGMENT_SHADER;
+	}
+	else {
+		log::warn("Unknown shader file: {}\n", path.string());
+	}
+
+	return shader_type;
 }
 
 }  // namespace project

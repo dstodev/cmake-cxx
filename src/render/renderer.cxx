@@ -59,9 +59,10 @@ void Renderer::compile_shaders()
 
 	for (auto const& shader_file : std::filesystem::directory_iterator(shader_dir)) {
 		auto const& shader_path = shader_file.path();
-		auto const& shader_name = shader_path.stem().string();
+		std::string shader_name = shader_path.stem().string();
 
-		auto const& [iterator, inserted] = _shader_programs.try_emplace(shader_name, shader_path, shader_name);
+		auto const& [iterator,
+		             inserted] = _shader_programs.try_emplace(shader_name, shader_path, std::move(shader_name));
 
 		if (!inserted) {
 			auto& key_or_value = *iterator;

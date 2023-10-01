@@ -9,7 +9,9 @@ namespace project {
 class ShaderProgram
 {
 public:
-	ShaderProgram(std::filesystem::path const& path, std::string name);
+	using path_type = std::filesystem::path;
+
+	ShaderProgram(path_type const& first_shader, std::string&& name);
 	~ShaderProgram();
 
 	ShaderProgram(ShaderProgram const& copy) = delete;
@@ -17,13 +19,12 @@ public:
 	ShaderProgram& operator=(ShaderProgram const& copy) = delete;
 	ShaderProgram& operator=(ShaderProgram&& move) = default;
 
-	void add_shader(std::filesystem::path const& path);
-	void link() const;
-	void use() const;
-
-	int get_uniform_location(char const* name) const;
-
 	std::string name() const;
+	void add_shader(path_type const& path);
+	void link() const;
+
+	void use() const;
+	int get_uniform_location(char const* name) const;
 
 protected:
 	unsigned _id;
@@ -31,7 +32,7 @@ protected:
 	unsigned _vertex;
 	unsigned _fragment;
 
-	unsigned get_shader_type(std::filesystem::path const& path) const;
+	unsigned get_shader_type(path_type const& path) const;
 };
 
 }  // namespace project
