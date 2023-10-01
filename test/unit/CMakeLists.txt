@@ -28,6 +28,7 @@ if(TEST_GUI)
 
 		LIBRARIES
 			project
+			GLEW::GLEW
 			SDL2::SDL2
 
 		MAIN ../sdl-main.cxx

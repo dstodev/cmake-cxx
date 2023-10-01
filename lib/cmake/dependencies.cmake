@@ -81,8 +81,6 @@ directory_targets(targets ${fmt_SOURCE_DIR} RECURSIVE)
 string(REPLACE ";" " " targets "${targets}")
 message(FORCE STATUS "Found fmt: ${targets}")
 
-message_gate_open()  # This should be at bottom of file
-
 ##  GLEW  ##
 if(WIN32)
 	# https://github.com/nigels-com/glew/releases
@@ -121,3 +119,5 @@ elseif(APPLE)
 		message(FATAL_ERROR " Could not find GLEW! Please install it e.g. brew install glew")
 	endif()
 endif()
+
+message_gate_open()  # This should be at bottom of file
