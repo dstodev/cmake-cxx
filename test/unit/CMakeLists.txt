@@ -18,17 +18,18 @@ add_google_executable(unit-project TEST
 		project
 )
 
-add_google_executable(unit-sdl2 TEST
-	SOURCES
-		application.cxx
-		texture.cxx
+if(TEST_GUI)
+	add_google_executable(unit-sdl2 TEST
+		SOURCES
+			application.cxx
+			texture.cxx
 
-	LIBRARIES
-		project
+		LIBRARIES
+			project
+			SDL2::SDL2
 
-		SDL2::SDL2
-
-	MAIN ../sdl-main.cxx
-)
+		MAIN ../sdl-main.cxx
+	)
+endif()
 
 add_local_all_target(all-unit)

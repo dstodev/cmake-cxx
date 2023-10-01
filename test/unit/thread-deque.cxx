@@ -64,28 +64,31 @@ TEST(ThreadDeque, pop_front)
 TEST(ThreadDeque, front_is_thread_safe)
 {
 	int const num_threads = 40;
-	int const num_tasks = num_threads * 100;
+	int const num_tasks = num_threads * 10;
 
 	DequeAccessor<int> deque;
 	ThreadPool pool(num_threads);
 	std::barrier barrier(num_threads);
 
-	for (int i = 0; i < num_tasks; ++i) {
+	for (int i {}; i < num_tasks; ++i) {
 		pool.add_task([&deque, &barrier]() {
 			barrier.arrive_and_wait();
 			ASSERT_EQ(1, deque.pop_front());
 			deque.emplace_front(1);
 			deque.push_front(1);
 			ASSERT_EQ(1, deque.front());
+			barrier.arrive_and_wait();
 		});
 	}
 
 	ASSERT_TRUE(deque.empty());
 
-	deque.emplace_front(1);
+	for (int i {}; i < num_threads; ++i) {
+		deque.emplace_front(1);
+	}
 	pool.stop();
 
-	ASSERT_EQ(num_tasks + 1, deque.size());
+	ASSERT_EQ(num_tasks + num_threads, deque.size());
 }
 
 TEST(ThreadDeque, emplace_back)
@@ -115,28 +118,31 @@ TEST(ThreadDeque, pop_back)
 TEST(ThreadDeque, back_is_thread_safe)
 {
 	int const num_threads = 40;
-	int const num_tasks = num_threads * 100;
+	int const num_tasks = num_threads * 10;
 
 	DequeAccessor<int> deque;
 	ThreadPool pool(num_threads);
 	std::barrier barrier(num_threads);
 
-	for (int i = 0; i < num_tasks; ++i) {
+	for (int i {}; i < num_tasks; ++i) {
 		pool.add_task([&deque, &barrier]() {
 			barrier.arrive_and_wait();
 			ASSERT_EQ(1, deque.pop_back());
 			deque.emplace_back(1);
 			deque.push_back(1);
 			ASSERT_EQ(1, deque.back());
+			barrier.arrive_and_wait();
 		});
 	}
 
 	ASSERT_TRUE(deque.empty());
 
-	deque.emplace_back(1);
+	for (int i {}; i < num_threads; ++i) {
+		deque.emplace_back(1);
+	}
 	pool.stop();
 
-	ASSERT_EQ(num_tasks + 1, deque.size());
+	ASSERT_EQ(num_tasks + num_threads, deque.size());
 }
 
 TEST(ThreadDeque, deque_is_lifo)

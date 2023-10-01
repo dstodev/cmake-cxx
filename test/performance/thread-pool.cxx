@@ -11,7 +11,7 @@ static void count_single_threaded(benchmark::State& state)
 	for (auto _ : state) {
 		int count = 0;
 
-		for (int i = 0; i < num_tasks; ++i) {  // loop may be optimized away
+		for (int i {}; i < num_tasks; ++i) {  // loop may be optimized away
 			count += (i + 1);
 		}
 
@@ -26,7 +26,7 @@ static void count_single_threaded_volatile(benchmark::State& state)
 	for (auto _ : state) {
 		volatile int count = 0;  // volatile prevents compiler from optimizing away the loop
 
-		for (int i = 0; i < num_tasks; ++i) {
+		for (int i {}; i < num_tasks; ++i) {
 			count += (i + 1);
 		}
 
@@ -41,7 +41,7 @@ static void count_single_threaded_atomic(benchmark::State& state)
 	for (auto _ : state) {
 		volatile std::atomic_int count = 0;
 
-		for (int i = 0; i < num_tasks; ++i) {
+		for (int i {}; i < num_tasks; ++i) {
 			count += (i + 1);
 		}
 
@@ -57,7 +57,7 @@ static void count_multithreaded(benchmark::State& state)
 		ThreadPool pool(state.range(0));
 		volatile std::atomic_int count = 0;
 
-		for (int i = 0; i < num_tasks; ++i) {
+		for (int i {}; i < num_tasks; ++i) {
 			pool.add_task([&count, i]() { count += (i + 1); });
 		}
 
@@ -74,7 +74,7 @@ static void count_multithreaded_initialized(benchmark::State& state)
 	for (auto _ : state) {
 		volatile std::atomic_int count = 0;
 
-		for (int i = 0; i < num_tasks; ++i) {
+		for (int i {}; i < num_tasks; ++i) {
 			pool.add_task([&count, i]() { count += (i + 1); });
 		}
 

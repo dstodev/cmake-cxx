@@ -66,13 +66,13 @@ static void TEST_lock(bool high_priority)
 	volatile int value = 0;
 
 	// Assuming the mutex does not work, try to force a race condition.
-	for (int i = 0; i < num_tasks; ++i) {
+	for (int i {}; i < num_tasks; ++i) {
 		pool.add_task([&]() {
 			barrier.arrive_and_wait();
 			jitter_sleep();
 			std::unique_lock lock(mutex);
 
-			for (int j = 0; j < num_additions; ++j) {
+			for (int j {}; j < num_additions; ++j) {
 				value += 1;
 			}
 		});
@@ -105,10 +105,10 @@ TEST(PriorityMutex, high_priority_lock_takes_priority)
 	std::counting_semaphore<num_threads> gate(0);
 	std::barrier barrier(num_threads + 1);
 
-	for (int cycles = 0; cycles < num_cycles; ++cycles) {
+	for (int cycles {}; cycles < num_cycles; ++cycles) {
 		std::vector<char> values;
 
-		for (int i = 0; i < num_threads - 1; ++i) {
+		for (int i {}; i < num_threads - 1; ++i) {
 			pool.add_task([&]() {
 				barrier.arrive_and_wait();
 				mutex.lock();

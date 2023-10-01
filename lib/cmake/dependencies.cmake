@@ -1,5 +1,5 @@
 # Look for dependency root adjacent to the build directory
-set(CPM_SOURCE_CACHE "${PROJECT_BINARY_DIR}/../_dependency-cache")
+file(REAL_PATH "${PROJECT_BINARY_DIR}/../_dependency-cache" CPM_SOURCE_CACHE)
 
 include(lib/third-party/cpm.cmake)
 
@@ -7,7 +7,8 @@ message(STATUS "Adding system packages...")
 
 #find_package(OpenGL REQUIRED)
 
-message(STATUS "Adding dependency packages...")
+message(STATUS "Adding dependency packages...\n   (from: ${CPM_SOURCE_CACHE})")
+
 message_gate_close()
 
 CPMAddPackage(NAME googletest

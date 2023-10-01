@@ -24,6 +24,10 @@ setup_build_mode()
 
 project(Project)
 
+# Our options
+option(TEST_GUI "Run GUI tests (requires attached display)?" TRUE)
+
+# CMake options
 set(CMAKE_CXX_STANDARD 20 CACHE STRING "C++ standard version")
 
 option(BUILD_SHARED_LIBS "Build a shared artifact (.dll, .so, .dylib)?" TRUE)
@@ -51,6 +55,7 @@ check_pie_supported()
 set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)  # Do not populate CTest/CDash targets
 include(CTest)  # used instead of `enable_testing()` for better IDE compatibility
 
+# Sources
 include(dependencies)  # lib/cmake/dependencies.cmake
 
 add_subdirectory(src)

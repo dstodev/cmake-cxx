@@ -99,13 +99,12 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Test
-        run: |
-          cmake -S . -B build/$env:BUILD_TYPE
-          cmake --build build/$env:BUILD_TYPE --target all-unit --config $env:BUILD_TYPE --parallel
-      - name: Package
-        run: |
-          cmake --build build/$env:BUILD_TYPE --target build-package --parallel
+      - name: Configure
+        run: cmake -S . -B build/$env:BUILD_TYPE -DTEST_GUI=OFF
+      - name: Run tests
+        run: cmake --build build/$env:BUILD_TYPE --target all-test --config $env:BUILD_TYPE --parallel
+      - name: Build package
+        run: cmake --build build/$env:BUILD_TYPE --target build-package --parallel
       - uses: actions/upload-artifact@v3  # https://github.com/actions/upload-artifact
         with:
           name: package-${{ github.job }}
@@ -120,16 +119,20 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Test
+      - name: Configure
         run: |
+          cmake_flags=(
+            -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+            -DTEST_GUI=OFF
+          )
           if [ "$VERBOSE_MAKEFILE" = 'true' ]; then
-            verbose_makefile='-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON'
+            cmake_flags+=('-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON')
           fi
-          cmake -S . -B build/$BUILD_TYPE -DCMAKE_BUILD_TYPE=$BUILD_TYPE $verbose_makefile
-          cmake --build build/$BUILD_TYPE --target all-unit --parallel
-      - name: Package
-        run: |
-          cmake --build build/$BUILD_TYPE --target build-package --parallel
+          cmake -S . -B build/$BUILD_TYPE "${cmake_flags[@]}"
+      - name: Run tests
+        run: cmake --build build/$BUILD_TYPE --target all-test --parallel
+      - name: Build package
+        run: cmake --build build/$BUILD_TYPE --target build-package --parallel
       - uses: actions/upload-artifact@v3
         with:
           name: package-${{ github.job }}
@@ -145,16 +148,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Test
+      - name: Configure
         run: |
+          cmake_flags=(
+            -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+            -DTEST_GUI=OFF
+          )
           if [ "$VERBOSE_MAKEFILE" = 'true' ]; then
-            verbose_makefile='-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON'
+            cmake_flags+=('-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON')
           fi
-          cmake -S . -B build/$BUILD_TYPE -DCMAKE_BUILD_TYPE=$BUILD_TYPE $verbose_makefile
-          cmake --build build/$BUILD_TYPE --target all-unit --parallel
-      - name: Package
-        run: |
-          cmake --build build/$BUILD_TYPE --target build-package --parallel
+          cmake -S . -B build/$BUILD_TYPE "${cmake_flags[@]}"
+      - name: Run tests
+        run: cmake --build build/$BUILD_TYPE --target all-unit --parallel
+      - name: Build package
+        run: cmake --build build/$BUILD_TYPE --target build-package --parallel
       - uses: actions/upload-artifact@v3
         with:
           name: package-${{ github.job }}
