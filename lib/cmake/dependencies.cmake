@@ -11,6 +11,7 @@ message(STATUS "Adding dependency packages...\n   (from: ${CPM_SOURCE_CACHE})")
 
 message_gate_close()
 
+## GoogleTest ##
 CPMAddPackage(NAME googletest
 	GITHUB_REPOSITORY google/googletest
 	VERSION 1.13.0
@@ -22,6 +23,7 @@ directory_targets(targets ${googletest_SOURCE_DIR} RECURSIVE)
 string(REPLACE ";" " " targets "${targets}")
 message(FORCE STATUS "Found Googletest: ${targets}")
 
+## Google Benchmark ##
 CPMAddPackage(NAME benchmark
 	GITHUB_REPOSITORY google/benchmark
 	VERSION 1.8.0
@@ -33,6 +35,7 @@ directory_targets(targets ${benchmark_SOURCE_DIR} RECURSIVE)
 string(REPLACE ";" " " targets "${targets}")
 message(FORCE STATUS "Found Benchmark: ${targets}")
 
+## Eigen ##
 CPMAddPackage(NAME eigen
 	GITLAB_REPOSITORY libeigen/eigen
 	GIT_TAG 3.4.0
@@ -42,12 +45,13 @@ add_library(eigen INTERFACE)
 add_library(Eigen3::Eigen ALIAS eigen)
 target_include_directories(eigen
 	INTERFACE
-		$<BUILD_INTERFACE:${eigen_SOURCE_DIR}>
-		$<INSTALL_INTERFACE:include>
+	$<BUILD_INTERFACE:${eigen_SOURCE_DIR}>
+	$<INSTALL_INTERFACE:include>
 )
 set(eigen_SOURCE_DIR ${CPM_PACKAGE_eigen_SOURCE_DIR} CACHE INTERNAL "Eigen source directory")
 message(FORCE STATUS "Found Eigen: eigen Eigen3::Eigen")
 
+## SDL2 ##
 CPMAddPackage(NAME sdl
 	GITHUB_REPOSITORY libsdl-org/SDL
 	GIT_TAG release-2.26.5
@@ -59,6 +63,7 @@ directory_targets(targets ${sdl_SOURCE_DIR} RECURSIVE)
 string(REPLACE ";" " " targets "${targets}")
 message(FORCE STATUS "Found SDL: ${targets}")
 
+## fmt ##
 CPMAddPackage(NAME fmt
 	GITHUB_REPOSITORY fmtlib/fmt
 	GIT_TAG 10.0.0
