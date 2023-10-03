@@ -2,15 +2,15 @@
 
 # Project Features
 
-This project implements many CMake and C++ utilities as a starting point for
-developers starting new modern C++ projects.
+This project implements CMake and C++ utilities for developers starting new
+modern C++ projects.
 
 ## CMake Features
 
-- Custom CMake testing framework [expect()](lib/cmake/ExpectConfig.cmake)
-- Argument parsing helper [help_parse_arguments()](lib/cmake/HelpParseArgumentsConfig.cmake)
-- Logging utilities e.g. [log_vars](lib/cmake/LogVarsConfig.cmake)
-- Target utilities e.g. [directory_targets()](lib/cmake/TargetUtilitiesConfig.cmake)
+- Custom CMake testing framework [expect()](lib/cmake/config/ExpectConfig.cmake)
+- Argument parsing helper [help_parse_arguments()](lib/cmake/config/HelpParseArgumentsConfig.cmake)
+- Logging utilities e.g. [log_vars](lib/cmake/config/LogVarsConfig.cmake)
+- Target utilities e.g. [directory_targets()](lib/cmake/config/TargetUtilitiesConfig.cmake)
 
 ## C++ Features
 
