@@ -16,7 +16,6 @@
 #include <player.hxx>
 #include <point.hxx>
 #include <simulation.hxx>
-#include <this-file.hxx>
 
 namespace project {
 
@@ -24,8 +23,7 @@ Renderer::Renderer(EventHandler const& handler)
     : _handler(handler)
     , _window(nullptr)
     , _context(nullptr)
-    , _shader_programs()
-    , _current_shader_program(nullptr)
+    , _shaders()
     , _player()
 {}
 
@@ -40,49 +38,11 @@ void Renderer::init(SDL_Window* window)
 	}
 
 	refresh();
-	compile_shaders();
 
-	_current_shader_program = &_shader_programs.at("xr-yg-zb");
-	_current_shader_program->use();
+	_shaders.compile();
+	_shaders.use("xr-yg-zb");
 
 	_player.init();
-}
-
-// TODO: Move to shader factory
-void Renderer::compile_shaders()
-{
-	static auto const shader_dir = THIS_DIRECTORY() / "shader";
-
-	for (auto const& shader_file : std::filesystem::directory_iterator(shader_dir)) {
-		auto const& shader_path = shader_file.path();
-		std::string shader_name = shader_path.stem().string();
-
-		auto const& [iterator,
-		             inserted] = _shader_programs.try_emplace(shader_name, shader_path, std::move(shader_name));
-
-		if (!inserted) {
-			auto& key_or_value = *iterator;
-			auto& program = key_or_value.second;
-			program.add_shader(shader_path);
-		}
-	}
-
-	for (auto& [key, program] : _shader_programs) {
-		program.link();
-	}
-}
-
-void Renderer::deinit()
-{
-	_shader_programs.clear();
-	_current_shader_program = nullptr;
-
-	_player.deinit();
-
-	SDL_GL_DeleteContext(_context);
-	_context = nullptr;
-
-	_window = nullptr;
 }
 
 void Renderer::refresh()
@@ -91,6 +51,16 @@ void Renderer::refresh()
 	int window_height;
 	SDL_GetWindowSize(_window, &window_width, &window_height);
 	glViewport(0, 0, window_width, window_height);
+}
+
+void Renderer::deinit()
+{
+	_player.deinit();
+
+	SDL_GL_DeleteContext(_context);
+	_context = nullptr;
+
+	_window = nullptr;
 }
 
 void Renderer::render()
@@ -117,8 +87,10 @@ void Renderer::draw(Simulation const& simulation)
 	    {-1.0f, -1.0f, 0.0f}  // bottom-left
 	};
 
+	// TODO: use shaders in render objects like Square?
+	auto const& shader = _shaders.get("xr-yg-zb");
 	auto blue = (sin(static_cast<float>(SDL_GetTicks64()) / 2000.0f) + 1) / 2.0f;
-	auto blue_uniform = _current_shader_program->get_uniform_location("blue");
+	auto blue_uniform = shader.get_uniform_location("blue");
 	glUniform1f(blue_uniform, blue);
 
 	_player.set_vertices(full_square.data(), 1, GL_DYNAMIC_DRAW);

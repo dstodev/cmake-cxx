@@ -1,10 +1,9 @@
 #ifndef RENDERER_HXX
 #define RENDERER_HXX
 
-#include <string>
 #include <unordered_map>
 
-#include <shader-program.hxx>
+#include <shader-factory.hxx>
 #include <square.hxx>
 
 struct SDL_Window;
@@ -22,8 +21,6 @@ class Simulation;
 class Renderer
 {
 public:
-	using ShaderMap = std::unordered_map<std::string, ShaderProgram>;
-
 	explicit Renderer(EventHandler const& handler);
 
 	Renderer(Renderer const& copy) = delete;
@@ -50,11 +47,7 @@ private:
 	SDL_Window* _window;
 	SDL_GLContext _context;
 
-	// TODO: Move shaders to render objects like Square?
-	void compile_shaders();
-	ShaderMap _shader_programs;
-	ShaderProgram* _current_shader_program;
-
+	ShaderFactory _shaders;
 	Square _player;
 };
 

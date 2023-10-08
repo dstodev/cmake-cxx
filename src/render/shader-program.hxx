@@ -1,38 +1,35 @@
 #ifndef SHADER_PROGRAM_HXX
 #define SHADER_PROGRAM_HXX
 
-#include <filesystem>
-#include <string>
-
 namespace project {
 
 class ShaderProgram
 {
 public:
-	using path_type = std::filesystem::path;
+	// clang-format off
+	static struct VertexType {} vertex_type;
+	static struct FragmentType {} fragment_type;
+	// clang-format on
 
-	ShaderProgram(path_type const& first_shader, std::string&& name);
+	ShaderProgram();
+
 	~ShaderProgram();
-
 	ShaderProgram(ShaderProgram const& copy) = delete;
 	ShaderProgram(ShaderProgram&& move) = default;
 	ShaderProgram& operator=(ShaderProgram const& copy) = delete;
 	ShaderProgram& operator=(ShaderProgram&& move) = default;
 
-	std::string name() const;
-	void add_shader(path_type const& path);
+	void add_shader(char const shader_source[], VertexType);
+	void add_shader(char const shader_source[], FragmentType);
 	void link() const;
 
 	void use() const;
 	int get_uniform_location(char const* name) const;
 
 protected:
-	unsigned _id;
-	std::string _name;
-	unsigned _vertex;
-	unsigned _fragment;
+	void add_shader(char const shader_source[], int shader_type);
 
-	unsigned get_shader_type(path_type const& path) const;
+	unsigned _id;
 };
 
 }  // namespace project
