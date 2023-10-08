@@ -19,9 +19,6 @@ class EventHandler;
 class Player;
 class Simulation;
 
-/* This class cannot be const-correct because the SDL render functions do not
-   take const pointers.
- */
 class Renderer
 {
 public:

@@ -48,9 +48,10 @@ void Renderer::init(SDL_Window* window)
 	_player.init();
 }
 
+// TODO: Move to shader factory
 void Renderer::compile_shaders()
 {
-	auto const shader_dir = THIS_DIRECTORY() / "shader";
+	static auto const shader_dir = THIS_DIRECTORY() / "shader";
 
 	for (auto const& shader_file : std::filesystem::directory_iterator(shader_dir)) {
 		auto const& shader_path = shader_file.path();

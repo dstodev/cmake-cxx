@@ -7,6 +7,8 @@
 
 namespace project {
 
+constexpr auto LOG_SIZE = 512u;
+
 ShaderProgram::ShaderProgram(path_type const& first_shader, std::string&& name)
     : _id(glCreateProgram())
     , _name(std::move(name))
@@ -30,7 +32,7 @@ void ShaderProgram::add_shader(path_type const& path)
 {
 	auto const shader_type = get_shader_type(path);
 	int success;
-	char info_log[512];
+	static char info_log[LOG_SIZE];
 
 	// The shader source is read as one single string (with multiple newlines),
 	// which is compilable by OpenGL.
@@ -67,7 +69,7 @@ void ShaderProgram::add_shader(path_type const& path)
 void ShaderProgram::link() const
 {
 	int success;
-	char info_log[512];
+	static char info_log[LOG_SIZE];
 
 	glLinkProgram(_id);
 	glGetProgramiv(_id, GL_LINK_STATUS, &success);

@@ -10,6 +10,8 @@ target_sources(${target_name}
 		square.hxx
 		texture.cxx
 		texture.hxx
+		vao.cxx
+		vao.hxx
 )
 target_include_directories(${target_name}
 	PUBLIC
