@@ -17,17 +17,17 @@ ShaderProgram::~ShaderProgram()
 	glDeleteProgram(_id);
 }
 
-void ShaderProgram::add_shader(char const shader_source[], VertexType)
+void ShaderProgram::add_shader(char const shader_source[], VertexType) const
 {
 	add_shader(shader_source, GL_VERTEX_SHADER);
 }
 
-void ShaderProgram::add_shader(char const shader_source[], FragmentType)
+void ShaderProgram::add_shader(char const shader_source[], FragmentType) const
 {
 	add_shader(shader_source, GL_FRAGMENT_SHADER);
 }
 
-void ShaderProgram::add_shader(char const shader_source[], int shader_type)
+void ShaderProgram::add_shader(char const shader_source[], int shader_type) const
 {
 	int success;
 	static char info_log[LOG_SIZE];

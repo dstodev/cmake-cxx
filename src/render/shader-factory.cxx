@@ -8,12 +8,12 @@ namespace project {
 void ShaderFactory::compile()
 {
 	{
-		auto& program = _shaders.try_emplace("xr-yg-zb").first->second;
+		auto const& program = _shaders.try_emplace("xr-yg-zb").first->second;
 		program.add_shader(xr_yg_zb_vs, ShaderProgram::vertex_type);
 		program.add_shader(xr_yg_zb_fs, ShaderProgram::fragment_type);
 	}
 
-	for (auto& [key, program] : _shaders) {
+	for (auto const& [key, program] : _shaders) {
 		program.link();
 	}
 }

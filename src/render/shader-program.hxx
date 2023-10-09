@@ -19,15 +19,15 @@ public:
 	ShaderProgram& operator=(ShaderProgram const& copy) = delete;
 	ShaderProgram& operator=(ShaderProgram&& move) = default;
 
-	void add_shader(char const shader_source[], VertexType);
-	void add_shader(char const shader_source[], FragmentType);
+	void add_shader(char const shader_source[], VertexType) const;
+	void add_shader(char const shader_source[], FragmentType) const;
 	void link() const;
 
 	void use() const;
 	int get_uniform_location(char const* name) const;
 
 protected:
-	void add_shader(char const shader_source[], int shader_type);
+	void add_shader(char const shader_source[], int shader_type) const;
 
 	unsigned _id;
 };
