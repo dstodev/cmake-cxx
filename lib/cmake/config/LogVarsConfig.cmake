@@ -4,14 +4,14 @@
 
 	Parameters
 	----------
-	var_names...
+	<var_names>... :
 		Names of variables to print
 
-	MODE mode
-		Message mode; defaults to STATUS
+	MODE <mode> :
+		Message mode. Defaults to STATUS
 
-	SPLIT_LISTS
-		If provided, list values are printed on separate lines
+	SPLIT_LISTS :
+		Print list values on separate lines
 ]]
 function(log_vars)
 	cmake_parse_arguments(PARSE_ARGV 0 args "SPLIT_LISTS" "MODE" "")

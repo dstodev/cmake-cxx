@@ -1,8 +1,5 @@
 #include "renderer.hxx"
 
-#include <cmath>
-#include <filesystem>
-
 #include <Eigen/Dense>
 #include <SDL.h>
 

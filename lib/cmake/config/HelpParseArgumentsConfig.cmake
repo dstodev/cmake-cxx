@@ -11,20 +11,19 @@
 
 	Parameters
 	----------
-	prefix
-		String prefixed to each parsed argument variable delimited with '_',
-		e.g. prefix=myprefix -> myprefix_MYARG.
+	prefix :
+		String prefixed to each parsed argument variable delimited with '_'
 
-	options
+	options :
 		List of option flags to parse for, e.g. "DO_STUFF;USE_THING"
 		For more information, view docs for cmake_parse_arguments(<options>)
 
-	one_value_keywords
+	one_value_keywords :
 		List of keywords to parse for which expect a single value, e.g. "TARGET;LIB_TYPE"
 		Supports stringified lists as the single value.
 		For more information, view docs for cmake_parse_arguments(<one_value_keywords>)
 
-	multi_value_keywords
+	multi_value_keywords :
 		List of keywords to parse for which expect multiple values, e.g. "EXTRA_CXX_FLAGS"
 		For more information, view docs for cmake_parse_arguments(<multi_value_keywords>)
 

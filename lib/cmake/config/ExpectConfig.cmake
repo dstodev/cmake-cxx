@@ -8,20 +8,20 @@
 
 	Parameters
 	----------
-	expr
+	expr :
 		Expression to test. Can use the same way as if(), e.g. expect("" IN_LIST mylist)
 
-	SAFE
+	SAFE :
 		If provided and expect() fails, the call will not count toward the number
 		of expect() failures, so will not contribute toward emitting message(FATAL_ERROR).
 		Still emits a warning message on failure.
 
-	REQUIRED
+	REQUIRED :
 		If provided and expect() fails, emits message(FATAL_ERROR) immediately
 		instead of a warning.
 		Because it emits FATAL_ERROR immediately, SAFE has no effect.
 
-	MESSAGE "custom-error-message"
+	MESSAGE "custom-error-message" :
 		If provided and expect() fails, custom-error-message emits instead of the
 		default warning message.
 

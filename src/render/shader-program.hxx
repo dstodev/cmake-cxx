@@ -6,11 +6,6 @@ namespace project {
 class ShaderProgram
 {
 public:
-	// clang-format off
-	static struct VertexType {} vertex_type;
-	static struct FragmentType {} fragment_type;
-	// clang-format on
-
 	ShaderProgram();
 
 	~ShaderProgram();
@@ -18,6 +13,11 @@ public:
 	ShaderProgram(ShaderProgram&& move) = default;
 	ShaderProgram& operator=(ShaderProgram const& copy) = delete;
 	ShaderProgram& operator=(ShaderProgram&& move) = default;
+
+	// clang-format off
+	static constexpr struct VertexType {} vertex_type;
+	static constexpr struct FragmentType {} fragment_type;
+	// clang-format on
 
 	void add_shader(char const shader_source[], VertexType) const;
 	void add_shader(char const shader_source[], FragmentType) const;

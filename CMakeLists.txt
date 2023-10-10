@@ -13,7 +13,6 @@ set(cmake_module_paths
 list(APPEND CMAKE_MODULE_PATH ${cmake_module_paths})  # mostly for include()
 list(APPEND CMAKE_PREFIX_PATH ${cmake_module_paths})  # mostly for find_package()
 
-find_package(Expect CONFIG REQUIRED)  # so modules may use expect() as a 'builtin' without find_package()
 find_package(BuildUtilities CONFIG REQUIRED)
 
 setup_build_mode()
