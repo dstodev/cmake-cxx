@@ -19,6 +19,7 @@ public:
 	void set_vertices(const float vertices[],
 	                  unsigned num_squares = 1,
 	                  int gl_mode = GL_STATIC_DRAW);  ///< Calls bind() and sets the vertices
+	// TODO: draw with attribute class as parameter?
 	void draw() const;  ///< Assumes bind() has already been called
 
 protected:

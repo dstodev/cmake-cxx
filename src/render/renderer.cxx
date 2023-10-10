@@ -88,10 +88,10 @@ void Renderer::draw(Simulation const& simulation)
 	};
 
 	// TODO: use shaders in render objects like Square?
-	auto const& shader = _shaders.get("xr-yg-zb");
-	auto blue = (sin(static_cast<float>(SDL_GetTicks64()) / 2000.0f) + 1) / 2.0f;
-	auto blue_uniform = shader.get_uniform_location("blue");
-	glUniform1f(blue_uniform, blue);
+	//	auto const& shader = _shaders.get("xr-yg-zb");
+	//	auto blue = (sin(static_cast<float>(SDL_GetTicks64()) / 2000.0f) + 1) / 2.0f;
+	//	auto blue_uniform = shader.get_uniform_location("blue");
+	//	glUniform1f(blue_uniform, blue);
 
 	_player.set_vertices(full_square.data(), 1, GL_DYNAMIC_DRAW);
 	_player.draw();
