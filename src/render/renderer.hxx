@@ -3,7 +3,7 @@
 
 #include <unordered_map>
 
-#include <shader-factory.hxx>
+#include <factory.hxx>
 #include <square.hxx>
 
 struct SDL_Window;
@@ -47,8 +47,8 @@ private:
 	SDL_Window* _window;
 	SDL_GLContext _context;
 
-	ShaderFactory _shaders;
-	Square _player;
+	shader::Factory _shaders;
+	vao::Square _squares;
 };
 
 }  // namespace project

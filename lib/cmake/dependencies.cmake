@@ -13,7 +13,7 @@ message(STATUS "Adding system packages...")
 
 find_package(OpenGL REQUIRED)
 
-message(STATUS "Adding dependency packages...\n   (from: ${CPM_SOURCE_CACHE})")
+message(STATUS "Adding dependency packages... (from: ${CPM_SOURCE_CACHE})")
 
 message_gate_close()
 

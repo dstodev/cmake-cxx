@@ -1,18 +1,18 @@
-#ifndef SHADER_PROGRAM_HXX
-#define SHADER_PROGRAM_HXX
+#ifndef PROGRAM_HXX
+#define PROGRAM_HXX
 
-namespace project {
+namespace project::shader {
 
-class ShaderProgram
+class Program
 {
 public:
-	ShaderProgram();
+	Program();
 
-	~ShaderProgram();
-	ShaderProgram(ShaderProgram const& copy) = delete;
-	ShaderProgram(ShaderProgram&& move) = default;
-	ShaderProgram& operator=(ShaderProgram const& copy) = delete;
-	ShaderProgram& operator=(ShaderProgram&& move) = default;
+	~Program();
+	Program(Program const& copy) = delete;
+	Program(Program&& move) = default;
+	Program& operator=(Program const& copy) = delete;
+	Program& operator=(Program&& move) = default;
 
 	// clang-format off
 	static constexpr struct VertexType {} vertex_type;
@@ -32,6 +32,6 @@ protected:
 	unsigned _id;
 };
 
-}  // namespace project
+}  // namespace project::shader
 
-#endif  // SHADER_PROGRAM_HXX
+#endif  // PROGRAM_HXX

@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 
-namespace project {
+namespace project::vao {
 
 void Square::set_vertices(const float vertices[], unsigned num_squares, int gl_mode)
 {
@@ -41,17 +41,6 @@ void Square::bind_buffers() const
 void Square::post_init()
 {
 	init_indices();
-
-	// First shader parameter is 3-float position vector
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-	glEnableVertexAttribArray(0);
-
-	// TODO: Add these to shader class as "register_attributes" which returns the number of shader parameters (always
-	//       float?) per vertex
-
-	//	// Second shader parameter is 3-float color vector
-	//	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
-	//	glEnableVertexAttribArray(1);
 }
 
 void Square::init_indices() const
@@ -71,4 +60,4 @@ void Square::init_indices() const
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 }
 
-}  // namespace project
+}  // namespace project::vao

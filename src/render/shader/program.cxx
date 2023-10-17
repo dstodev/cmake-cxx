@@ -1,33 +1,33 @@
-#include "shader-program.hxx"
+#include "program.hxx"
 
 #include <GL/glew.h>
 
 #include <log.hxx>
 
-namespace project {
+namespace project::shader {
 
 constexpr auto LOG_SIZE = 512u;
 
-ShaderProgram::ShaderProgram()
+Program::Program()
     : _id(glCreateProgram())
 {}
 
-ShaderProgram::~ShaderProgram()
+Program::~Program()
 {
 	glDeleteProgram(_id);
 }
 
-void ShaderProgram::add_shader(char const shader_source[], VertexType) const
+void Program::add_shader(char const shader_source[], VertexType) const
 {
 	add_shader(shader_source, GL_VERTEX_SHADER);
 }
 
-void ShaderProgram::add_shader(char const shader_source[], FragmentType) const
+void Program::add_shader(char const shader_source[], FragmentType) const
 {
 	add_shader(shader_source, GL_FRAGMENT_SHADER);
 }
 
-void ShaderProgram::add_shader(char const shader_source[], int shader_type) const
+void Program::add_shader(char const shader_source[], int shader_type) const
 {
 	int success;
 	static char info_log[LOG_SIZE];
@@ -49,7 +49,7 @@ void ShaderProgram::add_shader(char const shader_source[], int shader_type) cons
 	glDeleteShader(shader_id);
 }
 
-void ShaderProgram::link() const
+void Program::link() const
 {
 	int success;
 	static char info_log[LOG_SIZE];
@@ -63,14 +63,14 @@ void ShaderProgram::link() const
 	}
 }
 
-void ShaderProgram::use() const
+void Program::use() const
 {
 	glUseProgram(_id);
 }
 
-int ShaderProgram::get_uniform_location(const char* name) const
+int Program::get_uniform_location(const char* name) const
 {
 	return glGetUniformLocation(_id, name);
 }
 
-}  // namespace project
+}  // namespace project::shader

@@ -8,11 +8,14 @@
 #endif
 #include <GL/glew.h>
 
+#include <attribute.hxx>
 #include <event-handler.hxx>
 #include <log.hxx>
 #include <player.hxx>
 #include <point.hxx>
 #include <simulation.hxx>
+
+using project::vao::Attribute;
 
 namespace project {
 
@@ -21,7 +24,7 @@ Renderer::Renderer(EventHandler const& handler)
     , _window(nullptr)
     , _context(nullptr)
     , _shaders()
-    , _player()
+    , _squares()
 {}
 
 void Renderer::init(SDL_Window* window)
@@ -39,7 +42,13 @@ void Renderer::init(SDL_Window* window)
 	_shaders.compile();
 	_shaders.use("xr-yg-zb");
 
-	_player.init();
+	_squares.add_attribute({0, 3, Attribute::Type::Float, 0});
+
+	//	// Second shader parameter is 3-float color vector
+	//	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
+	//	glEnableVertexAttribArray(1);
+
+	_squares.init();
 }
 
 void Renderer::refresh()
@@ -52,7 +61,7 @@ void Renderer::refresh()
 
 void Renderer::deinit()
 {
-	_player.deinit();
+	_squares.deinit();
 
 	SDL_GL_DeleteContext(_context);
 	_context = nullptr;
@@ -90,8 +99,8 @@ void Renderer::draw(Simulation const& simulation)
 	//	auto blue_uniform = shader.get_uniform_location("blue");
 	//	glUniform1f(blue_uniform, blue);
 
-	_player.set_vertices(full_square.data(), 1, GL_DYNAMIC_DRAW);
-	_player.draw();
+	_squares.set_vertices(full_square.data(), 1, GL_DYNAMIC_DRAW);
+	_squares.draw();
 }
 
 void Renderer::draw(Player const& player, Point<int> const& view_center)

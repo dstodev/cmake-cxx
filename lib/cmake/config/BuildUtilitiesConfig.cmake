@@ -1,4 +1,5 @@
-find_package(Expect CONFIG REQUIRED)  # so modules may use expect() as a 'builtin' i.e. without find_package()
+# Always find expect() first; further modules may use as a 'builtin' i.e. without find_package()
+find_package(Expect CONFIG REQUIRED)
 
 find_package(AddGoogleExecutable CONFIG REQUIRED)
 find_package(AddLocalAllTarget CONFIG REQUIRED)
