@@ -4,6 +4,8 @@ target_sources(${target_name}
 		attribute.hxx
 		square.cxx
 		square.hxx
+		triangle.cxx
+		triangle.hxx
 		vao.cxx
 		vao.hxx
 )

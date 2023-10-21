@@ -3,11 +3,13 @@
 
 #include <vector>
 
+#include <GL/glew.h>
+
 #include <attribute.hxx>
 
 namespace project::vao {
 
-class Vao
+class Vao  // TODO: rename to Shape?
 {
 public:
 	Vao();
@@ -18,25 +20,33 @@ public:
 	Vao& operator=(Vao const& copy);
 	Vao& operator=(Vao&& move);
 
-	void init();  // also calls bind()
+	/// Add all attributes before calling init()
+	void add_attribute(Attribute&& attribute);
+
+	void init();  // calls bind()
 	void deinit();
 
 	void bind() const;
 
-	void add_attribute(Attribute&& attribute);
-	void init_attributes() const;
+	/// Calls bind() and sets vertex data
+	void set_vertex_data(const float vertex_data[], unsigned num_elements, int gl_mode = GL_STATIC_DRAW) const;
+
+	/// Draws elements in vertex buffer.
+	/// Assumes bind() has already been called.
+	void draw() const;
 
 protected:
-	void init_attribute(Attribute const& attribute) const;
+	void gen_buffers();
+	void delete_buffers();
+	void init_attributes() const;
 
-	virtual void gen_buffers();
-	virtual void delete_buffers();
-	virtual void bind_buffers() const;
-	virtual void post_init();
+	virtual void init_vertex_indices() = 0;
 
 	unsigned _vao;
-	unsigned _stride_bytes;
-	unsigned _offset;
+	unsigned _vbo;
+	unsigned _ebo;
+	unsigned _attribute_stride_bytes;
+	unsigned _num_indices;  // set in init_vertex_indices()
 
 	std::vector<Attribute> _attributes;
 };

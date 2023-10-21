@@ -5,9 +5,12 @@
 namespace project::vao {
 
 Vao::Vao()
-    : _vao(0)
-    , _stride_bytes(0)
-    , _offset(0)
+    : _vao()
+    , _vbo()
+    , _ebo()
+    , _attribute_stride_bytes()
+    , _num_indices()
+    , _attributes()
 {}
 
 Vao::~Vao() = default;
@@ -16,25 +19,35 @@ Vao::Vao(Vao&& move) = default;
 Vao& Vao::operator=(Vao const& copy) = default;
 Vao& Vao::operator=(Vao&& move) = default;
 
+void Vao::add_attribute(Attribute&& attribute)
+{
+	_attributes.emplace_back(attribute);
+	_attribute_stride_bytes += attribute.size_bytes();
+}
+
 void Vao::init()
 {
-	if (_vao != 0) {
+	bool const initialized = _vao != 0;
+
+	if (initialized) {
 		return;
 	}
 
-	glGenVertexArrays(1, &_vao);
 	gen_buffers();
 
 	bind();  // VAO first
-	bind_buffers();
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
 
 	init_attributes();
-	post_init();
+	init_vertex_indices();  // subclass implementation
 }
 
 void Vao::gen_buffers()
 {
-	// implement in subclasses
+	glGenVertexArrays(1, &_vao);
+	glGenBuffers(1, &_vbo);
+	glGenBuffers(1, &_ebo);
 }
 
 void Vao::bind() const
@@ -42,53 +55,40 @@ void Vao::bind() const
 	glBindVertexArray(_vao);
 }
 
-void Vao::add_attribute(Attribute&& attribute)
+void Vao::set_vertex_data(const float vertex_data[], unsigned num_elements, int gl_mode) const
 {
-	_attributes.emplace_back(attribute);
-	_stride_bytes += attribute.num_values * attribute.value_size;
-	_offset += attribute.offset;
+	auto const size = static_cast<GLsizeiptr>(num_elements * sizeof(vertex_data[0]));
+	bind();
+	glBufferData(GL_ARRAY_BUFFER, size, vertex_data, gl_mode);
+}
+
+void Vao::draw() const
+{
+	// TODO: This will only draw one shape; EBO indices only index for one set of vertices
+	auto const num_indices = static_cast<GLsizei>(_num_indices);
+	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, nullptr);
 }
 
 void Vao::init_attributes() const
 {
 	for (auto const& attribute : _attributes) {
-		init_attribute(attribute);
+		attribute.init(_attribute_stride_bytes);
 	}
-}
-
-void Vao::init_attribute(Attribute const& attribute) const
-{
-	auto const index = attribute.index;
-	auto const size = static_cast<GLint>(attribute.num_values);
-	auto const type = attribute.gl_type;
-	auto const normalized = GL_FALSE;
-	auto const stride = static_cast<GLsizei>(_stride_bytes);
-	auto const pointer = (void*) static_cast<GLsizeiptr>(attribute.offset);
-
-	// https://registry.khronos.org/OpenGL-Refpages/gl4/html/glVertexAttribPointer.xhtml
-	glVertexAttribPointer(index, size, type, normalized, stride, pointer);
-	glEnableVertexAttribArray(index);
-}
-
-void Vao::bind_buffers() const
-{
-	// implement in subclasses
-}
-
-void Vao::post_init()
-{
-	// implement in subclasses
 }
 
 void Vao::deinit()
 {
-	glDeleteVertexArrays(1, &_vao);
-	_vao = 0;
-	delete_buffers();  // for subclasses
+	delete_buffers();
 }
+
 void Vao::delete_buffers()
 {
-	// implement in subclasses
+	glDeleteVertexArrays(1, &_vao);
+	glDeleteBuffers(1, &_vbo);
+	glDeleteBuffers(1, &_ebo);
+	_vbo = 0;
+	_ebo = 0;
+	_vao = 0;
 }
 
 }  // namespace project::vao

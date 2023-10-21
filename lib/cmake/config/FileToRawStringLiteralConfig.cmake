@@ -9,7 +9,7 @@ find_package(HelpParseArguments CONFIG REQUIRED)
 		Hello, world!
 		This is my file.
 
-	Generates a C++ string literal:
+	Generates a C++ raw string literal:
 
 		char const file_content[] = R"#<file-content>#(
 		Hello, world!

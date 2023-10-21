@@ -1,24 +1,32 @@
 #ifndef ATTRIBUTE_HXX
 #define ATTRIBUTE_HXX
 
-namespace project::vao {  // TODO: move to project::shader?
+namespace project::vao {
 
-struct Attribute
+class Attribute
 {
+public:
 	enum class Type
 	{
 		Float,
 		Int,
-	} type;
+	};
 
-	Attribute(unsigned index, unsigned num_values, Type type, unsigned offset);
+	Attribute(unsigned index, unsigned num_values, Type type, unsigned offset_index);
 
-	int gl_type;
-	unsigned index;
-	unsigned num_values;
-	unsigned size;
-	unsigned value_size;
-	unsigned offset;
+	void init(unsigned stride_bytes) const;
+
+	unsigned size_bytes() const;
+
+private:
+	Type _value_type;
+
+	int _gl_type;
+	unsigned _index;
+	unsigned _num_values;
+	unsigned _offset_bytes;
+	unsigned _size_bytes;
+	unsigned _value_size_bytes;
 };
 
 }  // namespace project::vao
