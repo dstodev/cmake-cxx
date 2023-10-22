@@ -28,8 +28,11 @@ public:
 
 	void bind() const;
 
+	/// Calls bind() and draws vertex data
+	void draw_vertex_data(const float vertex_data[], unsigned num_elements, int gl_mode = GL_DYNAMIC_DRAW) const;
+
 	/// Calls bind() and sets vertex data
-	void set_vertex_data(const float vertex_data[], unsigned num_elements, int gl_mode = GL_STATIC_DRAW) const;
+	void set_vertex_data(const float vertex_data[], unsigned num_elements, int gl_mode = GL_DYNAMIC_DRAW) const;
 
 	/// Draws elements in vertex buffer.
 	/// Assumes bind() has already been called.

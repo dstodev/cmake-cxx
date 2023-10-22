@@ -86,11 +86,16 @@ void Renderer::draw(Simulation const& simulation)
 	draw(simulation.player(), simulation.center());
 	draw(events.mouse_pos());
 
-	Eigen::Matrix<float, 4, 3, Eigen::RowMajor> square {
-	    {-1.0f, 1.0f, 0.0f},  // top-left
-	    {1.0f, 1.0f, 0.0f},  // top-right
-	    {1.0f, -1.0f, 0.0f},  // bottom-right
-	    {-1.0f, -1.0f, 0.0f},  // bottom-left
+	Eigen::Matrix<float, 8, 3, Eigen::RowMajor> squares {
+	    {-1.0f,  1.0f, 0.0f}, // top-left
+	    {-0.1f,  1.0f, 0.0f}, // top-right
+	    {-0.1f, -1.0f, 0.0f}, // bottom-right
+	    {-1.0f, -1.0f, 0.0f}, // bottom-left
+
+	    { 0.1f,  1.0f, 0.0f}, // top-left
+	    { 1.0f,  1.0f, 0.0f}, // top-right
+	    { 1.0f, -1.0f, 0.0f}, // bottom-right
+	    { 0.1f, -1.0f, 0.0f}  // bottom-left
 	};
 
 	// TODO: use shaders in render objects like Square?
@@ -99,8 +104,8 @@ void Renderer::draw(Simulation const& simulation)
 	//	auto blue_uniform = shader.get_uniform_location("blue");
 	//	glUniform1f(blue_uniform, blue);
 
-	_squares.set_vertex_data(square.data(), square.size(), GL_DYNAMIC_DRAW);
-	_squares.draw();
+	_squares.draw_vertex_data(squares.data(), squares.size() / 2);
+	_squares.draw_vertex_data(squares.data() + squares.size() / 2, squares.size() / 2);
 }
 
 void Renderer::draw(Player const& player, Point<int> const& view_center)

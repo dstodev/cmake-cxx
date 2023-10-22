@@ -1,5 +1,5 @@
 # 2022 Daniel Stotts
-# Version ~53
+# Version ~54
 ---
 BasedOnStyle: LLVM
 ColumnLimit: 120
@@ -27,6 +27,7 @@ BreakBeforeBraces: Custom
 
 # Align all the things!
 AlignAfterOpenBracket: Align
+AlignArrayOfStructures: Right
 AlignConsecutiveMacros: Consecutive
 AlignEscapedNewlines: DontAlign
 AlignOperands: AlignAfterOperator

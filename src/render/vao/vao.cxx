@@ -55,6 +55,12 @@ void Vao::bind() const
 	glBindVertexArray(_vao);
 }
 
+void Vao::draw_vertex_data(const float* vertex_data, unsigned int num_elements, int gl_mode) const
+{
+	set_vertex_data(vertex_data, num_elements, gl_mode);
+	draw();
+}
+
 void Vao::set_vertex_data(const float vertex_data[], unsigned num_elements, int gl_mode) const
 {
 	auto const size = static_cast<GLsizeiptr>(num_elements * sizeof(vertex_data[0]));
@@ -64,7 +70,7 @@ void Vao::set_vertex_data(const float vertex_data[], unsigned num_elements, int 
 
 void Vao::draw() const
 {
-	// TODO: This will only draw one shape; EBO indices only index for one set of vertices
+	// This will only draw one shape. EBO indices only index for one set of vertices
 	auto const num_indices = static_cast<GLsizei>(_num_indices);
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, nullptr);
 }

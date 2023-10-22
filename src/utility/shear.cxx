@@ -8,7 +8,10 @@ namespace project {
 
 void shear(Point<float>& point, float x_magnitude, float y_magnitude)
 {
-	static Matrix2f transform {{1, 0}, {0, 1}};
+	static Matrix2f transform {
+	    {1, 0},
+	    {0, 1}
+    };
 
 	transform(0, 1) = x_magnitude;
 	transform(1, 0) = y_magnitude;

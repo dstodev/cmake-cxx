@@ -5,7 +5,6 @@
 
 namespace project::vao {
 
-/// Renders a square or sequence of squares.
 class Square : public Vao
 {
 protected:

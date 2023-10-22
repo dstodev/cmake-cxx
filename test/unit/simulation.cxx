@@ -95,15 +95,15 @@ TEST_P(PlayerMoveTests, player_moves_adjusted_for_time)
 	                            << ") but got (x=" << actual.x() << ", y=" << actual.y() << ")";
 }
 
+// clang-format off
 INSTANTIATE_TEST_SUITE_P(
     AdjustForTime,
     PlayerMoveTests,
     ::testing::Values(
         PlayerMoveTestParams(1000, true, false, false, false, false, Point {0.0f, -1.0f * Player::base_speed_pps}),
-        PlayerMoveTestParams(500, true, false, false, false, false, Point {0.0f, -0.5f * Player::base_speed_pps}),
-        PlayerMoveTestParams(0, true, false, false, false, false, Point {0.0f, 0.0f})));
+        PlayerMoveTestParams(500,  true, false, false, false, false, Point {0.0f, -0.5f * Player::base_speed_pps}),
+        PlayerMoveTestParams(0,    true, false, false, false, false, Point {0.0f, 0.0f})));
 
-// clang-format off
 INSTANTIATE_TEST_SUITE_P(AdjustForDirection, PlayerMoveTests, ::testing::Values(
     // up
     PlayerMoveTestParams(1000, true, false, false, false, false,
@@ -125,11 +125,11 @@ INSTANTIATE_TEST_SUITE_P(AdjustForDirection, PlayerMoveTests, ::testing::Values(
     // cos(45deg) = sin(45deg) = 0.70710678118
     PlayerMoveTestParams(1000, true, false, true, false, false,
                          Point {-0.70710678118f * Player::base_speed_pps,
-                                  -0.70710678118f * Player::base_speed_pps}),
+                                -0.70710678118f * Player::base_speed_pps}),
 
     // up + shift
     PlayerMoveTestParams(1000, true, false, false, false, true,
                          Point {0.0f, -1.0f * Player::base_speed_pps
-                                              * Player::shift_multiplier})
+                                            * Player::shift_multiplier})
 ));
 // clang-format on

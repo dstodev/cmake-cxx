@@ -1,5 +1,3 @@
 #include "player.hxx"
 
-namespace project {
-
-}  // namespace project
+namespace project {}  // namespace project
