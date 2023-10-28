@@ -10,7 +10,7 @@ class DLL Entity
 {
 public:
 	Entity();
-	virtual ~Entity() = default;
+	virtual ~Entity();
 
 	auto position() const -> Point<float> const&;
 	auto position() -> Point<float>&;

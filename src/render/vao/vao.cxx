@@ -15,9 +15,9 @@ Vao::Vao()
 
 Vao::~Vao() = default;
 Vao::Vao(Vao const& copy) = default;
-Vao::Vao(Vao&& move) = default;
+Vao::Vao(Vao&& move) noexcept = default;
 Vao& Vao::operator=(Vao const& copy) = default;
-Vao& Vao::operator=(Vao&& move) = default;
+Vao& Vao::operator=(Vao&& move) noexcept = default;
 
 void Vao::add_attribute(Attribute&& attribute)
 {

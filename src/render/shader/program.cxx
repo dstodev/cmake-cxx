@@ -17,6 +17,9 @@ Program::~Program()
 	glDeleteProgram(_id);
 }
 
+Program::Program(Program&& move) noexcept = default;
+Program& Program::operator=(Program&& move) noexcept = default;
+
 void Program::add_shader(char const shader_source[], VertexType) const
 {
 	add_shader(shader_source, GL_VERTEX_SHADER);

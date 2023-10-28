@@ -6,6 +6,8 @@ Entity::Entity()
     : _position()
 {}
 
+Entity::~Entity() = default;
+
 auto Entity::position() const -> Point<float> const&
 {
 	return _position;

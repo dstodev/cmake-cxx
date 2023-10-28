@@ -27,6 +27,9 @@ Renderer::Renderer(EventHandler const& handler)
     , _squares()
 {}
 
+Renderer::Renderer(Renderer&& move) noexcept = default;
+Renderer& Renderer::operator=(Renderer&& move) noexcept = default;
+
 void Renderer::init(SDL_Window* window)
 {
 	_window = window;

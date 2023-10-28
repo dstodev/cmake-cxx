@@ -6,7 +6,7 @@ target_sources(${target_name}
 		program.hxx
 )
 target_include_directories(${target_name}
-	PRIVATE
+	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 )
 

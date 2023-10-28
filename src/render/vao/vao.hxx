@@ -16,9 +16,9 @@ public:
 
 	virtual ~Vao();
 	Vao(Vao const& copy);
-	Vao(Vao&& move);
+	Vao(Vao&& move) noexcept;
 	Vao& operator=(Vao const& copy);
-	Vao& operator=(Vao&& move);
+	Vao& operator=(Vao&& move) noexcept;
 
 	/// Add all attributes before calling init()
 	void add_attribute(Attribute&& attribute);

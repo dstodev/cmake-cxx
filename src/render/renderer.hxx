@@ -24,10 +24,10 @@ public:
 	explicit Renderer(EventHandler const& handler);
 
 	Renderer(Renderer const& copy) = delete;
-	Renderer(Renderer&& move) = default;
+	Renderer(Renderer&& move) noexcept;
 
 	Renderer& operator=(Renderer const& copy) = delete;
-	Renderer& operator=(Renderer&& move) = default;
+	Renderer& operator=(Renderer&& move) noexcept;
 
 	void init(SDL_Window* window);
 	void deinit();

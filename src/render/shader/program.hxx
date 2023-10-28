@@ -9,10 +9,10 @@ public:
 	Program();
 
 	~Program();
+	Program(Program&& move) noexcept;
 	Program(Program const& copy) = delete;
-	Program(Program&& move) = default;
+	Program& operator=(Program&& move) noexcept;
 	Program& operator=(Program const& copy) = delete;
-	Program& operator=(Program&& move) = default;
 
 	// clang-format off
 	static constexpr struct VertexType {} vertex_type;
