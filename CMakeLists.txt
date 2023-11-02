@@ -7,8 +7,8 @@ cmake_policy(SET CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0
 set(CMAKE_POLICY_DEFAULT_CMP0068 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0068.html
 
 set(cmake_module_paths
-	"${CMAKE_CURRENT_LIST_DIR}/lib/cmake"
 	"${CMAKE_CURRENT_LIST_DIR}/lib/cmake/config"
+	"${CMAKE_CURRENT_LIST_DIR}/lib/cmake/include"
 )
 list(APPEND CMAKE_MODULE_PATH ${cmake_module_paths})  # mostly for include()
 list(APPEND CMAKE_PREFIX_PATH ${cmake_module_paths})  # mostly for find_package()
@@ -55,7 +55,7 @@ set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)  # Do not populate CTest/CDa
 include(CTest)  # used instead of `enable_testing()` for better IDE compatibility
 
 # Sources
-include(dependencies)  # lib/cmake/dependencies.cmake
+include(dependencies)  # lib/cmake/include/dependencies.cmake
 
 add_subdirectory(src)
 add_subdirectory(test)
@@ -89,4 +89,4 @@ add_dependencies(build-package
 	app-console
 )
 
-include(export)  # lib/cmake/export.cmake
+include(export)  # lib/cmake/include/export.cmake

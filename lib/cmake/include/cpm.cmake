@@ -1,4 +1,5 @@
-# This code is modified from: https://github.com/cpm-cmake/CPM.cmake/wiki/Downloading-CPM.cmake-in-CMake (as of 5/17/2023)
+# This code is modified from: (as of 5/17/2023)
+# https://github.com/cpm-cmake/CPM.cmake/wiki/Downloading-CPM.cmake-in-CMake
 
 function(_configure)
 	set(output_root "${PROJECT_BINARY_DIR}/cmake")
@@ -25,7 +26,7 @@ function(_configure)
 		"Received: ${output_hash}"
 		""
 	)
-	if (NOT "${output_hash}" STREQUAL "${expected_hash}")
+	if(NOT "${output_hash}" STREQUAL "${expected_hash}")
 		file(REMOVE ${output_path})
 		message(FATAL_ERROR "${msg}")
 	endif()
