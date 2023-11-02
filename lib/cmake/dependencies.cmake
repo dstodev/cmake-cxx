@@ -15,7 +15,7 @@ find_package(OpenGL REQUIRED)
 
 message(STATUS "Adding dependency packages... (from: ${CPM_SOURCE_CACHE})")
 
-message_gate_close()
+directory_targets(before_dependencies . RECURSIVE)
 
 ## GoogleTest ##
 CPMAddPackage(NAME googletest
@@ -25,9 +25,6 @@ CPMAddPackage(NAME googletest
 	EXCLUDE_FROM_ALL TRUE
 	SYSTEM TRUE
 )
-directory_targets(targets ${googletest_SOURCE_DIR} RECURSIVE)
-string(REPLACE ";" " " targets "${targets}")
-message(FORCE STATUS "Found Googletest: ${targets}")
 
 ## Google Benchmark ##
 CPMAddPackage(NAME benchmark
@@ -37,9 +34,6 @@ CPMAddPackage(NAME benchmark
 	EXCLUDE_FROM_ALL TRUE
 	SYSTEM TRUE
 )
-directory_targets(targets ${benchmark_SOURCE_DIR} RECURSIVE)
-string(REPLACE ";" " " targets "${targets}")
-message(FORCE STATUS "Found Benchmark: ${targets}")
 
 ## Eigen ##
 CPMAddPackage(NAME eigen
@@ -51,11 +45,10 @@ add_library(eigen INTERFACE)
 add_library(Eigen3::Eigen ALIAS eigen)
 target_include_directories(eigen
 	INTERFACE
-		$<BUILD_INTERFACE:${eigen_SOURCE_DIR}>
-		$<INSTALL_INTERFACE:include>
+	$<BUILD_INTERFACE:${eigen_SOURCE_DIR}>
+	$<INSTALL_INTERFACE:include>
 )
 set(eigen_SOURCE_DIR ${CPM_PACKAGE_eigen_SOURCE_DIR} CACHE INTERNAL "Eigen source directory")
-message(FORCE STATUS "Found Eigen: eigen Eigen3::Eigen")
 
 ## SDL2 ##
 CPMAddPackage(NAME sdl
@@ -65,9 +58,6 @@ CPMAddPackage(NAME sdl
 	EXCLUDE_FROM_ALL TRUE
 	SYSTEM TRUE
 )
-directory_targets(targets ${sdl_SOURCE_DIR} RECURSIVE)
-string(REPLACE ";" " " targets "${targets}")
-message(FORCE STATUS "Found SDL: ${targets}")
 
 ## fmt ##
 CPMAddPackage(NAME fmt
@@ -78,9 +68,6 @@ CPMAddPackage(NAME fmt
 	SYSTEM TRUE
 )
 set_target_properties(fmt PROPERTIES PUBLIC_HEADER "")
-directory_targets(targets ${fmt_SOURCE_DIR} RECURSIVE)
-string(REPLACE ";" " " targets "${targets}")
-message(FORCE STATUS "Found fmt: ${targets}")
 
 ##  GLEW  ##
 if(WIN32)
@@ -111,14 +98,13 @@ if(WIN32)
 		$<BUILD_INTERFACE:${glew_SOURCE_DIR}/include>
 		$<INSTALL_INTERFACE:include>
 	)
-	message(FORCE STATUS "Found GLEW: ${target_name}")
 elseif(APPLE)
 	find_package(GLEW)  # REQUIRED keyword is not respected by FindGLEW.cmake
-	if(GLEW_FOUND)
-		message(FORCE STATUS "Found GLEW: GLEW::GLEW")
-	else()
+	if(NOT GLEW_FOUND)
 		message(FATAL_ERROR " Could not find GLEW! Please install it e.g. brew install glew")
 	endif()
 endif()
 
-message_gate_open()  # This should be at bottom of file
+directory_targets(dependency_targets . RECURSIVE)
+list(REMOVE_ITEM dependency_targets ${before_dependencies})
+log_vars(dependency_targets SPLIT_LISTS)

@@ -4,7 +4,7 @@ project(SampleProject)
 cmake_policy(SET CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0091.html
 
 #[[
-	The following snippet looks for project.cmake anywhere in the primary
+	The following snippet looks for projectConfig.cmake anywhere in the primary
 	build directory.
 
 	This sample project builds in primary-build-dir/sample, but it is not
@@ -23,18 +23,23 @@ cmake_policy(SET CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0
 	Thus, search the primary build directory for project.cmake, which will
 	reside in this unzipped package directory.
 ]]
-file(GLOB_RECURSE project_exports "${PROJECT_BINARY_DIR}/../project.cmake")
+set(config_file "${PROJECT_BINARY_DIR}/../projectConfig.cmake")
+
+file(GLOB_RECURSE project_exports "${config_file}")
 list(FILTER project_exports INCLUDE REGEX "TXZ")
 list(LENGTH project_exports project_exports_length)
+
 if(NOT project_exports_length EQUAL 1)
-	message(FATAL_ERROR "Cannot locate project.cmake")
+	message(FATAL_ERROR "Cannot locate ${config_file}")
 endif()
-include(${project_exports})
 
 get_filename_component(exports_dir "${project_exports}" DIRECTORY)
 set(package_root "${exports_dir}/..")
-set(CMAKE_MSVCIDE_RUN_PATH "${package_root}/bin")
 
+list(APPEND CMAKE_PREFIX_PATH "${package_root}/cmake")
+find_package(project CONFIG REQUIRED)
+
+set(CMAKE_MSVCIDE_RUN_PATH "${package_root}/bin")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE STRING "MSVC runtime")
 
 add_executable(main WIN32 MACOSX_BUNDLE main.cxx)
