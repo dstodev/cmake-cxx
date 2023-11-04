@@ -71,12 +71,12 @@ The value of `LOG_LEVEL` may be one of:
 
 | Level   | Description               |
 |---------|---------------------------|
-| (none)  | No logging.               |
 | ERROR   | Errors only               |
 | WARNING | Warnings and above        |
 | INFO    | Status messages and above |
 | DEBUG   | Debug messages and above  |
 | TRACE   | Trace messages and above  |
+| (none)  | No logging.               |
 
 ## Helper Commands
 

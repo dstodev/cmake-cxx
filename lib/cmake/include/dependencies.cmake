@@ -15,6 +15,7 @@ directory_targets(before_dependencies . RECURSIVE)
 
 set(dependency_dir "${CMAKE_CURRENT_LIST_DIR}/dependencies")
 
+message_gate_close()
 include(${dependency_dir}/Eigen.cmake)
 include(${dependency_dir}/GLEW.cmake)
 include(${dependency_dir}/GoogleBenchmark.cmake)
@@ -22,6 +23,7 @@ include(${dependency_dir}/GoogleTest.cmake)
 include(${dependency_dir}/OpenGL.cmake)
 include(${dependency_dir}/SDL2.cmake)
 include(${dependency_dir}/fmt.cmake)
+message_gate_open()
 
 directory_targets(dependency_targets . RECURSIVE)
 list(REMOVE_ITEM dependency_targets ${before_dependencies})
