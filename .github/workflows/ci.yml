@@ -100,7 +100,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Configure
-        run: cmake -S . -B build/$env:BUILD_TYPE -DTEST_GUI=OFF
+        run: cmake -S . -B build/$env:BUILD_TYPE
       - name: Run tests
         run: cmake --build build/$env:BUILD_TYPE --target all-test --config $env:BUILD_TYPE --parallel
       - name: Build package
@@ -123,7 +123,6 @@ jobs:
         run: |
           cmake_flags=(
             -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-            -DTEST_GUI=OFF
           )
           if [ "$VERBOSE_MAKEFILE" = 'true' ]; then
             cmake_flags+=('-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON')
@@ -152,7 +151,6 @@ jobs:
         run: |
           cmake_flags=(
             -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-            -DTEST_GUI=OFF
           )
           if [ "$VERBOSE_MAKEFILE" = 'true' ]; then
             cmake_flags+=('-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON')

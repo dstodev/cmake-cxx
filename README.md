@@ -5,7 +5,6 @@ This project serves as an opinionated template for C++ developers.
 It includes common libraries:
 
 - [GoogleTest](https://github.com/google/googletest/)
-- [Google Benchmark](https://github.com/google/benchmark/)
 - [CMake Package Manager "CPM"](https://github.com/cpm-cmake/CPM.cmake)
 - See [dependencies.cmake](lib/cmake/dependencies.cmake) for more!
 
@@ -18,11 +17,6 @@ And plenty of CMake & C++ utilities; see [FEATURES.md](FEATURES.md) for details!
 - [Git](https://git-scm.com/)
 - [CMake](https://cmake.org/)
 - [Docker](https://www.docker.com/) (to run Docker tests)
-
-### MacOS
-
-- [Homebrew](https://brew.sh/) (optional)
-- [GLEW](http://glew.sourceforge.net/) (`brew install glew`)
 
 ## Running tests
 
@@ -61,10 +55,7 @@ The following scripts have been tested on MacOS Monterey and Windows 11.
 ## Logging
 
 Tests and the main program log information to the console if `app-console` is
-launched instead of `app-gui` using a Debug build.
-
-Release builds of the main application optimize out logging statements, so this
-variable has no effect.
+launched
 
 The main program additionally respects the `LOG_LEVEL` environment variable.
 The value of `LOG_LEVEL` may be one of:
@@ -77,6 +68,9 @@ The value of `LOG_LEVEL` may be one of:
 | DEBUG   | Debug messages and above  |
 | TRACE   | Trace messages and above  |
 | (none)  | No logging.               |
+
+Release builds of the main application optimize out logging statements, so this
+variable has no effect.
 
 ## Helper Commands
 

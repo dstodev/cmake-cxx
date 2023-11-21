@@ -42,12 +42,10 @@ find_package(project CONFIG REQUIRED)
 set(CMAKE_MSVCIDE_RUN_PATH "${package_root}/bin")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE STRING "MSVC runtime")
 
-add_executable(main WIN32 MACOSX_BUNDLE main.cxx)
+add_executable(main main.cxx)
 add_custom_target(run main)
 
 target_link_libraries(main
 	PRIVATE
 		project::project
-		project::SDL2main
-		project::SDL2  # only for SDL2main
 )

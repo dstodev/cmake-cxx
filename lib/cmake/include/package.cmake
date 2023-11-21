@@ -18,25 +18,15 @@ set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install-stage"
 install(TARGETS
 	# Project targets
 	project
-
-	# Optional targets
-	app-gui
 	app-console
 
 	# Dependency targets
-	SDL2
-	SDL2main
-	eigen
 	fmt
 
 	EXPORT ${export_name}
 	BUNDLE DESTINATION bin
 )
-install(DIRECTORY "${eigen_SOURCE_DIR}/Eigen" DESTINATION include)
-install(DIRECTORY "${SDL2_SOURCE_DIR}/include/" DESTINATION include/SDL2)
 install(DIRECTORY "${fmt_SOURCE_DIR}/include/" DESTINATION include)
-
-install(IMPORTED_RUNTIME_ARTIFACTS GLEW::GLEW RUNTIME DESTINATION bin)
 
 # Redistribute system runtimes
 set(CMAKE_INSTALL_DEBUG_LIBRARIES TRUE)

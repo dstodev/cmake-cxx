@@ -1,11 +1,6 @@
 set(target_name "project")
 
 add_library(${target_name})
-
-add_subdirectory(application)
-add_subdirectory(input)
-add_subdirectory(render)
-add_subdirectory(simulation)
 add_subdirectory(utility)
 
 target_include_directories(${target_name}
@@ -14,13 +9,7 @@ target_include_directories(${target_name}
 )
 target_link_libraries(${target_name}
 	PUBLIC
-		Eigen3::Eigen
 		fmt::fmt
-
-	PRIVATE
-		SDL2::SDL2
-		OpenGL::GL
-		GLEW::GLEW
 )
 target_compile_features(${target_name}
 	PUBLIC
@@ -28,7 +17,6 @@ target_compile_features(${target_name}
 )
 
 set(header_files_to_package
-	"${CMAKE_CURRENT_LIST_DIR}/application/application.hxx"
 	"${CMAKE_CURRENT_LIST_DIR}/utility/log.hxx"
 )
 
