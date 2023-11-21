@@ -1,10 +1,12 @@
 set(target_name "project")
 
 add_library(${target_name})
+
 add_subdirectory(utility)
 
 target_include_directories(${target_name}
 	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 		$<INSTALL_INTERFACE:include>
 )
 target_link_libraries(${target_name}

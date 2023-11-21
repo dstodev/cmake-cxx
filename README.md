@@ -60,14 +60,14 @@ launched
 The main program additionally respects the `LOG_LEVEL` environment variable.
 The value of `LOG_LEVEL` may be one of:
 
-| Level   | Description               |
-|---------|---------------------------|
-| ERROR   | Errors only               |
+|   Level | Description               |
+|--------:|:--------------------------|
+|   ERROR | Errors only               |
 | WARNING | Warnings and above        |
-| INFO    | Status messages and above |
-| DEBUG   | Debug messages and above  |
-| TRACE   | Trace messages and above  |
-| (none)  | No logging.               |
+|    INFO | Status messages and above |
+|   DEBUG | Debug messages and above  |
+|   TRACE | Trace messages and above  |
+|  (none) | No logging.               |
 
 Release builds of the main application optimize out logging statements, so this
 variable has no effect.
@@ -95,8 +95,7 @@ Notes:
 - There are currently intellisense bugs on MacOS due to CMake Tools.  
   One such issue is being tracked [here](https://github.com/microsoft/vscode-cmake-tools/issues/1178).
 - On Windows, make sure that you use the Ninja generator if you are able.  
-  On other platforms, make sure that you use a Makefile generator.  
-  This is to
+  On other platforms, make sure that you use a Makefile generator. This is to
   [generate `compile_commands.json`](https://cmake.org/cmake/help/latest/variable/CMAKE_EXPORT_COMPILE_COMMANDS.html)
   for automatic intellisense.
 - If CPM complains that a dependency's cache is dirty, you should delete the
