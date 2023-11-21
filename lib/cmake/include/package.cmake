@@ -58,11 +58,3 @@ install(EXPORT ${export_name}
 	DESTINATION cmake
 	NAMESPACE project::
 )
-
-if(APPLE)
-	# https://cmake.org/cmake/help/latest/module/BundleUtilities.html
-	install(CODE "
-		include(BundleUtilities)
-		fixup_bundle(\"\${CMAKE_INSTALL_PREFIX}/bin/app-gui.app\" \"\" \"\${CMAKE_INSTALL_PREFIX}/lib\")
-	")
-endif()
