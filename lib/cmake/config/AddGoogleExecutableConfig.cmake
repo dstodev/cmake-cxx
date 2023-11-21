@@ -5,7 +5,7 @@ find_package(HelpParseArguments CONFIG REQUIRED)
 function(add_google_executable target)
 	help_parse_arguments(args
 		"TEST;BENCHMARK"
-		"MAIN"
+		"MAIN;STANDARD"
 		"SOURCES;LIBRARIES"
 	)
 
@@ -38,9 +38,16 @@ function(add_google_executable target)
 			${args_LIBRARIES}
 			${google_links}
 	)
+
+	if (args_STANDARD)
+		set(std ${args_STANDARD})
+	else()
+		set(std 14)  # GoogleTest requires at least C++14 as of version 1.13
+	endif()
+
 	target_compile_features(${target}
 		PRIVATE
-			cxx_std_14  # GoogleTest requires at least C++14 as of version 1.13
+			cxx_std_${std}
 	)
 
 	if (args_TEST)

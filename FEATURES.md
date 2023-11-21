@@ -16,6 +16,3 @@ modern C++ projects.
 
 - [Basic logging](src/utility/log.hxx) using [fmt](https://github.com/fmtlib/fmt)
 - [Testing](test/unit/shear.cxx) with [GoogleTest](https://github.com/google/googletest)
-- [Benchmarking](test/performance/shear.cxx) with [Google Benchmark](https://github.com/google/benchmark)
-- Template data structures e.g. [Grid](src/utility/grid.hxx)
-- Thread tools e.g. [ThreadPool](src/utility/thread-pool.hxx)

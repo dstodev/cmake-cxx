@@ -10,5 +10,5 @@ else
   build_dir="$1"
 fi
 
-cmake -S "$source_dir" -B "$build_dir" -DCMAKE_BUILD_TYPE=Release -DTEST_GUI=OFF
+cmake -S "$source_dir" -B "$build_dir" -DCMAKE_BUILD_TYPE=Release
 cmake --build "$build_dir" --target all-test build-package --parallel
