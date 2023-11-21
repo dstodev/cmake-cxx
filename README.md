@@ -6,7 +6,7 @@ It includes common libraries:
 
 - [GoogleTest](https://github.com/google/googletest/)
 - [CMake Package Manager "CPM"](https://github.com/cpm-cmake/CPM.cmake)
-- See [dependencies.cmake](lib/cmake/dependencies.cmake) for more!
+- See [dependencies.cmake](lib/cmake/include/dependencies.cmake) for more!
 
 And plenty of CMake & C++ utilities; see [FEATURES.md](FEATURES.md) for details!
 
