@@ -47,55 +47,55 @@ DLL Level get_level();
 
 /// Emit an error message.
 template <typename... Args>
-void constexpr error(char const* format, Args&&... args)
+void constexpr error(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	if (detail::LogLevel >= Level::Error) {
-		fmt::print("Error: {}", fmt::format(fmt::runtime(format), std::forward<Args>(args)...));
+		fmt::print("Error: {}", fmt::format(format, std::forward<Args>(args)...));
 	}
 #endif
 }
 
 /// Emit a warning message.
 template <typename... Args>
-void constexpr warn(char const* format, Args&&... args)
+void constexpr warn(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	if (detail::LogLevel >= Level::Warn) {
-		fmt::print("Warn:  {}", fmt::format(fmt::runtime(format), std::forward<Args>(args)...));
+		fmt::print("Warn:  {}", fmt::format(format, std::forward<Args>(args)...));
 	}
 #endif
 }
 
 /// Emit an informational message.
 template <typename... Args>
-void constexpr info(char const* format, Args&&... args)
+void constexpr info(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	if (detail::LogLevel >= Level::Info) {
-		fmt::print("Info:  {}", fmt::format(fmt::runtime(format), std::forward<Args>(args)...));
+		fmt::print("Info:  {}", fmt::format(format, std::forward<Args>(args)...));
 	}
 #endif
 }
 
 /// Emit a debugging message.
 template <typename... Args>
-void constexpr debug(char const* format, Args&&... args)
+void constexpr debug(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	if (detail::LogLevel >= Level::Debug) {
-		fmt::print("Debug: {}", fmt::format(fmt::runtime(format), std::forward<Args>(args)...));
+		fmt::print("Debug: {}", fmt::format(format, std::forward<Args>(args)...));
 	}
 #endif
 }
 
 /// Emit a trace message.
 template <typename... Args>
-void constexpr trace(char const* format, Args&&... args)
+void constexpr trace(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	if (detail::LogLevel >= Level::Trace) {
-		fmt::print("Trace: {}", fmt::format(fmt::runtime(format), std::forward<Args>(args)...));
+		fmt::print("Trace: {}", fmt::format(format, std::forward<Args>(args)...));
 	}
 #endif
 }
