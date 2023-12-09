@@ -1,15 +1,5 @@
 set(export_name "project")
 
-message(DEBUG "CPack variables defined BEFORE project:")
-log_all_vars(FILTER CPACK MODE DEBUG)
-
-set(CPACK_GENERATOR "TXZ")
-set(CPACK_THREADS 0)  # https://cmake.org/cmake/help/latest/module/CPack.html#variable:CPACK_THREADS
-set(CPACK_ARCHIVE_THREADS 0)
-set(CPACK_VERBATIM_VARIABLES TRUE)
-
-include(CPack)  # https://cmake.org/cmake/help/latest/module/CPack.html
-
 set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install-stage"
 	CACHE PATH "When building the `install` target, put artifacts in this directory."
 )  # https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html
@@ -49,7 +39,7 @@ string(JOIN "\n" file_content
 	"include(\"\${CMAKE_CURRENT_LIST_DIR}/${export_name}-targets.cmake\")"
 	"" # Empty line
 )
-file(GENERATE OUTPUT ${export_name}Config.cmake CONTENT ${file_content})
+file(GENERATE OUTPUT "${export_name}Config.cmake" CONTENT ${file_content})
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${export_name}Config.cmake" DESTINATION cmake)
 
 # Export CMake targets

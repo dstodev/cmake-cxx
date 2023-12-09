@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
+
+message(DEBUG "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
+
 project(SampleProject)
 
 cmake_policy(SET CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0091.html
@@ -42,10 +45,12 @@ find_package(project CONFIG REQUIRED)
 set(CMAKE_MSVCIDE_RUN_PATH "${package_root}/bin")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE STRING "MSVC runtime")
 
-add_executable(main main.cxx)
-add_custom_target(run main)
-
+add_executable(main
+	main.cxx
+)
 target_link_libraries(main
 	PRIVATE
 		project::project
 )
+
+add_custom_target(run main > main.txt)
