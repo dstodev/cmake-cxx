@@ -102,9 +102,9 @@ jobs:
       - name: Configure
         run: cmake -S . -B build/$env:BUILD_TYPE
       - name: Run tests
-        run: cmake --build build/$env:BUILD_TYPE --target all-test --config $env:BUILD_TYPE --parallel
+        run: cmake --build build/$env:BUILD_TYPE --config $env:BUILD_TYPE --parallel --target all-test
       - name: Build package
-        run: cmake --build build/$env:BUILD_TYPE --target app-sample --parallel
+        run: cmake --build build/$env:BUILD_TYPE --config $env:BUILD_TYPE --parallel --target app-sample
       - uses: actions/upload-artifact@v3  # https://github.com/actions/upload-artifact
         with:
           name: package-${{ github.job }}
@@ -129,9 +129,9 @@ jobs:
           fi
           cmake -S . -B build/$BUILD_TYPE "${cmake_flags[@]}"
       - name: Run tests
-        run: cmake --build build/$BUILD_TYPE --target all-test --parallel
+        run: cmake --build build/$BUILD_TYPE --parallel --target all-test
       - name: Build package
-        run: cmake --build build/$BUILD_TYPE --target app-sample --parallel
+        run: cmake --build build/$BUILD_TYPE --parallel --target app-sample
       - uses: actions/upload-artifact@v3
         with:
           name: package-${{ github.job }}
@@ -157,9 +157,9 @@ jobs:
           fi
           cmake -S . -B build/$BUILD_TYPE "${cmake_flags[@]}"
       - name: Run tests
-        run: cmake --build build/$BUILD_TYPE --target all-test --parallel
+        run: cmake --build build/$BUILD_TYPE --parallel --target all-test
       - name: Build package
-        run: cmake --build build/$BUILD_TYPE --target app-sample --parallel
+        run: cmake --build build/$BUILD_TYPE --parallel --target app-sample
       - uses: actions/upload-artifact@v3
         with:
           name: package-${{ github.job }}
