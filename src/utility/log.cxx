@@ -11,6 +11,11 @@ namespace detail {
 Level LogLevel = Level::Info;
 }  // namespace detail
 
+Level level_from(std::string const& level)
+{
+	return level_from(level.c_str());
+}
+
 Level level_from(char const* level)
 {
 	std::string level_lowercase;

@@ -21,7 +21,7 @@ find_package(BuildUtilities CONFIG REQUIRED)
 
 setup_build_mode()
 
-project(Project)
+project(Project VERSION 0.1.0 LANGUAGES CXX)
 
 ## Options
 
@@ -77,7 +77,11 @@ if(PROJECT_IS_TOP_LEVEL)
 
 	set(target_name "app-console") # Console application
 	add_executable(${target_name} ${SAMPLE_MAIN})  # test/sample/targets.cmake
-	target_link_libraries(${target_name} PRIVATE project)
+	target_link_libraries(${target_name}
+		PRIVATE
+			project
+			cxxopts::cxxopts
+	)
 
 	#############
 	#  Package  #

@@ -51,6 +51,7 @@ add_executable(main
 target_link_libraries(main
 	PRIVATE
 		project::project
+		project::cxxopts
 )
 
 add_custom_target(run main > main.txt)

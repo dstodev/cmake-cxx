@@ -104,7 +104,7 @@ jobs:
       - name: Run tests
         run: cmake --build build/$env:BUILD_TYPE --target all-test --config $env:BUILD_TYPE --parallel
       - name: Build package
-        run: cmake --build build/$env:BUILD_TYPE --target build-package --parallel
+        run: cmake --build build/$env:BUILD_TYPE --target app-sample --parallel
       - uses: actions/upload-artifact@v3  # https://github.com/actions/upload-artifact
         with:
           name: package-${{ github.job }}
@@ -131,7 +131,7 @@ jobs:
       - name: Run tests
         run: cmake --build build/$BUILD_TYPE --target all-test --parallel
       - name: Build package
-        run: cmake --build build/$BUILD_TYPE --target build-package --parallel
+        run: cmake --build build/$BUILD_TYPE --target app-sample --parallel
       - uses: actions/upload-artifact@v3
         with:
           name: package-${{ github.job }}
@@ -159,7 +159,7 @@ jobs:
       - name: Run tests
         run: cmake --build build/$BUILD_TYPE --target all-test --parallel
       - name: Build package
-        run: cmake --build build/$BUILD_TYPE --target build-package --parallel
+        run: cmake --build build/$BUILD_TYPE --target app-sample --parallel
       - uses: actions/upload-artifact@v3
         with:
           name: package-${{ github.job }}

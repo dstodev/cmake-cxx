@@ -38,6 +38,12 @@ DLL extern Level LogLevel;
     @param level Options are: error warn info debug trace.
     @return Corresponding Level or Level::None if \p level is invalid or empty.
  */
+DLL Level level_from(std::string const& level);
+
+/** @brief Convert a string to a logging severity level.
+    @param level Options are: error warn info debug trace.
+    @return Corresponding Level or Level::None if \p level is invalid or empty.
+ */
 DLL Level level_from(char const* level);
 
 /// Ignore messages less-severe than \p level.

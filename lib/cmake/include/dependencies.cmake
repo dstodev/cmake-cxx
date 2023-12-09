@@ -13,6 +13,7 @@ message(STATUS "Adding dependency packages... (from: ${CPM_SOURCE_CACHE})")
 directory_targets(before_dependencies . RECURSIVE)
 
 include(${dependency_dir}/GoogleTest.cmake)
+include(${dependency_dir}/cxxopts.cmake)
 include(${dependency_dir}/fmt.cmake)
 
 directory_targets(dependency_targets . RECURSIVE)

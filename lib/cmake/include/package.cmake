@@ -11,11 +11,13 @@ install(TARGETS
 	app-console
 
 	# Dependency targets
+	cxxopts
 	fmt
 
 	EXPORT ${export_name}
 	BUNDLE DESTINATION bin
 )
+install(DIRECTORY "${cxxopts_SOURCE_DIR}/include/" DESTINATION include FILES_MATCHING PATTERN "*.h*")
 install(DIRECTORY "${fmt_SOURCE_DIR}/include/" DESTINATION include)
 
 # Redistribute system runtimes

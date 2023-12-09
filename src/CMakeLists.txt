@@ -6,6 +6,7 @@ add_subdirectory(utility)
 
 target_include_directories(${target_name}
 	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 		$<INSTALL_INTERFACE:include>
 )
@@ -18,7 +19,10 @@ target_compile_features(${target_name}
 		cxx_std_20
 )
 
+configure_file("version.hxx.in" "version.hxx")
+
 set(header_files_to_package
+	"${CMAKE_CURRENT_BINARY_DIR}/version.hxx"
 	"${CMAKE_CURRENT_LIST_DIR}/utility/log.hxx"
 )
 
