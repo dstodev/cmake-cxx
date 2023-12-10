@@ -58,7 +58,7 @@
 	Using a simple idiom, developers may test CMake code by defining a function
 	to introduce scope & purpose, then setting up the environment and calling expect():
 
-		include_guard(GLOBAL)  # Always put this before expect() tests to run them only once
+		expect_test_preamble()  # Always call before expect() tests to run them only once
 
 		function(test_example)
 			set(mylist "1;2")
@@ -84,12 +84,8 @@
 	-- Disabling expect():
 
 	Because modules may assume that expect() exists "as a built-in command", expect()
-	is not easily removable, but is easily replaceable. To disable expect(), simply
-	do not include the Expect module, and instead define a simple replacement function
-	that takes any amount of parameters but has no behavior:
-
-		function(expect)
-		endfunction()
+	is not easily removable. To disable expect(), simply set var DISABLE_EXPECT to TRUE
+	before this module is first included.
 ]]
 function(expect)
 	_increment_calls()
@@ -190,7 +186,17 @@ function(error_if_any_expect_fail)
 	endif()
 endfunction()
 
-include_guard(GLOBAL)  # Always put this before expect() tests to run them only once
+#[[
+	Always call expect_test_preamble() before expect() tests to run them only once.
+]]
+macro(expect_test_preamble)
+	include_guard(GLOBAL)
+	if (DISABLE_EXPECT)
+		return()
+	endif()
+endmacro()
+
+expect_test_preamble()
 
 _set_fails(0)
 _set_calls(0)

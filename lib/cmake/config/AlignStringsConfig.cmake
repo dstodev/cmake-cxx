@@ -27,8 +27,7 @@ macro(align_strings str1 str2 align)
 	set(${str2} "${spaces2}${${str2}}")
 endmacro()
 
-
-include_guard(GLOBAL)  # Always put this before expect() tests to run them only once
+expect_test_preamble()
 
 function(test_align_strings_equal)
 	set(str1 "Hello!")

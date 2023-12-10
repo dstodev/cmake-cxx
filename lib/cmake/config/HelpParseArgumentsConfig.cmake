@@ -115,7 +115,7 @@ function(help_print_parsed_arguments _prefix)
 	endforeach()
 endfunction()
 
-include_guard(GLOBAL)  # Always put this before expect() tests to run them only once
+expect_test_preamble()
 
 function(test_parse_options a b c)
 	help_parse_arguments(args "FLAG1;FLAG2" "" "")

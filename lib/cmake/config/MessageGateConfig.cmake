@@ -15,7 +15,7 @@ function(enable_message predicate)
 	set(__MESSAGE_GATE_OPEN ${value} CACHE INTERNAL "Emit messages?")
 endfunction()
 
-include_guard(GLOBAL)
+expect_test_preamble()
 
 set(__MESSAGE_GATE_OPEN TRUE CACHE INTERNAL "Emit messages?")
 

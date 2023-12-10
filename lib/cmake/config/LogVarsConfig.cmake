@@ -59,7 +59,7 @@ macro(log_all_vars)
 	endif()
 endmacro()
 
-include_guard(GLOBAL)  # Always put this before expect() tests to run them only once
+expect_test_preamble()
 
 function(test_log_does_not_replace_empty_values)
 	set(my_var "")
