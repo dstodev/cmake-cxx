@@ -6,12 +6,12 @@ set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install-stage"
 
 # Package the application
 install(TARGETS
+
 	# Project targets
 	project
-	app-console
 
 	# Dependency targets
-	cxxopts
+	cxxopts  # for sample
 	fmt
 
 	EXPORT ${export_name}

@@ -14,7 +14,7 @@ using namespace project;
 void set_log_level(std::optional<std::string> const& cli_level = std::nullopt);
 auto get_env_var(char const* name) -> std::optional<std::string>;
 
-int main(int argc, char* argv[])
+int main(int argc, char const* argv[])
 {
 	Cli const cli(argc, argv);
 

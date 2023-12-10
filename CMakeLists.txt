@@ -62,6 +62,7 @@ include(dependencies)  # lib/cmake/include/dependencies.cmake
 add_subdirectory(src)
 
 if(PROJECT_IS_TOP_LEVEL)
+
 	##############
 	#  Testing   #
 	##############

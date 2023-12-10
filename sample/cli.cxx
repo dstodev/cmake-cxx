@@ -18,13 +18,13 @@ Cli::Cli()
 	;  // clang-format on
 }
 
-Cli::Cli(int argc, char* argv[])
+Cli::Cli(int argc, char const* argv[])
     : Cli()
 {
 	parse(argc, argv);
 }
 
-void Cli::parse(int argc, char* argv[])
+void Cli::parse(int argc, char const* argv[])
 {
 	auto const result = _options.parse(argc, argv);
 

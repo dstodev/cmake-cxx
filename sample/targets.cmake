@@ -4,6 +4,7 @@ set(binary_dir "${PROJECT_BINARY_DIR}/sample")
 #####################
 #  External sample  #
 #####################
+
 set(target_name "app-sample")
 
 add_custom_target(${target_name}
@@ -15,6 +16,7 @@ add_dependencies(${target_name} build-package)
 #####################
 #  Internal sample  #
 #####################
+
 set(target_name "app-console")
 
 add_executable(${target_name}
