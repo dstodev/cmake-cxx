@@ -102,6 +102,17 @@ function(expect)
 	set(required ${${prefix}_REQUIRED})
 	set(safe ${${prefix}_SAFE})
 
+	# Wrap elements with spaces in quotes
+	list(LENGTH argv len)
+	math(EXPR len "${len} - 1")
+	foreach(i RANGE ${len})
+		list(GET argv ${i} arg)
+		if("${arg}" MATCHES " ")
+			list(REMOVE_AT argv ${i})
+			list(INSERT argv ${i} "\"${arg}\"")
+		endif()
+	endforeach()
+
 	# Replace empty strings with literal quote pairs
 	string(REGEX REPLACE "^;" "\"\";" argv "${argv}")
 	string(REGEX REPLACE ";;" ";\"\";" argv "${argv}")
@@ -197,6 +208,8 @@ function(test_expect)
 	expect(2 IN_LIST mylist)
 	expect(NOT 3 IN_LIST mylist)
 	expect("" IN_LIST mylist)
+	expect("a b" STREQUAL "a b")
+	expect("c;d" STREQUAL "c;d")
 endfunction()
 test_expect()
 

@@ -13,7 +13,7 @@ TEST(Log, error)
 	ASSERT_EQ(log::Level::Error, log::get_level());
 
 	::testing::internal::CaptureStdout();
-	log::error("Error: {}\n", "message");
+	log::error("Error: {}", "message");
 	std::string result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("Error: message\n") != std::string::npos);
 }
@@ -23,7 +23,7 @@ TEST(Log, error_one_arg)
 	log::set_level(log::Level::Error);
 
 	::testing::internal::CaptureStdout();
-	log::error("message\n");
+	log::error("message");
 	std::string result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("message\n") != std::string::npos);
 }
@@ -33,7 +33,7 @@ TEST(Log, error_varargs)
 	log::set_level(log::Level::Error);
 
 	::testing::internal::CaptureStdout();
-	log::error("Error: {} {}\n", "message", 1);
+	log::error("Error: {} {}", "message", 1);
 	std::string result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("Error: message 1\n") != std::string::npos);
 }
@@ -44,7 +44,7 @@ TEST(Log, warn)
 	ASSERT_EQ(log::Level::Warn, log::get_level());
 
 	::testing::internal::CaptureStdout();
-	log::warn("Warning: {}\n", "message");
+	log::warn("Warning: {}", "message");
 	std::string result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("Warning: message\n") != std::string::npos);
 }
@@ -54,7 +54,7 @@ TEST(Log, warn_one_arg)
 	log::set_level(log::Level::Warn);
 
 	::testing::internal::CaptureStdout();
-	log::warn("message\n");
+	log::warn("message");
 	std::string result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("message\n") != std::string::npos);
 }
@@ -64,7 +64,7 @@ TEST(Log, warn_varargs)
 	log::set_level(log::Level::Warn);
 
 	::testing::internal::CaptureStdout();
-	log::warn("Warning: {} {}\n", "message", 1);
+	log::warn("Warning: {} {}", "message", 1);
 	std::string result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("Warning: message 1\n") != std::string::npos);
 }
@@ -75,7 +75,7 @@ TEST(Log, info)
 	ASSERT_EQ(log::Level::Info, log::get_level());
 
 	::testing::internal::CaptureStdout();
-	log::info("Info: {}\n", "message");
+	log::info("Info: {}", "message");
 	std::string result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("Info: message\n") != std::string::npos);
 }
@@ -85,7 +85,7 @@ TEST(Log, info_one_arg)
 	log::set_level(log::Level::Info);
 
 	::testing::internal::CaptureStdout();
-	log::info("message\n");
+	log::info("message");
 	std::string result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("message\n") != std::string::npos);
 }
@@ -95,7 +95,7 @@ TEST(Log, info_varargs)
 	log::set_level(log::Level::Info);
 
 	::testing::internal::CaptureStdout();
-	log::info("Info: {} {}\n", "message", 1);
+	log::info("Info: {} {}", "message", 1);
 	std::string result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("Info: message 1\n") != std::string::npos);
 }
@@ -106,7 +106,7 @@ TEST(Log, debug)
 	ASSERT_EQ(log::Level::Debug, log::get_level());
 
 	::testing::internal::CaptureStdout();
-	log::debug("Debug: {}\n", "message");
+	log::debug("Debug: {}", "message");
 	std::string result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("Debug: message\n") != std::string::npos);
 }
@@ -116,7 +116,7 @@ TEST(Log, debug_one_arg)
 	log::set_level(log::Level::Debug);
 
 	::testing::internal::CaptureStdout();
-	log::debug("message\n");
+	log::debug("message");
 	std::string result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("message\n") != std::string::npos);
 }
@@ -126,7 +126,7 @@ TEST(Log, debug_varargs)
 	log::set_level(log::Level::Debug);
 
 	::testing::internal::CaptureStdout();
-	log::debug("Debug: {} {}\n", "message", 1);
+	log::debug("Debug: {} {}", "message", 1);
 	std::string result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("Debug: message 1\n") != std::string::npos);
 }
@@ -137,7 +137,7 @@ TEST(Log, trace)
 	ASSERT_EQ(log::Level::Trace, log::get_level());
 
 	::testing::internal::CaptureStdout();
-	log::trace("Trace: {}\n", "message");
+	log::trace("Trace: {}", "message");
 	std::string result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("Trace: message\n") != std::string::npos);
 }
@@ -147,7 +147,7 @@ TEST(Log, trace_one_arg)
 	log::set_level(log::Level::Trace);
 
 	::testing::internal::CaptureStdout();
-	log::trace("message\n");
+	log::trace("message");
 	std::string result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("message\n") != std::string::npos);
 }
@@ -157,7 +157,7 @@ TEST(Log, trace_varargs)
 	log::set_level(log::Level::Trace);
 
 	::testing::internal::CaptureStdout();
-	log::trace("Trace: {} {}\n", "message", 1);
+	log::trace("Trace: {} {}", "message", 1);
 	std::string result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("Trace: message 1\n") != std::string::npos);
 }
@@ -167,7 +167,7 @@ TEST(Log, none)
 	log::set_level(log::Level::Trace);
 
 	::testing::internal::CaptureStdout();
-	log::trace("Before none\n");
+	log::trace("Before none");
 	std::string result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("Before none\n") != std::string::npos);
 
@@ -175,14 +175,14 @@ TEST(Log, none)
 	ASSERT_EQ(log::Level::None, log::get_level());
 
 	::testing::internal::CaptureStdout();
-	log::trace("During none\n");
+	log::trace("During none");
 	result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.empty());
 
 	log::set_level(log::Level::Trace);
 
 	::testing::internal::CaptureStdout();
-	log::trace("After none\n");
+	log::trace("After none");
 	result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("After none\n") != std::string::npos);
 }

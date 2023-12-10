@@ -19,16 +19,10 @@ add_dependencies(${target_name} build-package)
 
 set(target_name "app-console")
 
-add_executable(${target_name}
-	${source_dir}/main.cxx
+add_executable(${target_name})
 
-	${source_dir}/cli.cxx
-	${source_dir}/cli.hxx
-)
-target_include_directories(${target_name}
-	PRIVATE
-		${source_dir}
-)
+include(${source_dir}/sources.cmake)
+
 target_link_libraries(${target_name}
 	PRIVATE
 		project

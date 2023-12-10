@@ -20,11 +20,11 @@ int main(int argc, char const* argv[])
 
 	set_log_level(cli.log_level());
 
-	log::error("Error messages enabled\n");
-	log::warn("Warning messages enabled\n");
-	log::info("Info messages enabled\n");
-	log::debug("Debug messages enabled\n");
-	log::trace("Trace messages enabled\n");
+	log::error("Error messages enabled");
+	log::warn("Warning messages enabled");
+	log::info("Info messages enabled");
+	log::debug("Debug messages enabled");
+	log::trace("Trace messages enabled");
 
 	return 0;
 }

@@ -57,7 +57,7 @@ void constexpr error(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	if (detail::LogLevel >= Level::Error) {
-		fmt::print("Error: {}", fmt::format(format, std::forward<Args>(args)...));
+		fmt::print("Error: {}\n", fmt::format(format, std::forward<Args>(args)...));
 	}
 #endif
 }
@@ -68,7 +68,7 @@ void constexpr warn(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	if (detail::LogLevel >= Level::Warn) {
-		fmt::print("Warn:  {}", fmt::format(format, std::forward<Args>(args)...));
+		fmt::print("Warn:  {}\n", fmt::format(format, std::forward<Args>(args)...));
 	}
 #endif
 }
@@ -79,7 +79,7 @@ void constexpr info(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	if (detail::LogLevel >= Level::Info) {
-		fmt::print("Info:  {}", fmt::format(format, std::forward<Args>(args)...));
+		fmt::print("Info:  {}\n", fmt::format(format, std::forward<Args>(args)...));
 	}
 #endif
 }
@@ -90,7 +90,7 @@ void constexpr debug(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	if (detail::LogLevel >= Level::Debug) {
-		fmt::print("Debug: {}", fmt::format(format, std::forward<Args>(args)...));
+		fmt::print("Debug: {}\n", fmt::format(format, std::forward<Args>(args)...));
 	}
 #endif
 }
@@ -101,7 +101,7 @@ void constexpr trace(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	if (detail::LogLevel >= Level::Trace) {
-		fmt::print("Trace: {}", fmt::format(format, std::forward<Args>(args)...));
+		fmt::print("Trace: {}\n", fmt::format(format, std::forward<Args>(args)...));
 	}
 #endif
 }

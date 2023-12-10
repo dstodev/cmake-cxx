@@ -78,6 +78,8 @@ if(PROJECT_IS_TOP_LEVEL)
 
 	include(sample/targets.cmake)
 
+	highlight_target_output("app-console")
+
 	#############
 	#  Package  #
 	#############

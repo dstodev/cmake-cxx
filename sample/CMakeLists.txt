@@ -47,16 +47,10 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE 
 
 set(target_name main)
 
-add_executable(${target_name}
-	main.cxx
+add_executable(${target_name})
 
-	cli.cxx
-	cli.hxx
-)
-target_include_directories(${target_name}
-	PRIVATE
-		${CMAKE_CURRENT_LIST_DIR}
-)
+include(sources.cmake)
+
 target_link_libraries(main
 	PRIVATE
 		project::project
