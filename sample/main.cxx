@@ -1,21 +1,24 @@
+#if defined(_WIN32)
+#define _CRT_SECURE_NO_WARNINGS 1  // NOLINT(*-reserved-identifier)
+#endif
+
 #include <cstdlib>
-#include <iostream>
+#include <optional>
+#include <string>
 
-#include <cxxopts.hpp>
-
+#include <cli.hxx>
 #include <log.hxx>
-#include <version.hxx>
 
 using namespace project;
 
-cxxopts::ParseResult parse_cli_options(int argc, char* argv[]);
-void set_log_level(cxxopts::ParseResult const& cli);
+void set_log_level(std::optional<std::string> const& cli_level = std::nullopt);
+auto get_env_var(char const* name) -> std::optional<std::string>;
 
 int main(int argc, char* argv[])
 {
-	auto cli = parse_cli_options(argc, argv);
+	Cli const cli(argc, argv);
 
-	set_log_level(cli);
+	set_log_level(cli.log_level());
 
 	log::error("Error messages enabled\n");
 	log::warn("Warning messages enabled\n");
@@ -26,45 +29,23 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
-cxxopts::ParseResult parse_cli_options(int argc, char* argv[])
-{
-	cxxopts::Options options("Project", "My example project using my library");
-
-	options.allow_unrecognised_options();
-
-	// clang-format off
-	options.add_options()
-		("h,help", "Print usage")
-		("v,version", "Print version")
-		("l,log-level", "Set log level. Options are: error warn info debug trace.",
-			cxxopts::value<std::string>()->default_value("none"))
-	;  // clang-format on
-
-	auto result = options.parse(argc, argv);
-
-	if (result.count("help") || !result.unmatched().empty()) {
-		std::cout << options.help() << std::endl;
-		std::exit(0);
-	}
-	else if (result.count("version")) {
-		std::cout << options.program() << ' ' << PROJECT_VERSION << std::endl;
-		std::exit(0);
-	}
-
-	return result;
-}
-
-void set_log_level(cxxopts::ParseResult const& cli)
+void set_log_level(std::optional<std::string> const& cli_level)
 {
 	log::Level level = log::Level::None;
 
-	if (cli.count("log-level")) {
-		auto const level_str = cli["log-level"].as<std::string>();
-		level = log::level_from(level_str);
+	// Give CLI precedence over environment variable.
+	if (cli_level) {
+		level = log::level_from(cli_level.value());
 	}
-	else if (char const* level_str = std::getenv("LOG_LEVEL")) {
-		level = log::level_from(level_str);
+	else if (auto const env_level = get_env_var("LOG_LEVEL")) {
+		level = log::level_from(env_level.value());
 	}
 
 	log::set_level(level);
+}
+
+auto get_env_var(char const* name) -> std::optional<std::string>
+{
+	char const* value = std::getenv(name);
+	return value ? std::make_optional(value) : std::nullopt;
 }

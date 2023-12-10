@@ -77,14 +77,6 @@ if(PROJECT_IS_TOP_LEVEL)
 
 	include(sample/targets.cmake)
 
-	set(target_name "app-console") # Console application
-	add_executable(${target_name} ${SAMPLE_MAIN})  # sample/targets.cmake
-	target_link_libraries(${target_name}
-		PRIVATE
-			project
-			cxxopts::cxxopts
-	)
-
 	#############
 	#  Package  #
 	#############

@@ -45,8 +45,17 @@ find_package(project CONFIG REQUIRED)
 set(CMAKE_MSVCIDE_RUN_PATH "${package_root}/bin")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE STRING "MSVC runtime")
 
-add_executable(main
+set(target_name main)
+
+add_executable(${target_name}
 	main.cxx
+
+	cli.cxx
+	cli.hxx
+)
+target_include_directories(${target_name}
+	PRIVATE
+		${CMAKE_CURRENT_LIST_DIR}
 )
 target_link_libraries(main
 	PRIVATE
@@ -54,4 +63,4 @@ target_link_libraries(main
 		project::cxxopts
 )
 
-add_custom_target(run main > main.txt)
+add_custom_target(run ${target_name} > ${target_name}.txt)
