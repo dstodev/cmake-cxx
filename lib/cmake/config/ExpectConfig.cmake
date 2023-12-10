@@ -103,6 +103,7 @@ function(expect)
 	set(safe ${${prefix}_SAFE})
 
 	# Wrap elements with spaces in quotes
+	# Avoid list(TRANSFORM) because it un-escapes passed-in lists
 	list(LENGTH argv len)
 	math(EXPR len "${len} - 1")
 	foreach(i RANGE ${len})
