@@ -67,7 +67,7 @@ if(PROJECT_IS_TOP_LEVEL)
 	##############
 
 	set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)  # Do not populate CTest/CDash targets
-	include(CTest)  # used instead of `enable_testing()` for better IDE compatibility
+	include(CTest)  # `include(CTest)` instead of `enable_testing()` for better IDE compatibility
 
 	add_subdirectory(test)
 
@@ -75,8 +75,10 @@ if(PROJECT_IS_TOP_LEVEL)
 	#  Samples  #
 	#############
 
+	include(sample/targets.cmake)
+
 	set(target_name "app-console") # Console application
-	add_executable(${target_name} ${SAMPLE_MAIN})  # test/sample/targets.cmake
+	add_executable(${target_name} ${SAMPLE_MAIN})  # sample/targets.cmake
 	target_link_libraries(${target_name}
 		PRIVATE
 			project

@@ -6,5 +6,3 @@ add_dependencies(all-test
 	all-link
 	all-unit
 )
-
-include(sample/targets.cmake)

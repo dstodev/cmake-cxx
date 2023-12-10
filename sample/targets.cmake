@@ -9,4 +9,4 @@ add_custom_target(${target_name}
 )
 add_dependencies(${target_name} build-package)
 
-set(SAMPLE_MAIN "${CMAKE_CURRENT_LIST_DIR}/main.cxx" PARENT_SCOPE)
+set(SAMPLE_MAIN "${CMAKE_CURRENT_LIST_DIR}/main.cxx")
