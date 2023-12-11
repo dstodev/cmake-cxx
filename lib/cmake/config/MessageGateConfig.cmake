@@ -12,16 +12,16 @@ function(enable_message predicate)
 	else()
 		set(value FALSE)  # and all falsy values to FALSE
 	endif()
-	set(__MESSAGE_GATE_OPEN ${value} CACHE INTERNAL "Emit messages?")
+	set(__message_gate_open ${value} CACHE INTERNAL "Emit messages?")
 endfunction()
 
 expect_test_preamble()
 
-set(__MESSAGE_GATE_OPEN TRUE CACHE INTERNAL "Emit messages?")
+set(__message_gate_open TRUE CACHE INTERNAL "Emit messages?")
 
 function(message)
 	cmake_parse_arguments(PARSE_ARGV 0 args "FORCE" "" "")
-	if(__MESSAGE_GATE_OPEN OR args_FORCE)
+	if(__message_gate_open OR args_FORCE)
 		_message(${args_UNPARSED_ARGUMENTS})
 	endif()
 endfunction()
