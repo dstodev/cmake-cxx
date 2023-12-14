@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include <version.h>
+#include <project.hxx>
 
 Cli::Cli()
     : _options {"Project", "My example project using my library"}
@@ -33,7 +33,7 @@ void Cli::parse(int argc, char const* argv[])
 		std::exit(0);
 	}
 	if (result.count("version")) {
-		std::cout << _options.program() << ' ' << PROJECT_VERSION << std::endl;
+		std::cout << _options.program() << ' ' << project::version() << std::endl;
 		std::exit(0);
 	}
 

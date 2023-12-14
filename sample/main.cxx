@@ -7,7 +7,7 @@
 #include <string>
 
 #include <cli.hxx>
-#include <log.hxx>
+#include <project.hxx>
 
 using namespace project;
 

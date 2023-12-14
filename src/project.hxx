@@ -4,6 +4,7 @@
 #include <string>
 
 #include <dll-export.h>
+#include <log.hxx>
 
 namespace project {
 

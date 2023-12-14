@@ -57,4 +57,4 @@ target_link_libraries(main
 		project::cxxopts
 )
 
-add_custom_target(run ${target_name} > ${target_name}.txt)
+add_custom_target(run ${target_name} --log-level=info > ${target_name}.txt)
