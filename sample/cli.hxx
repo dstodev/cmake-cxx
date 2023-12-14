@@ -9,15 +9,18 @@
 class Cli
 {
 public:
-	Cli();
 	Cli(int argc, char const* argv[]);
 
 	void parse(int argc, char const* argv[]);
-	auto result() const -> cxxopts::ParseResult const&;
-
 	auto log_level() const -> std::optional<std::string>;
 
 private:
+	explicit Cli(char const* argv_0);
+
+	auto basename(char const* argv_0) -> char const*;
+
+	std::string _program_path;
+
 	cxxopts::Options _options;
 	cxxopts::ParseResult _result;
 };
