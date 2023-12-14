@@ -4,19 +4,23 @@ set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install-stage"
 	CACHE PATH "When building the `install` target, put artifacts in this directory."
 )  # https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html
 
-# Package the application
+# Package CMake targets for the application to import
 install(TARGETS
-
 	# Project targets
 	project
 
 	# Dependency targets
 	cxxopts  # for sample
-	fmt
+	fmt      # for logging
 
 	EXPORT ${export_name}
 	BUNDLE DESTINATION bin
 )
+
+# Package sample application executable
+install(FILES $<TARGET_FILE:app-console> DESTINATION bin)
+
+# Redistribute dependency headers
 install(DIRECTORY "${cxxopts_SOURCE_DIR}/include/" DESTINATION include FILES_MATCHING PATTERN "*.h*")
 install(DIRECTORY "${fmt_SOURCE_DIR}/include/" DESTINATION include)
 

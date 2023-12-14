@@ -1,6 +1,11 @@
 set(target_name "project")
 
-add_library(${target_name})
+configure_file("version.h.in" "version.h")
+
+add_library(${target_name}
+	project.cxx
+	${CMAKE_CURRENT_BINARY_DIR}/version.h
+)
 
 add_subdirectory(utility)
 
@@ -19,10 +24,9 @@ target_compile_features(${target_name}
 		cxx_std_20
 )
 
-configure_file("version.hxx.in" "version.hxx")
-
 set(header_files_to_package
-	"${CMAKE_CURRENT_BINARY_DIR}/version.hxx"
+	"${CMAKE_CURRENT_BINARY_DIR}/version.h"
+	"${CMAKE_CURRENT_LIST_DIR}/project.hxx"
 	"${CMAKE_CURRENT_LIST_DIR}/utility/log.hxx"
 )
 

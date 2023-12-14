@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include <version.hxx>
+#include <version.h>
 
 Cli::Cli()
     : _options {"Project", "My example project using my library"}
