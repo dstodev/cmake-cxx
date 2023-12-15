@@ -21,13 +21,14 @@ target_link_libraries(${target_name}
 )
 target_compile_features(${target_name}
 	PUBLIC
-		cxx_std_20
+		cxx_std_${CMAKE_CXX_STANDARD}
 )
 
 set(header_files_to_package
 	"${CMAKE_CURRENT_BINARY_DIR}/version.h"
 	"${CMAKE_CURRENT_LIST_DIR}/project.hxx"
 	"${CMAKE_CURRENT_LIST_DIR}/utility/log.hxx"
+	"${CMAKE_CURRENT_LIST_DIR}/utility/deduplicate.hxx"
 )
 
 set_target_properties(${target_name} PROPERTIES

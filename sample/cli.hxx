@@ -3,6 +3,7 @@
 
 #include <optional>
 #include <string>
+#include <vector>
 
 #include <cxxopts.hpp>
 
@@ -18,8 +19,10 @@ private:
 	explicit Cli(char const* argv_0);
 
 	auto basename(char const* argv_0) -> char const*;
+	auto format_unrecognized_options() const -> std::string;
 
-	std::string _program_path;
+	std::string _program_name;  // Must initialize before `_options`
+	std::vector<std::string> _unrecognized_options;
 
 	cxxopts::Options _options;
 	cxxopts::ParseResult _result;

@@ -2,6 +2,7 @@ target_sources(${target_name}
 	PRIVATE
 		log.cxx
 		log.hxx
+		deduplicate.hxx
 )
 target_include_directories(${target_name}
 	PUBLIC

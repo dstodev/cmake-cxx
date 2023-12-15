@@ -2,6 +2,7 @@ add_google_executable(unit-project TEST
 	SOURCES
 		log.cxx
 		project.cxx
+		deduplicate.cxx
 
 	LIBRARIES
 		project

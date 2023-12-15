@@ -26,11 +26,10 @@ project(Project VERSION 0.1.0 LANGUAGES CXX)
 ## Options
 
 set(CMAKE_MESSAGE_LOG_LEVEL "Status" CACHE STRING "CMake message log level")
-set_property(CACHE CMAKE_MESSAGE_LOG_LEVEL PROPERTY STRINGS
-	"Error" "Warning" "Notice" "Status" "Verbose" "Debug" "Trace"
-) # https://cmake.org/cmake/help/latest/manual/cmake.1.html#cmdoption-cmake-log-level
+set_property(CACHE CMAKE_MESSAGE_LOG_LEVEL PROPERTY
+	STRINGS "Error" "Warning" "Notice" "Status" "Verbose" "Debug" "Trace")
 
-set(CMAKE_CXX_STANDARD 20 CACHE STRING "C++ standard version")
+set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard version")
 
 option(BUILD_SHARED_LIBS "Build a shared artifact (.dll, .so, .dylib)?" TRUE)
 option(CMAKE_EXPORT_COMPILE_COMMANDS "Generate compile_commands.json?" TRUE)
@@ -38,8 +37,7 @@ option(CMAKE_POSITION_INDEPENDENT_CODE "Build position-independent code?" TRUE)
 option(CMAKE_TLS_VERIFY "Verify HTTPS server certificates?" TRUE)
 option(CMAKE_VERBOSE_MAKEFILE "Emit verbose build output?" FALSE)
 
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
-	CACHE STRING "MSVC runtime")
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE STRING "MSVC runtime")
 
 # https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#output-artifacts
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib" CACHE PATH ".lib, .a, etc.")
@@ -53,9 +51,9 @@ configure_rpath_variables()
 include(CheckPIESupported)  # https://cmake.org/cmake/help/latest/module/CheckPIESupported.html
 check_pie_supported()
 
-#############
-#  Targets  #
-#############
+##################################
+#  Dependency & Project Targets  #
+##################################
 
 include(dependencies)  # lib/cmake/include/dependencies.cmake
 
