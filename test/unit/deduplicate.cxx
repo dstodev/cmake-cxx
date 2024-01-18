@@ -45,7 +45,7 @@ TEST(StableDeduplicate, two_elements_are_equal)
 	ASSERT_EQ("a", result[0]);
 }
 
-TEST(StableDeduplicate, deduplicated_elements_perserve_order)
+TEST(StableDeduplicate, deduplicated_elements_preserve_order)
 {
 	std::vector<std::string> const input {"b", "b", "c", "a", "a", "b", "c"};
 	auto const result = stable_deduplicate(input);
