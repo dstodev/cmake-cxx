@@ -2,6 +2,8 @@
 # CMake code is working as you expect it to. Use it to write "unit tests" for
 # CMake functions, or just to make sure your project is set up as you expect.
 
+include_guard(DIRECTORY)
+
 #[[
 	expect(expr...) asserts that expr evaluates TRUE. If expr instead evaluates FALSE, then
 	the expect() call "fails", and a warning message is immediately emitted.
@@ -36,8 +38,8 @@
 	near the top of the top-level CMakeLists.txt):
 
 		cmake_minimum_required(VERSION 3.18)
-		list(APPEND CMAKE_PREFIX_PATH directory/containing/this/file)
-		find_package(Expect CONFIG REQUIRED)
+		list(APPEND CMAKE_MODULE_PATH directory/containing/this/file)
+		include(Expect)
 
 	If any expect() call fails, emits message(FATAL_ERROR) once the CMake directory
 	which first includes this module finishes configuring. For this reason, developers
@@ -68,18 +70,18 @@
 		endfunction()
 		test_example()
 
-	Developers should place include_guard(GLOBAL) before expect() tests so the tests
+	Developers should place expect_test_preamble() before expect() tests so the tests
 	run only once when modules calling expect() are, for example, included more than
 	once. For each file using expect(), this guard should come before the first call
 	to expect(), but only once.
 
-	If module developers fail to use include_guard(GLOBAL) before expect() tests, then
-	printed metrics (number of expect() pass/fail) are invalidated, as some calls will
-	likely run multiple times, counting as multiple pass/fails.
+	If module developers do not call expect_test_preamble() before expect() tests, then
+	printed metrics (number of expect() pass/fail) are invalid; some calls may or may not
+	run multiple times, counting as multiple pass/fails.
 
 	When used as suggested, expect() tests run every CMake configure. This means CMake code
 	is tested every time the project is configured, asserting that the project configures
-	in a good state.
+	as expected.
 
 	-- Disabling expect():
 

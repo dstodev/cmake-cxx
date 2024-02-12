@@ -11,13 +11,12 @@ set(CMAKE_POLICY_DEFAULT_CMP0068 NEW)  # https://cmake.org/cmake/help/latest/pol
 #############
 
 set(cmake_module_paths
-	"${CMAKE_CURRENT_LIST_DIR}/lib/cmake/config"
+	"${CMAKE_CURRENT_LIST_DIR}/lib/cmake/module"
 	"${CMAKE_CURRENT_LIST_DIR}/lib/cmake/include"
 )
-list(APPEND CMAKE_MODULE_PATH ${cmake_module_paths})  # mostly for include()
-list(APPEND CMAKE_PREFIX_PATH ${cmake_module_paths})  # mostly for find_package()
+list(APPEND CMAKE_MODULE_PATH ${cmake_module_paths})
 
-find_package(BuildUtilities CONFIG REQUIRED)
+include(BuildUtilities)
 
 setup_build_mode()
 

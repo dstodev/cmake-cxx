@@ -1,3 +1,5 @@
+include_guard(DIRECTORY)
+
 #[[
 	string_capitalize(input_string result) uppercases the first letter of input_string,
 	lowercases all other letters, then stores the result in result.

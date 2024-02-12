@@ -39,8 +39,8 @@ endif()
 get_filename_component(exports_dir "${project_exports}" DIRECTORY)
 set(package_root "${exports_dir}/..")
 
-list(APPEND CMAKE_PREFIX_PATH "${package_root}/cmake")
-find_package(project CONFIG REQUIRED)
+list(APPEND CMAKE_MODULE_PATH "${package_root}/cmake")
+include(projectConfig)
 
 set(CMAKE_MSVCIDE_RUN_PATH "${package_root}/bin")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE STRING "MSVC runtime")

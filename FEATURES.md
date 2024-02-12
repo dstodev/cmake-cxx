@@ -7,10 +7,10 @@ modern C++ projects.
 
 ## CMake Features
 
-- Custom CMake testing framework [expect()](lib/cmake/config/ExpectConfig.cmake)
-- Argument parsing helper [help_parse_arguments()](lib/cmake/config/HelpParseArgumentsConfig.cmake)
-- Logging utilities e.g. [log_vars](lib/cmake/config/LogVarsConfig.cmake)
-- Target utilities e.g. [directory_targets()](lib/cmake/config/TargetUtilitiesConfig.cmake)
+- Custom CMake testing framework [expect()](lib/cmake/module/Expect.cmake)
+- Argument parsing helper [help_parse_arguments()](lib/cmake/module/HelpParseArguments.cmake)
+- Logging utilities e.g. [log_vars](lib/cmake/module/LogVars.cmake)
+- Target utilities e.g. [directory_targets()](lib/cmake/module/TargetUtilities.cmake)
 
 ## C++ Features
 

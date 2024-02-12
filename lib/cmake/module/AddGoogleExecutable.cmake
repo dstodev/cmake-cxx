@@ -1,6 +1,8 @@
+include_guard(DIRECTORY)
+
 include(GoogleTest)
 
-find_package(HelpParseArguments CONFIG REQUIRED)
+include(HelpParseArguments)
 
 function(add_google_executable target)
 	help_parse_arguments(args

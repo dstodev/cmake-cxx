@@ -1,9 +1,14 @@
-find_package(AlignStrings CONFIG REQUIRED)
+include_guard(DIRECTORY)
+
+include(AlignStrings)
 
 #[[
 	After `target` builds, print its output path and directory.
 ]]
 function(highlight_target_output target)
+	# a "file url" is of the form: file://<host>/<path>
+	# omitting <host> is equal to "localhost"
+	# https://www.ietf.org/rfc/rfc1738.txt
 	set(out_path "Built ${target}: file:///$<TARGET_FILE:${target}>")
 	set(out_dir "To directory: file:///$<TARGET_FILE_DIR:${target}>")
 

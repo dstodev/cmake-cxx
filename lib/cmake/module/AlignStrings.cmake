@@ -1,3 +1,5 @@
+include_guard(DIRECTORY)
+
 #[[
 	Given two strings str1 and str2, and a character to align on, prepends
 	spaces to str1 or str2 until they align on the first occurrence of the

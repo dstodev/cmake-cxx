@@ -1,3 +1,5 @@
+include_guard(DIRECTORY)
+
 #[[
 	log_vars(var_names...) will print a readout of all given variables
 	and their values. Message modes are supported e.g.: log_vars(... MODE STATUS)

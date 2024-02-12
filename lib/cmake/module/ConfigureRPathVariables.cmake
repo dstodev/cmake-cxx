@@ -1,3 +1,5 @@
+include_guard(DIRECTORY)
+
 function(configure_rpath_variables)
 	if(UNIX)
 		if(APPLE)

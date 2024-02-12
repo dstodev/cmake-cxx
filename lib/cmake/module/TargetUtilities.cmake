@@ -1,4 +1,6 @@
-find_package(HelpParseArguments CONFIG REQUIRED)
+include_guard(DIRECTORY)
+
+include(HelpParseArguments)
 
 #[[
 	Returns a list (in out_var) of all targets defined in the given directory.

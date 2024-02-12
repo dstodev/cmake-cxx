@@ -1,3 +1,5 @@
+include_guard(DIRECTORY)
+
 #[[
 	Parses function arguments past the last required function argument of the
 	function calling this macro.

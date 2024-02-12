@@ -1,3 +1,5 @@
+include_guard(DIRECTORY)
+
 function(message_gate_open)
 	enable_message(TRUE)
 endfunction()

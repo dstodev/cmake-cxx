@@ -1,3 +1,5 @@
+include_guard(DIRECTORY)
+
 function(add_local_all_target target_name)
 	get_directory_property(targets BUILDSYSTEM_TARGETS)
 

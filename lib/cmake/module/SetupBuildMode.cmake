@@ -1,3 +1,5 @@
+include_guard(DIRECTORY)
+
 set(__default_build_mode "Release" CACHE STRING "Default single-config-generator build mode")
 
 function(setup_build_mode)

@@ -1,4 +1,6 @@
-find_package(HelpParseArguments CONFIG REQUIRED)
+include_guard(DIRECTORY)
+
+include(HelpParseArguments)
 
 #[[
 	Converts a file to a raw string literal (>=C++11):
