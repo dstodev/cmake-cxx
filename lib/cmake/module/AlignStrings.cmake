@@ -1,4 +1,4 @@
-include_guard(DIRECTORY)
+include_guard()
 
 #[[
 	Given two strings str1 and str2, and a character to align on, prepends

@@ -2,7 +2,7 @@
 # CMake code is working as you expect it to. Use it to write "unit tests" for
 # CMake functions, or just to make sure your project is set up as you expect.
 
-include_guard(DIRECTORY)
+include_guard()
 
 #[[
 	expect(expr...) asserts that expr evaluates TRUE. If expr instead evaluates FALSE, then
@@ -187,6 +187,9 @@ function(error_if_any_expect_fail)
 		message(FATAL_ERROR "expect() failed ${__expect_fails} time(s)!")
 	endif()
 endfunction()
+
+# This module should be included only once, near the top of the top-level CMakeLists.txt.
+expect(NOT COMMAND _expect MESSAGE "expect() redefined!" SAFE)
 
 #[[
 	Always call expect_test_preamble() before expect() tests to run them only once.

@@ -1,4 +1,4 @@
-include_guard(DIRECTORY)
+include_guard()
 
 #[[
 	string_capitalize(input_string result) uppercases the first letter of input_string,

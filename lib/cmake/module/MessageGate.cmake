@@ -1,4 +1,4 @@
-include_guard(DIRECTORY)
+include_guard()
 
 function(message_gate_open)
 	enable_message(TRUE)

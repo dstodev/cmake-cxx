@@ -1,4 +1,4 @@
-include_guard(DIRECTORY)
+include_guard()
 
 #[[
 	Parses function arguments past the last required function argument of the

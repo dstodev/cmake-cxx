@@ -1,4 +1,4 @@
-include_guard(DIRECTORY)
+include_guard()
 
 set(__dll_export_file "dll-export.h" CACHE STRING "Name of the file that contains the dll export macro")
 set(__dll_export_macro "DLL" CACHE STRING "Name of the dll export macro")

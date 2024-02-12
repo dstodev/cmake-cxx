@@ -1,4 +1,4 @@
-include_guard(DIRECTORY)
+include_guard()
 
 include(HelpParseArguments)
 

@@ -1,4 +1,4 @@
-include_guard(DIRECTORY)
+include_guard()
 
 function(configure_rpath_variables)
 	if(UNIX)

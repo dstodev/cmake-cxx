@@ -1,4 +1,4 @@
-include_guard(DIRECTORY)
+include_guard()
 
 #[[
 	log_vars(var_names...) will print a readout of all given variables
