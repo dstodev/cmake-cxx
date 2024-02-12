@@ -45,8 +45,8 @@ string(JOIN "\n" file_content
 	"include(\"\${CMAKE_CURRENT_LIST_DIR}/${export_name}-targets.cmake\")"
 	"" # Empty line
 )
-file(GENERATE OUTPUT "${export_name}Config.cmake" CONTENT ${file_content})
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${export_name}Config.cmake" DESTINATION cmake)
+file(GENERATE OUTPUT "${export_name}-config.cmake" CONTENT ${file_content})
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${export_name}-config.cmake" DESTINATION cmake)
 
 # Export CMake targets
 install(EXPORT ${export_name}

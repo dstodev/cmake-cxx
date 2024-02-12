@@ -7,7 +7,7 @@ project(SampleProject)
 cmake_policy(SET CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0091.html
 
 #[[
-	The following snippet looks for projectConfig.cmake anywhere in the primary
+	The following snippet looks for project-config.cmake anywhere in the primary
 	build directory.
 
 	This sample project builds in primary-build-dir/sample, but it is not
@@ -26,7 +26,7 @@ cmake_policy(SET CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0
 	Thus, search the primary build directory for project.cmake, which will
 	reside in this unzipped package directory.
 ]]
-set(config_file "${PROJECT_BINARY_DIR}/../projectConfig.cmake")
+set(config_file "${PROJECT_BINARY_DIR}/../project-config.cmake")
 
 file(GLOB_RECURSE project_exports "${config_file}")
 list(FILTER project_exports INCLUDE REGEX "TXZ")
@@ -40,7 +40,7 @@ get_filename_component(exports_dir "${project_exports}" DIRECTORY)
 set(package_root "${exports_dir}/..")
 
 list(APPEND CMAKE_MODULE_PATH "${package_root}/cmake")
-include(projectConfig)
+include(project-config)
 
 set(CMAKE_MSVCIDE_RUN_PATH "${package_root}/bin")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE STRING "MSVC runtime")
