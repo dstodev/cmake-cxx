@@ -196,7 +196,7 @@ expect(NOT COMMAND _expect MESSAGE "expect() redefined!" SAFE)
 ]]
 macro(expect_test_preamble)
 	include_guard(GLOBAL)
-	if (DISABLE_EXPECT)
+	if(DISABLE_EXPECT)
 		return()
 	endif()
 endmacro()

@@ -11,23 +11,23 @@ function(add_google_executable target)
 		"SOURCES;LIBRARIES"
 	)
 
-	if (args_TEST)
-		if (args_MAIN)
+	if(args_TEST)
+		if(args_MAIN)
 			list(APPEND google_links "gtest")
 		else()
 			list(APPEND google_links "gtest_main")
 		endif()
 	endif()
 
-	if (args_BENCHMARK)
-		if (args_MAIN)
+	if(args_BENCHMARK)
+		if(args_MAIN)
 			list(APPEND google_links "benchmark")
 		else()
 			list(APPEND google_links "benchmark_main")
 		endif()
 	endif()
 
-	if (NOT google_links)
+	if(NOT google_links)
 		message(FATAL_ERROR "At least one option must be provided: TEST or BENCHMARK")
 	endif()
 
@@ -41,7 +41,7 @@ function(add_google_executable target)
 			${google_links}
 	)
 
-	if (args_STANDARD)
+	if(args_STANDARD)
 		set(std ${args_STANDARD})
 	else()
 		set(std 14)  # GoogleTest requires at least C++14 as of version 1.13
@@ -52,7 +52,7 @@ function(add_google_executable target)
 			cxx_std_${std}
 	)
 
-	if (args_TEST)
+	if(args_TEST)
 		# TODO: Better properties support https://cmake.org/cmake/help/latest/command/set_tests_properties.html
 		gtest_discover_tests(${target})
 	endif()

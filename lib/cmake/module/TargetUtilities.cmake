@@ -7,19 +7,18 @@ include(HelpParseArguments)
 	If RECURSIVE is given, the list will also include targets defined in subdirectories.
 ]]
 function(directory_targets out_var directory)
-	_directory_targets(result ${directory} ${ARGN})
+	help_parse_arguments(args "RECURSIVE" "" "")
+	_directory_targets(result ${directory} ${args_RECURSIVE})
 	list(REMOVE_DUPLICATES result)
 	set(${out_var} ${result} PARENT_SCOPE)
 endfunction()
 
-function(_directory_targets out_var directory)
-	help_parse_arguments(args "RECURSIVE" "" "")
-
+function(_directory_targets out_var directory recursive)
 	get_property(targets DIRECTORY ${directory} PROPERTY BUILDSYSTEM_TARGETS)
 	get_property(imports DIRECTORY ${directory} PROPERTY IMPORTED_TARGETS)
 	list(APPEND targets ${imports})
 
-	if(args_RECURSIVE)
+	if(recursive)
 		get_property(subdirs DIRECTORY ${directory} PROPERTY SUBDIRECTORIES)
 
 		foreach(subdir IN LISTS subdirs)

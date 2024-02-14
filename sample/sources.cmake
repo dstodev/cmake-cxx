@@ -6,7 +6,7 @@
 
 set(source_dir "${CMAKE_CURRENT_LIST_DIR}")
 
-target_sources(${target_name}
+target_sources(${target_name}  # parent scope defines ${target_name}
 	PRIVATE
 		${source_dir}/main.cxx
 

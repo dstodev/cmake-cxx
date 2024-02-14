@@ -36,7 +36,7 @@ include_guard()
 	function(my_function target)
 		help_parse_arguments(args "PRINT_VALUES" "VALUE1;VALUE2" "OTHER_VALUES")
 
-		if (args_PRINT_VALUES)
+		(args_PRINT_VALUES)
 			message("Value 1: ${args_VALUE1}")
 			message("Value 2: ${args_VALUE2}")
 			foreach (val IN LISTS args_OTHER_VALUES)

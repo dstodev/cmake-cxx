@@ -1,13 +1,15 @@
 include_guard()
 
+include(SortListByLength)
+
 #[[
-	Given two strings str1 and str2, and a character to align on, prepends
-	spaces to str1 or str2 until they align on the first occurrence of the
+	Given two strings string1 and string2, and a character to align on, prepends
+	spaces to string1 or string2 until they align on the first occurrence of the
 	character.
 ]]
-macro(align_strings str1 str2 align)
-	string(FIND "${${str1}}" "${align}" index1)
-	string(FIND "${${str2}}" "${align}" index2)
+function(align_strings string1 string2 align)
+	string(FIND "${${string1}}" "${align}" index1)
+	string(FIND "${${string2}}" "${align}" index2)
 
 	if(index1 EQUAL -1 OR index2 EQUAL -1)
 		return()
@@ -25,9 +27,21 @@ macro(align_strings str1 str2 align)
 		string(REPEAT " " ${index} spaces1)
 	endif()
 
-	set(${str1} "${spaces1}${${str1}}")
-	set(${str2} "${spaces2}${${str2}}")
-endmacro()
+	set(${string1} "${spaces1}${${string1}}" PARENT_SCOPE)
+	set(${string2} "${spaces2}${${string2}}" PARENT_SCOPE)
+endfunction()
+
+function(align_list list_name align)
+	sort_list_by_length(${list_name} sorted ORDER DESCENDING)
+	list(GET sorted 0 largest)
+
+	foreach(item IN LISTS ${list_name})
+		align_strings(largest item ${align})
+		list(APPEND aligned "${item}")
+	endforeach()
+
+	set(${list_name} "${aligned}" PARENT_SCOPE)
+endfunction()
 
 expect_test_preamble()
 
@@ -48,8 +62,8 @@ function(test_align_strings_str1_longer)
 
 	align_strings(str1 str2 "!")
 
-	expect("${str1}" MATCHES "^Hello, !$")
-	expect("${str2}" MATCHES "^  World!$")
+	expect(str1 MATCHES "^Hello, !$")
+	expect(str2 MATCHES "^  World!$")
 endfunction()
 test_align_strings_str1_longer()
 
@@ -59,8 +73,8 @@ function(test_align_strings_str2_longer)
 
 	align_strings(str1 str2 "!")
 
-	expect("${str1}" MATCHES "^  Hello!$")
-	expect("${str2}" MATCHES "^, World!$")
+	expect(str1 MATCHES "^  Hello!$")
+	expect(str2 MATCHES "^, World!$")
 endfunction()
 test_align_strings_str2_longer()
 
@@ -70,8 +84,8 @@ function(test_align_strings_str1_empty)
 
 	align_strings(str1 str2 "!")
 
-	expect("${str1}" MATCHES "^$")
-	expect("${str2}" MATCHES "^World!$")
+	expect(str1 MATCHES "^$")
+	expect(str2 MATCHES "^World!$")
 endfunction()
 test_align_strings_str1_empty()
 
@@ -81,6 +95,7 @@ function(test_align_strings_str2_empty)
 
 	align_strings(str1 str2 "!")
 
-	expect("${str1}" MATCHES "^Hello!$")
-	expect("${str2}" MATCHES "^$")
+	expect(str1 MATCHES "^Hello!$")
+	expect(str2 MATCHES "^$")
 endfunction()
+test_align_strings_str2_empty()

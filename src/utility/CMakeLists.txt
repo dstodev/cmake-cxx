@@ -1,4 +1,4 @@
-target_sources(${target_name}
+target_sources(${target_name}  # parent scope defines ${target_name}
 	PRIVATE
 		log.cxx
 		log.hxx

@@ -6,6 +6,7 @@
       <file path="$PROJECT_DIR$/build/_dependency-cache" />
       <file path="$PROJECT_DIR$/build/compose-build" />
       <file path="$PROJECT_DIR$/build/compose-build-clang" />
+      <file path="$PROJECT_DIR$/build/manual" />
       <file path="$PROJECT_DIR$/build/vscode" />
     </excludeRoots>
   </component>
