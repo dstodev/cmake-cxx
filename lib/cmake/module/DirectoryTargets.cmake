@@ -4,7 +4,7 @@ include(HelpParseArguments)
 
 #[[
 	Returns a list (in out_var) of all targets defined in the given directory.
-	If RECURSIVE is given, the list will also include targets defined in subdirectories.
+	Provide RECURSIVE to include targets defined in subdirectories.
 ]]
 function(directory_targets out_var directory)
 	help_parse_arguments(args "RECURSIVE" "" "")
