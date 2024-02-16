@@ -11,8 +11,8 @@ set(CMAKE_POLICY_DEFAULT_CMP0068 NEW)  # https://cmake.org/cmake/help/latest/pol
 #############
 
 set(cmake_module_paths
-	"${CMAKE_CURRENT_LIST_DIR}/lib/cmake/module"
 	"${CMAKE_CURRENT_LIST_DIR}/lib/cmake/include"
+	"${CMAKE_CURRENT_LIST_DIR}/lib/cmake/module"
 )
 list(APPEND CMAKE_MODULE_PATH ${cmake_module_paths})
 
@@ -54,7 +54,7 @@ check_pie_supported()
 #  Dependency & Project Targets  #
 ##################################
 
-add_subdirectory(lib/cmake/include/dependencies)
+add_subdirectory(lib/cmake/dependencies)
 
 add_subdirectory(src)
 
