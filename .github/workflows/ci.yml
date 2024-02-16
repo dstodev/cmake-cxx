@@ -90,7 +90,7 @@ jobs:
     needs: cfg
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3  # https://github.com/marketplace/actions/checkout
+      - uses: actions/checkout@v4  # https://github.com/marketplace/actions/checkout
       - run: script/run-docker-tests.bash
 
   native-windows:
@@ -98,14 +98,14 @@ jobs:
     needs: cfg
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Configure
         run: cmake -S . -B build/$env:BUILD_TYPE
       - name: Run tests
         run: cmake --build build/$env:BUILD_TYPE --config $env:BUILD_TYPE --parallel --target all-test
       - name: Build package
         run: cmake --build build/$env:BUILD_TYPE --config $env:BUILD_TYPE --parallel --target app-sample
-      - uses: actions/upload-artifact@v3  # https://github.com/actions/upload-artifact
+      - uses: actions/upload-artifact@v4  # https://github.com/actions/upload-artifact
         with:
           name: package-${{ github.job }}
           path: build/${{ env.BUILD_TYPE }}/*.tar.xz
@@ -118,7 +118,7 @@ jobs:
     needs: cfg
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Configure
         run: |
           cmake_flags=(
@@ -132,7 +132,7 @@ jobs:
         run: cmake --build build/$BUILD_TYPE --parallel --target all-test
       - name: Build package
         run: cmake --build build/$BUILD_TYPE --parallel --target app-sample
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: package-${{ github.job }}
           path: build/${{ env.BUILD_TYPE }}/*.tar.xz
@@ -146,7 +146,7 @@ jobs:
     needs: cfg
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Configure
         run: |
           cmake_flags=(
@@ -160,7 +160,7 @@ jobs:
         run: cmake --build build/$BUILD_TYPE --parallel --target all-test
       - name: Build package
         run: cmake --build build/$BUILD_TYPE --parallel --target app-sample
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: package-${{ github.job }}
           path: build/${{ env.BUILD_TYPE }}/*.tar.xz
