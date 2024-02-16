@@ -1,6 +1,6 @@
-# CMake is a complicated language. This module is for developers to ensure their
-# CMake code is working as you expect it to. Use it to write "unit tests" for
-# CMake functions, or just to make sure your project is set up as you expect.
+# CMake is a complicated language. This module is for developers to ensure your
+# CMake code is working as you expect it to, including using expect() to write
+# "unit tests" for CMake functions.
 
 include_guard()
 

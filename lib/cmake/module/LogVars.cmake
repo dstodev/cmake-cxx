@@ -1,14 +1,12 @@
 include_guard()
 
 #[[
-	log_vars(var_names...) will print a readout of all given variables
-	and their values. Message modes are supported e.g.: log_vars(... MODE STATUS)
+	log_vars(var_names... [MODE <mode>] [SPLIT_LISTS])
+
+	Print a table of all given variables and their values.
 
 	Parameters
 	----------
-	<var_names>... :
-		Names of variables to print
-
 	MODE <mode> :
 		Message mode. Defaults to STATUS
 
