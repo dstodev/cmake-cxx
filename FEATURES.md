@@ -9,10 +9,10 @@ modern C++ projects.
 
 - Custom CMake testing framework [expect()](lib/cmake/module/Expect.cmake)
 - Argument parsing helper [help_parse_arguments()](lib/cmake/module/HelpParseArguments.cmake)
-- Logging utilities e.g. [log_vars](lib/cmake/module/LogVars.cmake)
-- Target utilities e.g. [directory_targets()](lib/cmake/module/TargetUtilities.cmake)
+- Logging utilities e.g. [log_vars()](lib/cmake/module/LogVars.cmake)
+- Target utilities e.g. [directory_targets()](lib/cmake/module/DirectoryTargets.cmake)
 
 ## C++ Features
 
 - [Basic logging](src/utility/log.hxx) using [fmt](https://github.com/fmtlib/fmt)
-- [Testing](test/unit/shear.cxx) with [GoogleTest](https://github.com/google/googletest)
+- [Testing](test/unit/project.cxx) with [GoogleTest](https://github.com/google/googletest)
