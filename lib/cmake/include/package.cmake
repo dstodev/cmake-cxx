@@ -21,8 +21,8 @@ install(TARGETS
 install(FILES $<TARGET_FILE:app-console> DESTINATION bin)
 
 # Redistribute dependency headers
-install(DIRECTORY "${cxxopts_SOURCE_DIR}/include/" DESTINATION include FILES_MATCHING PATTERN "*.h*")
-install(DIRECTORY "${fmt_SOURCE_DIR}/include/" DESTINATION include)
+install(DIRECTORY "${CPM_PACKAGE_cxxopts_SOURCE_DIR}/include/" DESTINATION include FILES_MATCHING PATTERN "*.h*")
+install(DIRECTORY "${CPM_PACKAGE_fmt_SOURCE_DIR}/include/" DESTINATION include)
 
 # Redistribute system runtimes
 set(CMAKE_INSTALL_DEBUG_LIBRARIES TRUE)

@@ -54,7 +54,7 @@ check_pie_supported()
 #  Dependency & Project Targets  #
 ##################################
 
-include(dependencies)  # lib/cmake/include/dependencies.cmake
+add_subdirectory(lib/cmake/include/dependencies)
 
 add_subdirectory(src)
 

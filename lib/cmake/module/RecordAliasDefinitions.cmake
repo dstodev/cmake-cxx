@@ -1,9 +1,20 @@
 include_guard()
 
+#[[
+	CMake does not provide a way to detect library aliases.
+	Instead, override add_library in the current scope to record alias definitions.
+
+	After calling this function, the following variables are available:
+	- ${out_names} - name of the variable that contains the list of alias names
+	- ${out_targets} - name of the variable that contains the list of alias targets
+
+	e.g.
+		record_alias_definitions(ALIAS_NAMES ALIAS_TARGETS)
+		# ...
+		message("Alias names: ${${ALIAS_NAMES}}")
+		message("Alias targets: ${${ALIAS_TARGETS}}")
+]]
 macro(record_alias_definitions out_names out_targets)
-
-	# Override add_library to record alias definitions
-
 	set(__${out_names} "" CACHE INTERNAL "")
 	set(__${out_targets} "" CACHE INTERNAL "")
 
@@ -22,10 +33,10 @@ macro(record_alias_definitions out_names out_targets)
 
 	function(add_library)
 		list(FIND ARGN ALIAS alias_index)
+		#                                               alias_index
+		#                                        name_index  |  target_index
+		#                                           0|      1|       2|
 		if(alias_index GREATER 0)  # add_library(My::Alias ALIAS some_target)
-			#                                       0|      1|       2|
-			#                                    name_index  |  target_index
-			#                                           alias_index
 			math(EXPR alias_name_index "${alias_index} - 1")
 			math(EXPR alias_target_index "${alias_index} + 1")
 			list(GET ARGN ${alias_name_index} alias_name)

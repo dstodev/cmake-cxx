@@ -7,7 +7,7 @@ message(STATUS "Adding dependency packages... (from: ${CPM_SOURCE_CACHE})")
 
 directory_targets(before_dependencies . RECURSIVE)  # record targets before adding dependencies
 
-set(dependency_dir "${CMAKE_CURRENT_LIST_DIR}/dependencies")
+set(dependency_dir "${CMAKE_CURRENT_LIST_DIR}")
 
 # Include CPack before dependencies to ensure default CPack variables, except what is set here.
 include(${dependency_dir}/CPack.cmake)
