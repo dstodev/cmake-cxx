@@ -47,14 +47,12 @@ include_guard()
 
 	my_function(some_target PRINT_VALUES VALUE1 a b VALUE2 "c;d" OTHER_VALUES e f g)
 
-	#[=[
 	Output:
 		[cmake] Value 1: a
 		[cmake] Value 2: c;d
 		[cmake] Other value: e
 		[cmake] Other value: f
 		[cmake] Other value: g
-	]=]
 
 	References
 	----------

@@ -1,3 +1,5 @@
+include(LineNumber)
+
 # This code is modified from: (as of 5/17/2023)
 # https://github.com/cpm-cmake/CPM.cmake/wiki/Downloading-CPM.cmake-in-CMake
 
@@ -18,17 +20,17 @@ function(_configure)
 	endif()
 
 	file(MD5 ${output_path} output_hash)
-	string(JOIN "\n " msg " "
-		"CPM.cmake hash mismatch! This is suspicious and could warrant further investigation."
-		"To continue, update expected_hash in ${CMAKE_CURRENT_LIST_FILE}:0."
-		""
-		"Expected: ${expected_hash}"
-		"Received: ${output_hash}"
-		""
-	)
 	if(NOT "${output_hash}" STREQUAL "${expected_hash}")
+		line_number(hash_line ${CMAKE_CURRENT_FUNCTION_LIST_FILE} ${expected_hash})
+		string(JOIN "\n " msg " "
+			"CPM.cmake hash mismatch! This is suspicious and could warrant further investigation."
+			"To continue, update expected_hash: ${CMAKE_CURRENT_LIST_FILE}:${hash_line}"
+			""
+			"Expected: ${expected_hash}"
+			"Received: ${output_hash}"
+			"")
 		file(REMOVE ${output_path})
-		message(FATAL_ERROR "${msg}")
+		message(FATAL_ERROR ${msg})
 	endif()
 
 	include(${output_path})
