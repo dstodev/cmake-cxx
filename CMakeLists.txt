@@ -1,19 +1,6 @@
 cmake_minimum_required(VERSION 3.24)
 
-## Our policies
-if(POLICY CMP0091)
-	cmake_policy(SET CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0091.html
-endif()
-if(POLICY CMP0152)
-	cmake_policy(SET CMP0152 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0152.html
-endif()
-
-## Dependency policies
-set(CMAKE_POLICY_DEFAULT_CMP0068 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0068.html
-
-#############
-#  Project  #
-#############
+## Modules
 
 set(cmake_module_paths
 	"${CMAKE_CURRENT_LIST_DIR}/lib/cmake/include"
@@ -22,6 +9,18 @@ set(cmake_module_paths
 list(APPEND CMAKE_MODULE_PATH ${cmake_module_paths})
 
 include(AllModules)
+
+## Our policies
+
+set_policy(CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0091.html
+set_policy(CMP0152 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0152.html
+
+## Dependency policies
+set(CMAKE_POLICY_DEFAULT_CMP0068 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0068.html
+
+#############
+#  Project  #
+#############
 
 setup_build_mode()
 
