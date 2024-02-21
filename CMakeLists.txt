@@ -1,8 +1,12 @@
 cmake_minimum_required(VERSION 3.24)
 
 ## Our policies
-cmake_policy(SET CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0091.html
-cmake_policy(SET CMP0152 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0152.html
+if(POLICY CMP0091)
+	cmake_policy(SET CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0091.html
+endif()
+if(POLICY CMP0152)
+	cmake_policy(SET CMP0152 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0152.html
+endif()
 
 ## Dependency policies
 set(CMAKE_POLICY_DEFAULT_CMP0068 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0068.html
