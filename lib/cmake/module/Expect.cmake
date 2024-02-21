@@ -34,12 +34,13 @@ include_guard()
 
 		expect(CMAKE_BUILD_TYPE MATCHES "Debug|Release")
 
-	To use this module, include the module as early as possible (preferably
-	near the top of the top-level CMakeLists.txt):
+	To use this module: add the module's directory to CMAKE_MODULE_PATH,
+	then include and use:
 
 		cmake_minimum_required(VERSION 3.18)
 		list(APPEND CMAKE_MODULE_PATH directory/containing/this/file)
 		include(Expect)
+		expect(CMAKE_BUILD_TYPE MATCHES "Debug|Release")
 
 	If any expect() call fails, emits message(FATAL_ERROR) once the CMake directory
 	which first includes this module finishes configuring. For this reason, developers
@@ -85,8 +86,7 @@ include_guard()
 
 	-- Disabling expect():
 
-	Because modules may assume that expect() exists "as a built-in command", expect()
-	is not easily removable. To disable expect(), simply set var DISABLE_EXPECT to TRUE
+	To disable expect() tests, simply set var DISABLE_EXPECT to TRUE
 	before this module is first included.
 ]]
 function(expect)
@@ -149,12 +149,12 @@ function(expect)
 		if(msg)
 			set(pretty_message "${msg}")
 		else()
-			string(REPLACE "\"" "\\\"" expr "${argv}")  # double-escape quotes for message
+			string(REPLACE "\\" "\\\\" expr "${argv}")  # double-escape for message
 			set(pretty_message
 				" expect(${expr}) failed!\n"
 				" Search call stack for: (expect)")
 		endif()
-		message(${message_mode} ${pretty_message})
+		cmake_language(EVAL CODE "${__expect_message_fn}(\${message_mode} \${pretty_message})")
 	endif()
 endfunction()
 
@@ -188,6 +188,13 @@ function(error_if_any_expect_fail)
 	endif()
 endfunction()
 
+function(_expect_message_nop)
+endfunction()
+
+macro(disable_expect_message)
+	set(__expect_message_fn _expect_message_nop)
+endmacro()
+
 # This module should be included only once, near the top of the top-level CMakeLists.txt.
 expect(NOT COMMAND _expect MESSAGE "expect() redefined!" SAFE)
 
@@ -206,6 +213,8 @@ expect_test_preamble()
 _set_fails(0)
 _set_calls(0)
 
+set(__expect_message_fn message CACHE INTERNAL "Name of expect() message function")
+
 cmake_language(DEFER CALL report_expect_calls)  # https://cmake.org/cmake/help/latest/command/cmake_language.html#defer
 cmake_language(DEFER CALL error_if_any_expect_fail)
 
@@ -213,20 +222,20 @@ function(test_expect)
 	expect("" STREQUAL "")
 	expect(TRUE)
 	expect(NOT FALSE)
+	expect("a b" STREQUAL "a b")
+	expect("c;d" STREQUAL "c;d")
 
 	set(mylist "1;2;")  # trailing semicolon puts empty string i.e. "" at end
 	# unset(mylist)  # uncomment to check error output
 	expect(1 IN_LIST mylist)
 	expect(2 IN_LIST mylist)
-	expect(NOT 3 IN_LIST mylist)
 	expect("" IN_LIST mylist)
-	expect("a b" STREQUAL "a b")
-	expect("c;d" STREQUAL "c;d")
+	expect(NOT 3 IN_LIST mylist)
 endfunction()
 test_expect()
 
 function(test_expect_safe)
-	set(CMAKE_MESSAGE_LOG_LEVEL ERROR)  # comment-out to check error output for this function
+	disable_expect_message()
 	expect(SAFE FALSE)
 	expect(FALSE SAFE)
 	expect("1" STREQUAL SAFE "2")  # try something really weird
@@ -234,7 +243,7 @@ endfunction()
 test_expect_safe()
 
 function(test_expect_message)
-	set(CMAKE_MESSAGE_LOG_LEVEL ERROR)  # comment-out to check error output for this function
+	disable_expect_message()
 	expect(FALSE MESSAGE "Assertion failed!" SAFE)
 endfunction()
 test_expect_message()

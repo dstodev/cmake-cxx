@@ -43,6 +43,7 @@ function(align_list list_name align)
 	set(${list_name} "${aligned}" PARENT_SCOPE)
 endfunction()
 
+include(Expect)
 expect_test_preamble()
 
 function(test_align_strings_equal)

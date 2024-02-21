@@ -115,6 +115,7 @@ function(help_print_parsed_arguments _prefix)
 	endforeach()
 endfunction()
 
+include(Expect)
 expect_test_preamble()
 
 function(test_parse_options a b c)

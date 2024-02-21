@@ -35,16 +35,17 @@ list(FILTER release_runtimes EXCLUDE REGEX "Debug")
 set(debug_runtimes ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS})
 list(FILTER debug_runtimes INCLUDE REGEX "Debug")
 
-install(PROGRAMS ${release_runtimes} DESTINATION bin CONFIGURATIONS Release)
-install(PROGRAMS ${debug_runtimes} DESTINATION bin CONFIGURATIONS Debug)
-
-log_vars(release_runtimes debug_runtimes SPLIT_LISTS MODE DEBUG)
+if(release_runtimes OR debug_runtimes)
+	install(PROGRAMS ${release_runtimes} DESTINATION bin CONFIGURATIONS Release)
+	install(PROGRAMS ${debug_runtimes} DESTINATION bin CONFIGURATIONS Debug)
+	log_vars(release_runtimes debug_runtimes MODE DEBUG)
+endif()
 
 # Generate & install project config file
 string(JOIN "\n" file_content
 	"include(\"\${CMAKE_CURRENT_LIST_DIR}/${export_name}-targets.cmake\")"
-	"" # Empty line
-)
+	"")  # Empty line
+
 file(GENERATE OUTPUT "${export_name}-config.cmake" CONTENT ${file_content})
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${export_name}-config.cmake" DESTINATION cmake)
 

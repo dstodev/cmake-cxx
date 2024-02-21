@@ -23,12 +23,14 @@ include(HelpParseArguments)
 	An example main.cxx which runs GoogleTest tests is provided by Google
 	in their documentation primer, copied here for convenience:
 
-	// 2/16/2024 from: https://google.github.io/googletest/primer.html#writing-the-main-function
+	// (2/16/2024)
 
 		int main(int argc, char **argv) {
 			testing::InitGoogleTest(&argc, argv);
 			return RUN_ALL_TESTS();
 		}
+
+	// from: https://google.github.io/googletest/primer.html#writing-the-main-function
 ]]
 function(add_google_executable target)
 	help_parse_arguments(args "" "MAIN;STANDARD" "SOURCES;LIBRARIES")
@@ -52,33 +54,14 @@ function(add_google_executable target)
 		set(std ${min_standard})
 	endif()
 
-	get_cmake_property(cxx_features CMAKE_CXX_KNOWN_FEATURES)
 	set(known_versions "${CMAKE_CXX_COMPILE_FEATURES}")
 	list(FILTER known_versions INCLUDE REGEX "cxx_std_")
-	list(FILTER known_versions EXCLUDE REGEX "_98$|_11$") # Remove versions less than min_standard
+	list(FILTER known_versions EXCLUDE REGEX "(_98|_11)$") # Remove versions less than min_standard
 	list(JOIN known_versions " " known_version_str)
-
-	if(NOT "cxx_std_${std}" IN_LIST cxx_features)
-		string(JOIN "\n " msg " "
-			"C++ standard (${std}) is not valid!"
-			"Supported features: ${known_version_str}"
-			"")
-		message(FATAL_ERROR "${msg}")
-	endif()
-
-	if(NOT "cxx_std_${std}" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
-		string(JOIN "\n " msg " "
-			"C++ standard (${std}) is valid, but not supported by your compiler!"
-			"Compiler ID: ${CMAKE_CXX_COMPILER_ID}"
-			"Compiler version: ${CMAKE_CXX_COMPILER_VERSION}"
-			"Supported features: ${known_version_str}"
-			"")
-		message(FATAL_ERROR ${msg})
-	endif()
 
 	if(std LESS min_standard)
 		string(JOIN "\n " msg " "
-			"C++ standard (${std}) is valid, but not supported by GoogleTest!"
+			"C++ standard (${std}) is not supported by GoogleTest!"
 			"GoogleTest requires C++${min_standard} or greater!"
 			"Supported features: ${known_version_str}"
 			"")

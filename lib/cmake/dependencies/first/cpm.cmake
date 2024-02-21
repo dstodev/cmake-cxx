@@ -30,7 +30,7 @@ function(_configure)
 			"Received: ${output_hash}"
 			"")
 		file(REMOVE ${output_path})
-		message(FATAL_ERROR ${msg})
+		message(FATAL_ERROR "${msg}")
 	endif()
 
 	include(${output_path})

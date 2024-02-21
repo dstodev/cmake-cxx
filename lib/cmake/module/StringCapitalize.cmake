@@ -12,6 +12,7 @@ function(string_capitalize in_string out_var)
 	set(${out_var} "${first_letter}${rest_of_string}" PARENT_SCOPE)
 endfunction()
 
+include(Expect)
 expect_test_preamble()
 
 function(test_capitalize_lower_string)

@@ -1,7 +1,8 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.24)
 
 ## Our policies
 cmake_policy(SET CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0091.html
+cmake_policy(SET CMP0152 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0152.html
 
 ## Dependency policies
 set(CMAKE_POLICY_DEFAULT_CMP0068 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0068.html
@@ -16,7 +17,7 @@ set(cmake_module_paths
 )
 list(APPEND CMAKE_MODULE_PATH ${cmake_module_paths})
 
-include(BuildUtilities)
+include(AllModules)
 
 setup_build_mode()
 
@@ -28,7 +29,7 @@ set(CMAKE_MESSAGE_LOG_LEVEL "Status" CACHE STRING "CMake message log level")
 set_property(CACHE CMAKE_MESSAGE_LOG_LEVEL PROPERTY
 	STRINGS "Error" "Warning" "Notice" "Status" "Verbose" "Debug" "Trace")
 
-set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard version")
+default_standard(CXX 17)
 
 option(BUILD_SHARED_LIBS "Build a shared artifact (.dll, .so, .dylib)?" TRUE)
 option(CMAKE_EXPORT_COMPILE_COMMANDS "Generate compile_commands.json?" TRUE)

@@ -16,6 +16,7 @@ function(sort_list_by_length in_list out_list)
 	set(${out_list} ${output} PARENT_SCOPE)
 endfunction()
 
+include(Expect)
 expect_test_preamble()
 
 function(test_sort_list_by_length_ascending)
