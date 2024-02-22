@@ -19,7 +19,7 @@ endfunction()
 
 include_guard(GLOBAL)
 
-set(__message_gate_open TRUE CACHE INTERNAL "Emit messages?")
+message_gate_open()
 
 function(message)
 	cmake_parse_arguments(PARSE_ARGV 0 args "FORCE" "" "")

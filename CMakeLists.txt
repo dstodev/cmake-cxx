@@ -8,7 +8,7 @@ set(cmake_module_paths
 )
 list(APPEND CMAKE_MODULE_PATH ${cmake_module_paths})
 
-include(AllModules)
+include(AllModules)  # lib/cmake/module/AllModules.cmake
 
 ## Our policies
 

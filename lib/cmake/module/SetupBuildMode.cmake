@@ -1,7 +1,11 @@
 include_guard()
 
-set(__default_build_mode "Release" CACHE STRING "Default single-config-generator build mode")
+set(__default_build_mode "Release" CACHE STRING "Default single-config build mode")
 
+#[[
+	If using a single-config generator, asserts CMAKE_BUILD_TYPE exists.
+	Call setup_build_mode() before project().
+]]
 function(setup_build_mode)
 	get_cmake_property(is_multi_config GENERATOR_IS_MULTI_CONFIG)  # https://cmake.org/cmake/help/latest/prop_gbl/GENERATOR_IS_MULTI_CONFIG.html
 

@@ -1,5 +1,5 @@
 set(modules_to_ignore
-	"MessageGate"
+	"MessageGate"  # could confuse users when automatically included (overrides message())
 )
 
 file(GLOB modules "${CMAKE_CURRENT_LIST_DIR}/*.cmake")

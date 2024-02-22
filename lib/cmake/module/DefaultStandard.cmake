@@ -3,6 +3,11 @@ include_guard()
 function(default_standard)
 	cmake_parse_arguments(PARSE_ARGV 0 args "" "C;CXX" "")
 
+	if(args_KEYWORDS_MISSING_VALUES)
+		list(JOIN args_KEYWORDS_MISSING_VALUES " " msg)
+		message(FATAL_ERROR "Missing value for parameters: ${msg}")
+	endif()
+
 	if(args_C)
 		_set_standard(C ${args_C})
 		set(CMAKE_C_STANDARD ${CMAKE_C_STANDARD} PARENT_SCOPE)
@@ -18,6 +23,12 @@ endfunction()
 
 function(_set_standard lang version)
 	if(NOT DEFINED CMAKE_${lang}_STANDARD)
+		get_cmake_property(enabled_languages ENABLED_LANGUAGES)
+
+		if(NOT lang IN_LIST enabled_languages)
+			message(FATAL_ERROR "Language not enabled: ${lang}")
+		endif()
+
 		get_cmake_property(all_features CMAKE_${lang}_KNOWN_FEATURES)
 		set(supported_features "${CMAKE_${lang}_COMPILE_FEATURES}")
 
