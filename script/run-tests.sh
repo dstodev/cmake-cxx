@@ -11,4 +11,4 @@ else
 fi
 
 cmake -S "$source_dir" -B "$build_dir" -DCMAKE_BUILD_TYPE=Release
-cmake --build "$build_dir" --target all-test build-package --parallel
+cmake --build "$build_dir" --target all-test app-sample --parallel

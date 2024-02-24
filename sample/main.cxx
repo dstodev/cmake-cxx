@@ -3,6 +3,7 @@
 #endif
 
 #include <cstdlib>
+#include <iostream>
 #include <optional>
 #include <string>
 
@@ -25,6 +26,8 @@ int main(int argc, char const* argv[])
 	log::info("Info messages enabled");
 	log::debug("Debug messages enabled");
 	log::trace("Trace messages enabled");
+
+	std::cout << "Welcome!" << std::endl;
 
 	return 0;
 }
