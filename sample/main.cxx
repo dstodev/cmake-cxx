@@ -63,6 +63,9 @@ void print_enabled_log_levels()
 	case log::Level::Error: log_levels.emplace_back("Error"); [[fallthrough]];
 	default:;
 	}
+	if (log_levels.empty()) {
+		std::cout << "None";
+	}
 	for (auto it = log_levels.rbegin(); it != log_levels.rend(); ++it) {
 		std::cout << *it;
 		if (std::next(it) != log_levels.rend()) {
