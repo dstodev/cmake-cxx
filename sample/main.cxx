@@ -14,18 +14,16 @@ using namespace project;
 
 void set_log_level(std::optional<std::string> const& cli_level = std::nullopt);
 auto get_env_var(char const* name) -> std::optional<std::string>;
+void print_enabled_log_levels();
 
 int main(int argc, char const* argv[])
 {
 	Cli const cli(argc, argv);
 
+#if ENABLE_LOGGING
 	set_log_level(cli.log_level());
-
-	log::error("Error messages enabled");
-	log::warn("Warning messages enabled");
-	log::info("Info messages enabled");
-	log::debug("Debug messages enabled");
-	log::trace("Trace messages enabled");
+	print_enabled_log_levels();
+#endif
 
 	std::cout << "Welcome!" << std::endl;
 
@@ -51,4 +49,25 @@ auto get_env_var(char const* name) -> std::optional<std::string>
 {
 	char const* value = std::getenv(name);
 	return value ? std::make_optional(value) : std::nullopt;
+}
+
+void print_enabled_log_levels()
+{
+	std::cout << "Logging: ";
+	std::vector<char const*> log_levels;
+	switch (log::get_level()) {
+	case log::Level::Trace: log_levels.emplace_back("Trace"); [[fallthrough]];
+	case log::Level::Debug: log_levels.emplace_back("Debug"); [[fallthrough]];
+	case log::Level::Info: log_levels.emplace_back("Info"); [[fallthrough]];
+	case log::Level::Warn: log_levels.emplace_back("Warning"); [[fallthrough]];
+	case log::Level::Error: log_levels.emplace_back("Error"); [[fallthrough]];
+	default:;
+	}
+	for (auto it = log_levels.rbegin(); it != log_levels.rend(); ++it) {
+		std::cout << *it;
+		if (std::next(it) != log_levels.rend()) {
+			std::cout << ", ";
+		}
+	}
+	std::cout << std::endl;
 }

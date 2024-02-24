@@ -22,8 +22,8 @@ Cli::Cli(char const* argv_0)
 		("h,help", "Print usage")
 		("v,version", "Print version")
 		("l,log-level", "Set log level. LEVEL=error|warn|info|debug|trace",
-			cxxopts::value<std::string>()->default_value("none"), "LEVEL")
-	;  // clang-format on
+			cxxopts::value<std::string>()->default_value("none"), "LEVEL");
+	// clang-format on
 }
 
 auto Cli::basename(char const* argv_0) -> char const*
@@ -81,7 +81,7 @@ auto Cli::format_unrecognized_options() const -> std::string
 		for (auto const& option : _unrecognized_options) {
 			result << option;
 
-		if (&option != &last) {
+			if (&option != &last) {
 				result << ", ";
 			}
 		}
