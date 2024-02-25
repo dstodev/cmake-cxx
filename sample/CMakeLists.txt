@@ -53,8 +53,11 @@ include(sources.cmake)
 
 target_link_libraries(main
 	PRIVATE
-		project::project
-		project::cxxopts
+	project::project
+	project::cxxopts
 )
 
-add_custom_target(run ${target_name} --log-level=info > ${target_name}.txt && cat ${target_name}.txt)
+add_custom_target(run
+	COMMAND ${target_name} --log-level=info > ${target_name}.txt
+	COMMAND ${CMAKE_COMMAND} -E cat ${target_name}.txt
+)
