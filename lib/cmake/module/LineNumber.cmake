@@ -7,7 +7,11 @@ include_guard()
 function(line_number out_var file pattern)
 	set(${out_var} -1 PARENT_SCOPE)
 
-	file(STRINGS ${file} lines)
+	file(READ ${file} data)
+	string(REGEX REPLACE ";" "<semicolon>" data "${data}")
+	string(REGEX REPLACE "#\\[\\[|\\]\\]" "<comment-block-bound>" data "${data}")
+	string(REGEX REPLACE "\r\n?|\n" ";" lines "${data}")
+
 	list(LENGTH lines line_count)
 	math(EXPR line_count "${line_count} - 1")
 
@@ -21,3 +25,18 @@ function(line_number out_var file pattern)
 		endif()
 	endforeach()
 endfunction()
+
+include(Expect)
+expect_test_preamble()
+
+function(test_line_number)
+	set(pattern "function\\(test_line_number\\)")
+	set(line ${CMAKE_CURRENT_FUNCTION_LIST_LINE})
+	set(file "${CMAKE_CURRENT_FUNCTION_LIST_FILE}")
+
+	line_number(line_number ${file} "${pattern}")
+
+	expect(32 EQUAL ${line_number})
+	expect(${line} EQUAL ${line_number})
+endfunction()
+test_line_number()

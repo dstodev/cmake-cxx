@@ -52,8 +52,8 @@ function(test_align_strings_equal)
 
 	align_strings(str1 str2 "!")
 
-	expect("${str1}" MATCHES "^Hello!$")
-	expect("${str2}" MATCHES "^World!$")
+	expect(str1 MATCHES "^Hello!$")
+	expect(str2 MATCHES "^World!$")
 endfunction()
 test_align_strings_equal()
 

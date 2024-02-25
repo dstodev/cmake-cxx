@@ -44,10 +44,7 @@ include_guard()
 
 	If any expect() call fails, emits message(FATAL_ERROR) once the CMake directory
 	which first includes this module finishes configuring. For this reason, developers
-	should include this module only once near the top of the top-level CMakeLists.txt.
-	This way, the message emits when the project finishes configuring, conveying the
-	total number of expect() failures. Additionally, this allows subsequent modules
-	to assume that expect() exists, almost as if it were a built-in command.
+	should first include this module near the top of the top-level CMakeLists.txt.
 
 	Once the CMake directory which first includes this module finishes configuring,
 	emits a message conveying the total number of expect() calls.
@@ -55,6 +52,33 @@ include_guard()
 	Developers should take care to avoid duplicating expect() calls by e.g. including
 	them multiple times with find_package() or include(). If calls are duplicated,
 	printed metrics will contain duplicates.
+
+	-- expect() output
+
+	If an assertion fails, you will see a message e.g.:
+
+	set(myvar 10)
+	expect(myvar EQUAL 11)
+
+	>  CMake Warning (dev) at lib/cmake/module/Expect.cmake:178:EVAL:1 (message):
+	>     expect(myvar EQUAL 11) failed!
+	>     Search call stack for: (expect)
+	>  Call Stack (most recent call first):
+	>    lib/cmake/module/Expect.cmake:178 (cmake_language)
+	>    CMakeLists.txt:97 (expect)
+
+	Developers are encouraged to search the call stack for (expect), here
+	showing the assertion failed in CMakeLists.txt at line 97.
+
+	Notice the message shows the expect() expression verbatim, above showing the
+	name of the variable (myvar). To log the value of myvar instead, use a normal
+	variable expansion:
+
+	set(myvar 10)
+	expect(${myvar} EQUAL 11)
+
+	>  expect(10 EQUAL 11) failed!
+	>  Search call stack for: (expect)
 
 	-- Using expect() to unit test CMake code:
 
