@@ -1,6 +1,7 @@
 #ifndef LOG_HXX
 #define LOG_HXX
 
+#include <string_view>
 #include <utility>
 
 #include <fmt/core.h>
@@ -37,14 +38,13 @@ DLL extern Level LogLevel;
 /** @brief Convert a string to a logging severity level.
     @param level Options are: error warn info debug trace.
     @return Corresponding Level or Level::None if \p level is invalid or empty.
- */
-DLL Level level_from(std::string const& level);
 
-/** @brief Convert a string to a logging severity level.
-    @param level Options are: error warn info debug trace.
-    @return Corresponding Level or Level::None if \p level is invalid or empty.
+    std::string_view is constructible via e.g. cast from std::string const&
+    (std::basic_string::operator basic_string_view())
+    or via std::basic_string_view(char const* cstr) etc.
+
  */
-DLL Level level_from(char const* level);
+DLL Level level_from(std::string_view level);
 
 /// Ignore messages less-severe than \p level.
 DLL void set_level(Level level);

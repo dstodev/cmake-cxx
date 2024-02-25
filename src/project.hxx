@@ -1,7 +1,7 @@
 #ifndef PROJECT_HXX
 #define PROJECT_HXX
 
-#include <string>
+#include <string_view>
 
 #include <dll-export.h>
 
@@ -13,7 +13,7 @@ namespace project {
 
 /** @brief Get project version string, e.g. "1.0.0"
  */
-DLL auto version() -> std::string const&;
+DLL auto version() -> std::string_view;
 
 }  // namespace project
 

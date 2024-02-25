@@ -36,7 +36,7 @@ auto Cli::basename(char const* argv_0) -> char const*
 void Cli::parse(int argc, char const* argv[])
 {
 	auto const result = _options.parse(argc, argv);
-	auto const version_string = "Project " + project::version();
+	auto const version_string = "Project " + std::string {project::version()};
 
 	int exit_code = -1;  // <0 means no exit, 0 means exit without error, >0 means exit with error.
 
@@ -49,7 +49,7 @@ void Cli::parse(int argc, char const* argv[])
 
 	// If user provides unrecognized options, print help text then exit with error.
 	// Since this is an error condition, print to stderr.
-	if (!std::empty(result.unmatched()) /* || argc == 1 */) {
+	if (!std::empty(result.unmatched())) {
 		_unrecognized_options = project::stable_deduplicate(result.unmatched());
 		std::cerr << format_unrecognized_options();
 		std::cerr << _options.help() << std::endl;
