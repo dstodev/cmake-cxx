@@ -49,10 +49,6 @@ include_guard()
 	Once the CMake directory which first includes this module finishes configuring,
 	emits a message conveying the total number of expect() calls.
 
-	Developers should take care to avoid duplicating expect() calls by e.g. including
-	them multiple times with find_package() or include(). If calls are duplicated,
-	printed metrics will contain duplicates.
-
 	-- expect() output
 
 	If an assertion fails, you will see a message e.g.:
@@ -82,10 +78,10 @@ include_guard()
 
 	-- Using expect() to unit test CMake code:
 
-	Using a simple idiom, developers may test CMake code by defining a function
-	to introduce scope & purpose, then setting up the environment and calling expect():
+	Using a simple idiom, developers may test CMake code:
 
-		expect_test_preamble()  # Always call before expect() tests to run them only once
+		include(Expect)
+		expect_test_preamble()  # Always call before expect() tests so they run only once
 
 		function(test_example)
 			set(mylist "1;2")
@@ -95,7 +91,7 @@ include_guard()
 		endfunction()
 		test_example()
 
-	Developers should place expect_test_preamble() before expect() tests so the tests
+	Developers should call expect_test_preamble() before expect() tests so the tests
 	run only once when modules calling expect() are, for example, included more than
 	once. For each file using expect(), this guard should come before the first call
 	to expect(), but only once.
@@ -105,7 +101,7 @@ include_guard()
 	run multiple times, counting as multiple pass/fails.
 
 	When used as suggested, expect() tests run every CMake configure. This means CMake code
-	is tested every time the project is configured, asserting that the project configures
+	is tested every time the project is configured, asserting the project configures
 	as expected.
 
 	-- Disabling expect():
