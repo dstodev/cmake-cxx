@@ -270,13 +270,15 @@ function(test_expect)
 	expect("c;d" STREQUAL "c;d")
 	expect("e; f" STREQUAL "e; f")
 
-	set(mylist "1;2;")  # trailing semicolon puts empty string i.e. "" at end
+	set(mylist "1;2; ; 3;")  # trailing semicolon puts empty string i.e. "" at end
 	# unset(mylist)  # uncomment to check error output
 	expect(1 IN_LIST mylist)
 	expect(2 IN_LIST mylist)
 	expect("" IN_LIST mylist)
+	expect(" " IN_LIST mylist)
+	expect(" 3" IN_LIST mylist)
 	expect(NOT 3 IN_LIST mylist)
-	expect(mylist STREQUAL "1;2;")
+	expect(mylist STREQUAL "1;2; ; 3;")
 endfunction()
 test_expect()
 
