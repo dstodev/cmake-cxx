@@ -22,7 +22,7 @@ set(CMAKE_POLICY_DEFAULT_CMP0068 NEW)  # https://cmake.org/cmake/help/latest/pol
 #  Project  #
 #############
 
-setup_build_mode()
+default_build_type("Release")
 
 project(Project VERSION 0.1.0 LANGUAGES CXX)
 

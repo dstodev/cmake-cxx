@@ -120,17 +120,50 @@ function(expect)
 	set(required ${${prefix}_REQUIRED})
 	set(safe ${${prefix}_SAFE})
 
-	# Wrap elements with spaces in quotes
-	# Avoid list(TRANSFORM) because it un-escapes passed-in lists
+	# Avoid list() operations because they un-escape semicolons
 	list(LENGTH argv len)
 	math(EXPR len "${len} - 1")
+
+	set(argv_str "${argv}")
+
 	foreach(i RANGE ${len})
 		list(GET argv ${i} arg)
-		if("${arg}" MATCHES " ")
-			list(REMOVE_AT argv ${i})
-			list(INSERT argv ${i} "\"${arg}\"")
+		string(REGEX REPLACE "\\\\*;" "\\\\;" arg "${arg}")
+
+		if("${arg}" MATCHES ";| ")
+			string(SUBSTRING "${arg}" 0 1 first)
+
+			if(NOT first STREQUAL "\"")
+				string(FIND "${argv_str}" "${arg}" pos)
+
+				if(pos GREATER -1)
+					string(LENGTH "${arg}" len)
+					math(EXPR pos_end "${pos} + ${len}")
+					string(SUBSTRING "${argv_str}" 0 ${pos} pre)
+					string(SUBSTRING "${argv_str}" ${pos_end} -1 pro)
+					string(REGEX REPLACE "^;" "" pro "${pro}")
+					set(argv_str "${pro}")
+					string(CONCAT arg "\"" "${arg}" "\"")
+				endif()
+			endif()
+		else()
+			string(FIND "${argv_str}" ";" pos)
+			if(pos GREATER -1)
+				math(EXPR pos "${pos} + 1")
+				string(SUBSTRING "${argv_str}" ${pos} -1 argv_str)
+			endif()
+		endif()
+
+		if(new_argv OR new_argv STREQUAL "")
+			string(CONCAT new_argv "${new_argv};${arg}")
+		else()
+			set(new_argv "${arg}")
 		endif()
 	endforeach()
+
+	if(new_argv)
+		set(argv "${new_argv}")
+	endif()
 
 	# Replace empty strings with literal quote pairs
 	string(REGEX REPLACE "^;" "\"\";" argv "${argv}")
@@ -140,18 +173,10 @@ function(expect)
 	# Manually separate list by replacing non-escaped semicolons with space " "
 	# Avoid string(JOIN " " argv ${argv}) because it un-escapes passed-in lists
 	string(REGEX REPLACE "([^\\]);" "\\1 " argv "${argv}")
+	string(REPLACE "\\;" ";" expr "${argv}")  # un-escape semicolons after separating for if()
 
-	#[[
-		If called like expect("" IN_LIST mylist), then "${argv}" is ";IN_LIST;mylist"
-		Evaluating argv like this is invalid because it becomes if(NOT (IN_LIST mylist))
-		So, replace empty strings with literal quotes to become if(NOT ("" IN_LIST mylist))
-		when evaluated by cmake_language(EVAL CODE)  https://cmake.org/cmake/help/latest/command/cmake_language.html#evaluating-code
-
-		Cannot use if(NOT ("${argv}")) instead, as it becomes if(NOT (";IN_LIST;mylist"))
-		which evaluates like if(NOT (TRUE)).
-	]]
 	set(code "
-		if(NOT (${argv}))
+		if(NOT (${expr}))
 			if(NOT ${safe})
 				_increment_fails()
 			endif()
@@ -169,9 +194,8 @@ function(expect)
 		if(msg)
 			set(pretty_message "${msg}")
 		else()
-			string(REPLACE "\\" "\\\\" expr "${argv}")  # double-escape for message
 			set(pretty_message
-				" expect(${expr}) failed!\n"
+				" expect(${argv}) failed!\n"
 				" Search call stack for: (expect)")
 		endif()
 		cmake_language(EVAL CODE "${__expect_message_fn}(\${message_mode} \${pretty_message})")
@@ -244,6 +268,7 @@ function(test_expect)
 	expect(NOT FALSE)
 	expect("a b" STREQUAL "a b")
 	expect("c;d" STREQUAL "c;d")
+	expect("e; f" STREQUAL "e; f")
 
 	set(mylist "1;2;")  # trailing semicolon puts empty string i.e. "" at end
 	# unset(mylist)  # uncomment to check error output
@@ -251,6 +276,7 @@ function(test_expect)
 	expect(2 IN_LIST mylist)
 	expect("" IN_LIST mylist)
 	expect(NOT 3 IN_LIST mylist)
+	expect(mylist STREQUAL "1;2;")
 endfunction()
 test_expect()
 

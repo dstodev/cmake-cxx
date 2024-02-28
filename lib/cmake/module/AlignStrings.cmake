@@ -100,3 +100,15 @@ function(test_align_strings_str2_empty)
 	expect(str2 MATCHES "^$")
 endfunction()
 test_align_strings_str2_empty()
+
+function(test_align_list_no_align)
+	set(list "Hello;, World")
+	align_list(list "!")
+	expect("${list}" STREQUAL "Hello;, World")
+endfunction()
+test_align_list_no_align()
+
+#[[ TODO: More list alignment tests
+	- multiple items, some with align character some without
+	- multiple items, all with align character
+]]
