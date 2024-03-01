@@ -120,37 +120,47 @@ function(expect)
 	set(required ${${prefix}_REQUIRED})
 	set(safe ${${prefix}_SAFE})
 
-	# Avoid list() operations because they un-escape semicolons
-	list(LENGTH argv len)
-	math(EXPR len "${len} - 1")
-
 	set(argv_str "${argv}")
 
-	foreach(i RANGE ${len})
-		list(GET argv ${i} arg)
-		string(REGEX REPLACE "\\\\*;" "\\\\;" arg "${arg}")
+	# Look through arguments, wrapping any items with spaces or semicolons in quotes
+	# Avoid list() operations because they un-escape semicolons
+	while(NOT done)
+		set(find_str "${argv_str}")
+
+		# Find first un-escaped semicolon in argv_str
+		while(pos GREATER -1 OR NOT DEFINED pos)
+			string(FIND "${find_str}" ";" pos)
+			math(EXPR prev "${pos} - 1")
+			if(prev LESS 0)
+				break()
+			endif()
+			string(SUBSTRING "${find_str}" ${prev} 1 char)
+
+			if(char STREQUAL "\\")
+				math(EXPR upto_semicolon "${pos} + 1")
+				string(REPEAT "-" ${upto_semicolon} pad)
+				string(SUBSTRING "${find_str}" ${upto_semicolon} -1 pro)
+				string(CONCAT find_str "${pad}${pro}")  # Pad to preserve length
+			else()
+				break()
+			endif()
+		endwhile()
+
+		string(SUBSTRING "${argv_str}" 0 ${pos} arg)
+
+		if(pos GREATER -1)  # If list has more elements to parse
+			# Remove arg from argv_str
+			math(EXPR pos "${pos} + 1")
+			string(SUBSTRING "${argv_str}" ${pos} -1 argv_str)
+		else()
+			set(done TRUE)
+		endif()
 
 		if("${arg}" MATCHES ";| ")
 			string(SUBSTRING "${arg}" 0 1 first)
 
 			if(NOT first STREQUAL "\"")
-				string(FIND "${argv_str}" "${arg}" pos)
-
-				if(pos GREATER -1)
-					string(LENGTH "${arg}" len)
-					math(EXPR pos_end "${pos} + ${len}")
-					string(SUBSTRING "${argv_str}" 0 ${pos} pre)
-					string(SUBSTRING "${argv_str}" ${pos_end} -1 pro)
-					string(REGEX REPLACE "^;" "" pro "${pro}")
-					set(argv_str "${pro}")
-					string(CONCAT arg "\"" "${arg}" "\"")
-				endif()
-			endif()
-		else()
-			string(FIND "${argv_str}" ";" pos)
-			if(pos GREATER -1)
-				math(EXPR pos "${pos} + 1")
-				string(SUBSTRING "${argv_str}" ${pos} -1 argv_str)
+				string(CONCAT arg "\"" "${arg}" "\"")
 			endif()
 		endif()
 
@@ -159,7 +169,7 @@ function(expect)
 		else()
 			set(new_argv "${arg}")
 		endif()
-	endforeach()
+	endwhile()
 
 	if(new_argv)
 		set(argv "${new_argv}")
@@ -173,7 +183,7 @@ function(expect)
 	# Manually separate list by replacing non-escaped semicolons with space " "
 	# Avoid string(JOIN " " argv ${argv}) because it un-escapes passed-in lists
 	string(REGEX REPLACE "([^\\]);" "\\1 " argv "${argv}")
-	string(REPLACE "\\;" ";" expr "${argv}")  # un-escape semicolons after separating for if()
+	string(REPLACE "\\;" ";" expr "${argv}")  # Un-escape semicolons after separating for if()
 
 	set(code "
 		if(NOT (${expr}))
@@ -269,8 +279,9 @@ function(test_expect)
 	expect("a b" STREQUAL "a b")
 	expect("c;d" STREQUAL "c;d")
 	expect("e; f" STREQUAL "e; f")
+	expect("a b;c\;d" STREQUAL "a b;c\;d")
 
-	set(mylist "1;2; ; 3;")  # trailing semicolon puts empty string i.e. "" at end
+	set(mylist ";;1;2; ; 3;;")  # trailing semicolon puts empty string i.e. "" at end
 	# unset(mylist)  # uncomment to check error output
 	expect(1 IN_LIST mylist)
 	expect(2 IN_LIST mylist)
@@ -278,7 +289,11 @@ function(test_expect)
 	expect(" " IN_LIST mylist)
 	expect(" 3" IN_LIST mylist)
 	expect(NOT 3 IN_LIST mylist)
-	expect(mylist STREQUAL "1;2; ; 3;")
+	expect(mylist STREQUAL ";;1;2; ; 3;;")
+	expect(mylist STREQUAL "${mylist}")
+
+	set(mylist ";\;;\;;")
+	expect(mylist STREQUAL ";\;;\;;")
 endfunction()
 test_expect()
 
