@@ -116,7 +116,7 @@ function(expect)
 	# cmake_parse_arguments() will escape list semicolons, etc.
 	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "SAFE;REQUIRED" "MESSAGE" "")
 	set(argv "${${prefix}_UNPARSED_ARGUMENTS}")
-	set(msg ${${prefix}_MESSAGE})
+	set(msg "${${prefix}_MESSAGE}")
 	set(required ${${prefix}_REQUIRED})
 	set(safe ${${prefix}_SAFE})
 
@@ -131,9 +131,11 @@ function(expect)
 		while(pos GREATER -1 OR NOT DEFINED pos)
 			string(FIND "${find_str}" ";" pos)
 			math(EXPR prev "${pos} - 1")
+
 			if(prev LESS 0)
 				break()
 			endif()
+
 			string(SUBSTRING "${find_str}" ${prev} 1 char)
 
 			if(char STREQUAL "\\")
@@ -194,6 +196,7 @@ function(expect)
 		endif()
 	")
 	cmake_language(EVAL CODE "${code}")
+
 	if(print)
 		if(${${prefix}_REQUIRED})
 			set(message_mode FATAL_ERROR)
