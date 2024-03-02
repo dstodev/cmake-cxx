@@ -33,6 +33,13 @@ endfunction()
 
 function(align_list list_name align)
 	sort_list_by_length(${list_name} sorted ORDER DESCENDING)
+	list(FILTER sorted INCLUDE REGEX "${align}")
+	list(LENGTH sorted length)
+
+	if(length EQUAL 0)
+		return()
+	endif()
+
 	list(GET sorted 0 largest)
 
 	foreach(item IN LISTS ${list_name})
@@ -108,7 +115,33 @@ function(test_align_list_no_align)
 endfunction()
 test_align_list_no_align()
 
-#[[ TODO: More list alignment tests
-	- multiple items, some with align character some without
-	- multiple items, all with align character
-]]
+function(test_align_list_one_align)
+	set(list "Hello;, World!")
+	align_list(list "!")
+	expect("${list}" STREQUAL "Hello;, World!")
+endfunction()
+test_align_list_one_align()
+
+set(check_output FALSE)
+
+function(test_align_list_two_align)
+	set(list "Hello, ;World!;Nevermind, ;goodbye!")
+	align_list(list "!")
+	expect("${list}" STREQUAL "Hello, ;  World!;Nevermind, ;goodbye!")
+	if(check_output)
+		list(JOIN list "\n" list)
+		message("${list}")
+	endif()
+endfunction()
+test_align_list_two_align()
+
+function(test_align_list_all_align)
+	set(list "Hello, !;World!;Nevermind,     !;goodbye!")
+	align_list(list "!")
+	expect("${list}" STREQUAL "        Hello, !;          World!;Nevermind,     !;        goodbye!")
+	if(check_output)
+		list(JOIN list "\n" list)
+		message("${list}")
+	endif()
+endfunction()
+test_align_list_all_align()

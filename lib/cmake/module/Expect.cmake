@@ -297,6 +297,8 @@ function(test_expect)
 
 	set(mylist ";\;;\;;")
 	expect(mylist STREQUAL ";\;;\;;")
+
+	expect(NOT "; ;  ;   " STREQUAL "   ;  ; ;")
 endfunction()
 test_expect()
 
