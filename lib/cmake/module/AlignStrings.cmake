@@ -145,3 +145,5 @@ function(test_align_list_all_align)
 	endif()
 endfunction()
 test_align_list_all_align()
+
+unset(check_output)

@@ -21,3 +21,7 @@ foreach(module IN LISTS modules)
 		include(${module})
 	endif()
 endforeach()
+
+unset(modules)
+unset(modules_to_ignore)
+unset(this_file)
