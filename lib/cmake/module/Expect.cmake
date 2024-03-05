@@ -112,6 +112,17 @@ include_guard()
 function(expect)
 	_increment_calls()
 
+	math(EXPR max_arg_index "${ARGC} - 1")
+
+	foreach(index RANGE ${max_arg_index})
+		# Modify ARGV# in place, escaping backslashes before cmake_parse_arguments()
+		# to avoid doubling backslashes added by it, e.g. list separator backslashes.
+
+		set(arg "${ARGV${index}}")
+		string(REPLACE "\\" "\\\\" arg "${arg}")  # Escape backslashes
+		set(ARGV${index} "${arg}")
+	endforeach()
+
 	set(prefix "__expect_args")
 	# cmake_parse_arguments() will escape list semicolons, etc.
 	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "SAFE;REQUIRED" "MESSAGE" "")
@@ -122,43 +133,13 @@ function(expect)
 
 	set(argv_str "${argv}")
 
-	# Look through arguments, wrapping any items with spaces or semicolons in quotes
-	# Avoid list() operations because they un-escape semicolons
-	while(NOT done)
-		set(find_str "${argv_str}")
+	while(DEFINED argv_str)
+		# Look through arguments, wrapping any items with special characters like
+		# spaces or semicolons in quotes.
+		# Avoid list() operations because they un-escape string elements.
+		list_tokenize(argv_str arg)
 
-		# Find first un-escaped semicolon in argv_str
-		while(pos GREATER -1 OR NOT DEFINED pos)
-			string(FIND "${find_str}" ";" pos)
-			math(EXPR prev "${pos} - 1")
-
-			if(prev LESS 0)
-				break()
-			endif()
-
-			string(SUBSTRING "${find_str}" ${prev} 1 char)
-
-			if(char STREQUAL "\\")
-				math(EXPR upto_semicolon "${pos} + 1")
-				string(REPEAT "-" ${upto_semicolon} pad)
-				string(SUBSTRING "${find_str}" ${upto_semicolon} -1 pro)
-				string(CONCAT find_str "${pad}${pro}")  # Pad to preserve length
-			else()
-				break()
-			endif()
-		endwhile()
-
-		string(SUBSTRING "${argv_str}" 0 ${pos} arg)
-
-		if(pos GREATER -1)  # If list has more elements to parse
-			# Remove arg from argv_str
-			math(EXPR pos "${pos} + 1")
-			string(SUBSTRING "${argv_str}" ${pos} -1 argv_str)
-		else()
-			set(done TRUE)
-		endif()
-
-		if("${arg}" MATCHES ";| ")
+		if(NOT "${arg}" MATCHES "^[A-Za-z0-9_]+$")
 			string(SUBSTRING "${arg}" 0 1 first)
 
 			if(NOT first STREQUAL "\"")
@@ -177,13 +158,12 @@ function(expect)
 		set(argv "${new_argv}")
 	endif()
 
-	# Replace empty strings with literal quote pairs
-	string(REGEX REPLACE "^;" "\"\";" argv "${argv}")
-	string(REGEX REPLACE ";;" ";\"\";" argv "${argv}")
-	string(REGEX REPLACE ";$" ";\"\"" argv "${argv}")
+	# Escape non-space whitespace
+	string(REPLACE "\t" "\\t" argv "${argv}")
+	string(REPLACE "\r" "\\r" argv "${argv}")
+	string(REPLACE "\n" "\\n" argv "${argv}")
 
 	# Manually separate list by replacing non-escaped semicolons with space " "
-	# Avoid string(JOIN " " argv ${argv}) because it un-escapes passed-in lists
 	string(REGEX REPLACE "([^\\]);" "\\1 " argv "${argv}")
 	string(REPLACE "\\;" ";" expr "${argv}")  # Un-escape semicolons after separating for if()
 
@@ -207,12 +187,58 @@ function(expect)
 		if(msg)
 			set(pretty_message "${msg}")
 		else()
+			string(REPLACE "\\\\" "\\" argv "${argv}")
 			set(pretty_message
 				" expect(${argv}) failed!\n"
 				" Search call stack for: (expect)")
 		endif()
 		cmake_language(EVAL CODE "${__expect_message_fn}(\${message_mode} \${pretty_message})")
 	endif()
+endfunction()
+
+function(list_tokenize list_to_consume next_token)
+	set(argv_str "${${list_to_consume}}")
+	set(find_str "${argv_str}")
+
+	# Find first un-escaped semicolon in argv_str
+	while(pos GREATER -1 OR NOT DEFINED pos)
+		string(FIND "${find_str}" ";" pos)
+		string(SUBSTRING "${find_str}" 0 ${pos} arg_candidate)
+
+		if(arg_candidate MATCHES "\\\\$")
+			# If there is a backslash before the semicolon, determine
+			# if the backslash itself is escaped
+			string(REGEX MATCH "(\\\\)+$" slashes "${arg_candidate}")
+			string(LENGTH "${slashes}" slashes_len)
+			math(EXPR result "${slashes_len} % 2")
+
+			if(result EQUAL 0)
+				# If there is an even number of backslashes then the backslash
+				# is escaped, not the semicolon.
+				break()
+			endif()
+
+			math(EXPR upto_semicolon "${pos} + 1")  # upto and including semicolon
+			string(REPEAT "-" ${upto_semicolon} pad)
+			string(SUBSTRING "${find_str}" ${upto_semicolon} -1 pro)
+			string(CONCAT find_str "${pad}${pro}")  # Pad to preserve length
+		else()
+			break()
+		endif()
+	endwhile()
+
+	string(SUBSTRING "${argv_str}" 0 ${pos} arg)
+
+	if(pos GREATER -1)  # If list has more elements to parse
+		# Remove arg from argv_str
+		math(EXPR pos "${pos} + 1")
+		string(SUBSTRING "${argv_str}" ${pos} -1 argv_str)
+		set(${list_to_consume} "${argv_str}" PARENT_SCOPE)
+	else()
+		unset(${list_to_consume} PARENT_SCOPE)
+	endif()
+
+	set(${next_token} "${arg}" PARENT_SCOPE)
 endfunction()
 
 function(_increment_calls)
@@ -275,6 +301,10 @@ set(__expect_message_fn message CACHE INTERNAL "Name of expect() message functio
 cmake_language(DEFER CALL report_expect_calls)  # https://cmake.org/cmake/help/latest/command/cmake_language.html#defer
 cmake_language(DEFER CALL error_if_any_expect_fail)
 
+###################
+#  Test expect()  #
+###################
+
 function(test_expect)
 	expect("" STREQUAL "")
 	expect(TRUE)
@@ -283,6 +313,12 @@ function(test_expect)
 	expect("c;d" STREQUAL "c;d")
 	expect("e; f" STREQUAL "e; f")
 	expect("a b;c\;d" STREQUAL "a b;c\;d")
+	expect("a\nb" STREQUAL "a\nb")
+	expect("a\\b" STREQUAL "a\\b")
+	expect("\\" STREQUAL "\\")
+	expect("\\\\" STREQUAL "\\\\")
+	expect("\;" STREQUAL "\;")
+	expect("\\\;" STREQUAL "\\\;")
 
 	set(mylist ";;1;2; ; 3;;")  # trailing semicolon puts empty string i.e. "" at end
 	# unset(mylist)  # uncomment to check error output
@@ -296,7 +332,7 @@ function(test_expect)
 	expect(mylist STREQUAL "${mylist}")
 
 	set(mylist ";\;;\;;")
-	expect(mylist STREQUAL ";\;;\;;")
+	expect("${mylist}" STREQUAL ";\;;\;;")
 
 	expect(NOT "; ;  ;   " STREQUAL "   ;  ; ;")
 endfunction()
@@ -321,3 +357,140 @@ function(test_required)
 	#expect(FALSE MESSAGE "Comment-out this test!" REQUIRED)  # uncomment to check error output
 endfunction()
 test_required()
+
+##########################
+#  Test list_tokenize()  #
+##########################
+
+function(test_list_tokenize_simple)
+	set(list "a;b;c")
+
+	list_tokenize(list next)
+	expect("a" STREQUAL "${next}")
+	expect("b;c" STREQUAL "${list}")
+
+	list_tokenize(list next)
+	expect("b" STREQUAL "${next}")
+	expect("c" STREQUAL "${list}")
+
+	list_tokenize(list next)
+	expect("c" STREQUAL "${next}")
+	expect(NOT DEFINED list)
+
+	list_tokenize(list next)
+	expect("" STREQUAL "${next}")
+	expect(NOT DEFINED list)
+endfunction()
+test_list_tokenize_simple()
+
+function(test_list_tokenize_escaped)
+	set(list "a\;b;c\;d;e")
+
+	list_tokenize(list next)
+	expect("a\;b" STREQUAL "${next}")
+	expect("c\;d;e" STREQUAL "${list}")
+
+	list_tokenize(list next)
+	expect("c\;d" STREQUAL "${next}")
+	expect("e" STREQUAL "${list}")
+
+	list_tokenize(list next)
+	expect("e" STREQUAL "${next}")
+	expect(NOT DEFINED list)
+endfunction()
+test_list_tokenize_escaped()
+
+function(test_list_tokenize_empty)
+	set(list "")
+
+	list_tokenize(list next)
+	expect("" STREQUAL "${next}")
+	expect(NOT DEFINED list)
+endfunction()
+test_list_tokenize_empty()
+
+function(test_list_tokenize_escaped_separator)
+	set(list "\;")
+
+	list_tokenize(list next)
+	expect("\;" STREQUAL "${next}")
+	expect(NOT DEFINED list)
+endfunction()
+test_list_tokenize_escaped_separator()
+
+function(test_list_tokenize_escaped_separators)
+	set(list "\;;\;")
+
+	list_tokenize(list next)
+	expect("\;" STREQUAL "${next}")
+	expect("\;" STREQUAL "${list}")
+
+	list_tokenize(list next)
+	expect("\;" STREQUAL "${next}")
+	expect(NOT DEFINED list)
+endfunction()
+test_list_tokenize_escaped_separators()
+
+function(test_list_tokenize_escaped_backslash)
+	set(list "\\")
+
+	list_tokenize(list next)
+	expect("\\" STREQUAL "${next}")
+	expect(NOT DEFINED list)
+endfunction()
+test_list_tokenize_escaped_backslash()
+
+function(test_list_tokenize_escaped_backslash_and_separator)
+	set(list "\\\\;\;")
+
+	list_tokenize(list next)
+	expect("\\\\" STREQUAL "${next}")
+	expect("\;" STREQUAL "${list}")
+
+	list_tokenize(list next)
+	expect("\;" STREQUAL "${next}")
+	expect(NOT DEFINED list)
+endfunction()
+test_list_tokenize_escaped_backslash_and_separator()
+
+function(test_list_tokenize_empty_string)
+	set(list ";")
+
+	list_tokenize(list next)
+	expect("" STREQUAL "${next}")
+	expect("" STREQUAL "${list}")
+
+	list_tokenize(list next)
+	expect("" STREQUAL "${next}")
+	expect(NOT DEFINED list)
+endfunction()
+test_list_tokenize_empty_string()
+
+function(test_list_tokenize_empty_strings)
+	set(list ";a;;b;c;")
+
+	list_tokenize(list next)
+	expect("" STREQUAL "${next}")
+	expect("a;;b;c;" STREQUAL "${list}")
+
+	list_tokenize(list next)
+	expect("a" STREQUAL "${next}")
+	expect(";b;c;" STREQUAL "${list}")
+
+	list_tokenize(list next)
+	expect("" STREQUAL "${next}")
+	expect("b;c;" STREQUAL "${list}")
+
+	list_tokenize(list next)
+	expect("b" STREQUAL "${next}")
+	expect("c;" STREQUAL "${list}")
+
+	list_tokenize(list next)
+	expect("c" STREQUAL "${next}")
+	expect("" STREQUAL "${list}")
+
+	list_tokenize(list next)
+	expect("" STREQUAL "${next}")
+	expect(NOT DEFINED list)
+endfunction()
+test_list_tokenize_empty_strings()

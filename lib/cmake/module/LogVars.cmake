@@ -46,6 +46,7 @@ function(log_vars)
 	endforeach()
 
 	if(args_TO_VAR)
+		string(REPLACE "\;" "\\\;" msg "${msg}")  # escape semicolons
 		list(TRANSFORM msg PREPEND "${line_prefix}")
 		list(JOIN msg "\n" msg)
 		set(${args_TO_VAR} "${msg}" PARENT_SCOPE)
@@ -133,5 +134,14 @@ function(test_log_vars_output)
 	message("----------------------------------------")
 	log_vars(a b a MODE WARNING)
 	message("----------------------------------------")
+endfunction()
+test_log_vars_output()
+
+function(test_log_vars_output)
+	set(a "value")
+	set(b "a;b;c")
+
+	log_vars(a b a RAW_LISTS TO_VAR msg)
+	expect("${msg}" STREQUAL "\${a} : value\n\${b} : a;b;c\n\${a} : value")
 endfunction()
 test_log_vars_output()
