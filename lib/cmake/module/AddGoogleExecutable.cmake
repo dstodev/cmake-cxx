@@ -70,8 +70,6 @@ function(add_google_executable target)
 
 	target_compile_features(${target} PRIVATE cxx_std_${std})
 
-	if(args_TEST)
-		# TODO: Better properties support https://cmake.org/cmake/help/latest/command/set_tests_properties.html
-		gtest_discover_tests(${target})
-	endif()
+	# TODO: Better properties support https://cmake.org/cmake/help/latest/command/set_tests_properties.html
+	gtest_discover_tests(${target})
 endfunction()
