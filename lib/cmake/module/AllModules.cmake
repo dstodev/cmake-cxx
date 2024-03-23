@@ -3,10 +3,10 @@ set(modules_to_ignore
 )
 
 file(GLOB modules "${CMAKE_CURRENT_LIST_DIR}/*.cmake")
+get_filename_component(this_file ${CMAKE_CURRENT_LIST_FILE} REALPATH)
 
 foreach(module IN LISTS modules)
 	get_filename_component(module ${module} REALPATH)
-	get_filename_component(this_file ${CMAKE_CURRENT_LIST_FILE} REALPATH)
 
 	if(module PATH_EQUAL this_file)
 		continue()
