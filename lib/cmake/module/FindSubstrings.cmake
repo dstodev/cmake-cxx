@@ -15,6 +15,17 @@ include_guard()
 
 	in_string :
 		String to search in.
+
+	LAST : (optional)
+		If set, the string is searched backwards.
+
+		This is useful to disambiguate e.g:
+
+			in_string: "((("
+			substring: "(("
+
+		Should the result index be "0" or "1"?
+		Default returns 0, LAST returns 1.
 ]]
 function(find_substrings out_pos_list substring in_string)
 	cmake_parse_arguments(PARSE_ARGV 3 args "LAST" "" "")
@@ -46,7 +57,7 @@ function(find_substrings out_pos_list substring in_string)
 		endif()
 	endwhile()
 
-	if (args_LAST)
+	if(args_LAST)
 		list(REVERSE pos_list)
 	endif()
 
@@ -66,6 +77,16 @@ function(test_find_substrings)
 endfunction()
 test_find_substrings()
 
+function(test_find_substrings_last)
+	set(input "<>one<>two<><>three<><><>" LAST)
+	find_substrings(pos_list "<>" "${input}")
+	expect(DEFINED pos_list)
+	list(LENGTH pos_list pos_list_len)
+	expect(${pos_list_len} EQUAL 7)
+	expect("${pos_list}" STREQUAL "0;5;10;12;19;21;23")
+endfunction()
+test_find_substrings_last()
+
 function(test_find_substrings_none)
 	set(input "<>one<>two<><>three<><><>")
 	find_substrings(pos_list "()" "${input}")
@@ -76,6 +97,26 @@ function(test_find_substrings_none)
 endfunction()
 test_find_substrings_none()
 
+function(test_find_substrings_none_last)
+	set(input "<>one<>two<><>three<><><>" LAST)
+	find_substrings(pos_list "()" "${input}")
+	expect(DEFINED pos_list)
+	list(LENGTH pos_list pos_list_len)
+	expect(${pos_list_len} EQUAL 0)
+	expect("${pos_list}" STREQUAL "")
+endfunction()
+test_find_substrings_none_last()
+
+function(test_find_substrings_match_first_simple)
+	set(input "<<<one<<<")
+	find_substrings(pos_list "<<" "${input}")
+	expect(DEFINED pos_list)
+	list(LENGTH pos_list pos_list_len)
+	expect(${pos_list_len} EQUAL 2)
+	expect("${pos_list}" STREQUAL "0;6")
+endfunction()
+test_find_substrings_match_first_simple()
+
 function(test_find_substrings_match_first)
 	set(input "<<<<<one<<<<<")
 	find_substrings(pos_list "<<" "${input}")
@@ -85,6 +126,16 @@ function(test_find_substrings_match_first)
 	expect("${pos_list}" STREQUAL "0;2;8;10")
 endfunction()
 test_find_substrings_match_first()
+
+function(test_find_substrings_match_last_simple)
+	set(input "<<<one<<<")
+	find_substrings(pos_list "<<" "${input}" LAST)
+	expect(DEFINED pos_list)
+	list(LENGTH pos_list pos_list_len)
+	expect(${pos_list_len} EQUAL 2)
+	expect("${pos_list}" STREQUAL "1;7")
+endfunction()
+test_find_substrings_match_last_simple()
 
 function(test_find_substrings_match_last)
 	set(input "<<<<<one<<<<<")
