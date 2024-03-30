@@ -36,7 +36,7 @@ include_guard()
 	Example
 	-------
 
-	find_package(HelpParseArguments CONFIG REQUIRED)
+	include(HelpParseArguments)
 
 	function(my_function target)
 		help_parse_arguments(args "PRINT_VALUES" "VALUE1;VALUE2" "OTHER_VALUES")
