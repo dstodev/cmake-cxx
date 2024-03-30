@@ -18,10 +18,16 @@ include(HelpParseArguments)
 		This is my file.
 		)#<file-content>#";
 
+
 	Parameters
 	----------
+
 	file_path :
 		Path to the file to convert.
+
+
+	Options
+	-------
 
 	CHAR_SEQ :
 		Character sequence to use for the raw string literal.
@@ -87,5 +93,5 @@ function(file_to_raw_string_literal file_path)
 		target_include_directories(${args_TARGET} PRIVATE "$<BUILD_INTERFACE:${out_dir}>")
 	endif()
 
-	set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${file_path})
+	set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${file_path}")
 endfunction()

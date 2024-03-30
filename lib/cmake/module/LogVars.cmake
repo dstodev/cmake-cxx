@@ -5,8 +5,17 @@ include_guard()
 
 	Print a table of all given variables and their values.
 
+
 	Parameters
 	----------
+
+	var_names... :
+		Names of variables to log.
+
+
+	Options
+	----------
+
 	MODE <mode> :
 		Message mode. Defaults to STATUS
 
@@ -18,7 +27,8 @@ include_guard()
 		Do not print list values on separate lines
 ]]
 function(log_vars)
-	cmake_parse_arguments(PARSE_ARGV 0 args "RAW_LISTS" "MODE;TO_VAR" "")
+	# cmake_parse_arguments() adds one escape backslash to semicolons in arguments
+	cmake_parse_arguments(PARSE_ARGV 0 args "RAW_LISTS" "MODE;TO_VAR" "")  # +1 escape backslash = 1
 
 	if(args_MODE MATCHES "^(STATUS|VERBOSE|DEBUG|TRACE)$")
 		set(line_prefix "-- ")
@@ -46,13 +56,13 @@ function(log_vars)
 	endforeach()
 
 	if(args_TO_VAR)
-		string(REPLACE "\;" "\\\;" msg "${msg}")  # escape semicolons
-		list(TRANSFORM msg PREPEND "${line_prefix}")
-		list(JOIN msg "\n" msg)
+		string(REPLACE "\;" "\\\;" msg "${msg}")  # +1 escape backslash = 2
+		list(TRANSFORM msg PREPEND "${line_prefix}")  # -1 escape backslash = 1
+		list(JOIN msg "\n" msg)  # -1 escape backslash = 0
 		set(${args_TO_VAR} "${msg}" PARENT_SCOPE)
 	else()
 		# message() prefixes the first line
-		list(JOIN msg "\n${line_prefix}" msg)
+		list(JOIN msg "\n${line_prefix}" msg)  # -1 escape backslash = 0
 		message(${args_MODE} "${msg}")
 	endif()
 endfunction()
@@ -68,8 +78,10 @@ endfunction()
 
 	Log all known variables.
 
-	Parameters
+
+	Options
 	----------
+
 	FILTER <regex> :
 		Only log variables matching the given regex.
 

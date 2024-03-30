@@ -8,10 +8,16 @@ include_guard()
 	expect(expr...) asserts that expr evaluates TRUE. If expr instead evaluates FALSE, then
 	the expect() call "fails", and a warning message is immediately emitted.
 
+
 	Parameters
 	----------
+
 	expr :
 		Expression to test. Can use the same way as if(), e.g. expect("" IN_LIST mylist)
+
+
+	Options
+	-------
 
 	SAFE :
 		If provided and expect() fails, the call will not count toward the number
@@ -27,8 +33,10 @@ include_guard()
 		If provided and expect() fails, custom-error-message emits instead of the
 		default warning message.
 
+
 	Description
 	-----------
+
 	expect() is useful to assert that the project is "working as expected", and notify
 	developers when it is not:
 
@@ -115,16 +123,16 @@ function(expect)
 	math(EXPR max_arg_index "${ARGC} - 1")
 
 	foreach(index RANGE ${max_arg_index})
-		# Modify ARGV# in place, escaping backslashes before cmake_parse_arguments()
-		# to avoid doubling backslashes added by it, e.g. list separator backslashes.
+		# Modify ARGV# in place, escaping backslashes.
+		# Do not escape backslashes added by cmake_parse_arguments().
 
 		set(arg "${ARGV${index}}")
-		string(REPLACE "\\" "\\\\" arg "${arg}")  # Escape backslashes
+		string(REPLACE "\\" "\\\\" arg "${arg}")
 		set(ARGV${index} "${arg}")
 	endforeach()
 
 	set(prefix "__expect_args")
-	# cmake_parse_arguments() will escape list semicolons, etc.
+	# cmake_parse_arguments() adds one escape backslash to semicolons in arguments
 	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "SAFE;REQUIRED" "MESSAGE" "")
 	set(argv "${${prefix}_UNPARSED_ARGUMENTS}")
 	set(msg "${${prefix}_MESSAGE}")

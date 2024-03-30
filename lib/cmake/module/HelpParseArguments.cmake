@@ -11,10 +11,13 @@ include_guard()
 	cmake_parse_arguments(). Automatically uses the more intuitive but harder to implement
 	PARSE_ARGV variant of cmake_parse_arguments() to enable passing e.g. lists.
 
+
 	Parameters
 	----------
+
 	prefix :
 		String prefixed to each parsed argument variable delimited with '_'
+		e.g. prefix="args" creates variables like "args_OPTION"
 
 	options :
 		List of option flags to parse for, e.g. "DO_STUFF;USE_THING"
@@ -29,8 +32,10 @@ include_guard()
 		List of keywords to parse for which expect multiple values, e.g. "EXTRA_CXX_FLAGS"
 		For more information, view docs for cmake_parse_arguments(<multi_value_keywords>)
 
+
 	Example
 	-------
+
 	find_package(HelpParseArguments CONFIG REQUIRED)
 
 	function(my_function target)

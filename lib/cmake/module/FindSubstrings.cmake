@@ -5,8 +5,10 @@ include_guard()
 
 	Find all occurrences of substring within in_string.
 
+
 	Parameters
 	----------
+
 	out_pos_list :
 		Name of variable to store list of occurrence positions.
 
@@ -16,7 +18,11 @@ include_guard()
 	in_string :
 		String to search in.
 
-	LAST : (optional)
+
+	Options
+	-------
+
+	LAST :
 		If set, the string is searched backwards.
 
 		This is useful to disambiguate e.g:
