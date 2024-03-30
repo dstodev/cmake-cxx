@@ -158,9 +158,17 @@ function(expect)
 	string(REPLACE "\n" "\\n" argv "${argv}")
 
 	# Manually separate list by replacing non-escaped semicolons with space " "
+	# Do not have to worry about escaped backslashes here, because elements
+	# with any escaped semicolons are surrounded by quotes.
 	string(REGEX REPLACE "([^\\]);" "\\1 " argv "${argv}")
-	string(REPLACE "\\;" ";" expr "${argv}")  # Un-escape semicolons after separating for if()
+	string(REPLACE "\;" ";" expr "${argv}")  # Un-escape semicolons after separating for if()
 
+	#[[
+		Use cmake_langauge(EVAL CODE) to support wrapping arguments in quotes.
+		Cannot use quote literals \"\" because they are interpreted as string
+		elements, not CMake syntax.
+		Cannot otherwise inject quotes around arguments.
+	]]
 	set(code "
 		if(NOT (${expr}))
 			if(NOT ${safe})
@@ -193,9 +201,11 @@ endfunction()
 function(list_tokenize list_to_consume next_token)
 	set(argv_str "${${list_to_consume}}")
 	set(find_str "${argv_str}")
+	set(pos_offset 0)
+	unset(pos)
 
-	# Find first un-escaped semicolon in argv_str
-	while(pos GREATER -1 OR NOT DEFINED pos)
+	# Find first un-escaped semicolon in argv_str, or end of string
+	while(NOT pos EQUAL -1)
 		string(FIND "${find_str}" ";" pos)
 		string(SUBSTRING "${find_str}" 0 ${pos} arg_candidate)
 
@@ -212,15 +222,18 @@ function(list_tokenize list_to_consume next_token)
 				break()
 			endif()
 
+			# Semicolon is escaped, continue searching
 			math(EXPR upto_semicolon "${pos} + 1")  # upto and including semicolon
-			string(REPEAT "-" ${upto_semicolon} pad)
-			string(SUBSTRING "${find_str}" ${upto_semicolon} -1 pro)
-			string(CONCAT find_str "${pad}${pro}")  # Pad to preserve length
+			math(EXPR pos_offset "${pos_offset} + ${upto_semicolon}")
+			string(SUBSTRING "${find_str}" ${upto_semicolon} -1 find_str)
 		else()
 			break()
 		endif()
 	endwhile()
 
+	if(pos GREATER -1)  # If semicolon found
+		math(EXPR pos "${pos} + ${pos_offset}")
+	endif()
 	string(SUBSTRING "${argv_str}" 0 ${pos} arg)
 
 	if(pos GREATER -1)  # If list has more elements to parse
@@ -460,19 +473,6 @@ function(test_list_tokenize_escaped_backslash)
 endfunction()
 test_list_tokenize_escaped_backslash()
 
-function(test_list_tokenize_escaped_backslash_and_separator)
-	set(list "\\\\;\;")
-
-	list_tokenize(list next)
-	expect("\\\\" STREQUAL "${next}")
-	expect("\;" STREQUAL "${list}")
-
-	list_tokenize(list next)
-	expect("\;" STREQUAL "${next}")
-	expect(NOT DEFINED list)
-endfunction()
-test_list_tokenize_escaped_backslash_and_separator()
-
 function(test_list_tokenize_empty_string)
 	set(list ";")
 
@@ -514,3 +514,37 @@ function(test_list_tokenize_empty_strings)
 	expect(NOT DEFINED list)
 endfunction()
 test_list_tokenize_empty_strings()
+
+function(test_list_tokenize_escaped_backslash_and_separator)
+	set(check_output FALSE)
+
+	if(check_output)
+		set(not NOT)
+	else()
+		set(negate NOT)
+	endif()
+
+	set(case_1 "\\\\")    # -> \\
+	set(case_2 "\\;")     # -> \;
+	set(case_3 "\\\\\;")  # -> \\\;
+	set(case_4 "\;")      # -> \;
+
+	set(list "${case_1};${case_2};${case_3};${case_4}")
+
+	list_tokenize(list next)
+	expect(${not} "\\\\" STREQUAL "${next}")
+	expect(${not} "\\;;\\\\\;;\;" STREQUAL "${list}")
+
+	list_tokenize(list next)
+	expect(${not} "\\;" STREQUAL "${next}")
+	expect(${not} "\\\\\;;\;" STREQUAL "${list}")
+
+	list_tokenize(list next)
+	expect(${not} "\\\\\;" STREQUAL "${next}")
+	expect(${not} "\;" STREQUAL "${list}")
+
+	list_tokenize(list next)
+	expect(${not} "\;" STREQUAL "${next}")
+	expect(${negate} DEFINED list)
+endfunction()
+test_list_tokenize_escaped_backslash_and_separator()
