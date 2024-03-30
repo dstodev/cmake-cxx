@@ -27,21 +27,25 @@ include_guard()
 		Do not print list values on separate lines
 ]]
 function(log_vars)
+	set(prefix "__${CMAKE_CURRENT_FUNCTION}")
 	# cmake_parse_arguments() adds one escape backslash to semicolons in arguments
-	cmake_parse_arguments(PARSE_ARGV 0 args "RAW_LISTS" "MODE;TO_VAR" "")  # +1 escape backslash = 1
+	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "RAW_LISTS" "MODE;TO_VAR" "")  # +1 escape backslash = 1
+	set(raw_lists "${${prefix}_RAW_LISTS}")
+	set(mode "${${prefix}_MODE}")
+	set(to_var ${${prefix}_TO_VAR})
 
-	if(args_MODE MATCHES "^(STATUS|VERBOSE|DEBUG|TRACE)$")
+	if(mode MATCHES "^(STATUS|VERBOSE|DEBUG|TRACE)$")
 		set(line_prefix "-- ")
-	elseif(args_MODE MATCHES "WARNING|ERROR")
+	elseif(mode MATCHES "WARNING|ERROR")
 		set(indent " ")
 	endif()
 
-	foreach(var IN LISTS args_UNPARSED_ARGUMENTS)
+	foreach(var IN LISTS ${prefix}_UNPARSED_ARGUMENTS)
 		if("${${var}}" STREQUAL "")
 			set(${var} "(empty)")  # value replacement lost outside function scope
 		endif()
 
-		if(args_RAW_LISTS)
+		if(raw_lists)
 			string(REPLACE ";" "\;" ${var} "${${var}}")
 		else()
 			list(LENGTH ${var} length)
@@ -55,15 +59,15 @@ function(log_vars)
 		list(APPEND msg "${indent}\${${var}} : ${${var}}")
 	endforeach()
 
-	if(args_TO_VAR)
+	if(to_var)
 		string(REPLACE "\;" "\\\;" msg "${msg}")  # +1 escape backslash = 2
 		list(TRANSFORM msg PREPEND "${line_prefix}")  # -1 escape backslash = 1
 		list(JOIN msg "\n" msg)  # -1 escape backslash = 0
-		set(${args_TO_VAR} "${msg}" PARENT_SCOPE)
+		set(${to_var} "${msg}" PARENT_SCOPE)
 	else()
 		# message() prefixes the first line
 		list(JOIN msg "\n${line_prefix}" msg)  # -1 escape backslash = 0
-		message(${args_MODE} "${msg}")
+		message(${mode} "${msg}")
 	endif()
 endfunction()
 
@@ -105,7 +109,7 @@ macro(log_all_vars)
 			set(_forward_mode "MODE;${_args_MODE}")
 		endif()
 
-		log_vars(TO_VAR _msg ${_forward_mode} ${_args_UNPARSED_ARGUMENTS} ${_vars})
+		log_vars(TO_VAR _msg ${_forward_mode} ${_vars})
 		message(${_args_MODE} "${_notice}:\n${_msg}")
 	else()
 		message(${_args_MODE} "${_notice}: (none)")

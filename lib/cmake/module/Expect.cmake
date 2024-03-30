@@ -131,7 +131,7 @@ function(expect)
 		set(ARGV${index} "${arg}")
 	endforeach()
 
-	set(prefix "__expect_args")
+	set(prefix "__${CMAKE_CURRENT_FUNCTION}")
 	# cmake_parse_arguments() adds one escape backslash to semicolons in arguments
 	cmake_parse_arguments(PARSE_ARGV 0 ${prefix} "SAFE;REQUIRED" "MESSAGE" "")
 	set(argv "${${prefix}_UNPARSED_ARGUMENTS}")
