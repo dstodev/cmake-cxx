@@ -63,6 +63,9 @@ void constexpr error(fmt::format_string<Args...> const& format, Args&&... args)
 	if (detail::LogLevel >= Level::Error) {
 		fmt::print("Error: {}\n", fmt::format(format, std::forward<Args>(args)...));
 	}
+#else
+	(void) format;
+	((void) args, ...);
 #endif
 }
 
@@ -74,6 +77,9 @@ void constexpr warn(fmt::format_string<Args...> const& format, Args&&... args)
 	if (detail::LogLevel >= Level::Warn) {
 		fmt::print("Warn:  {}\n", fmt::format(format, std::forward<Args>(args)...));
 	}
+#else
+	(void) format;
+	((void) args, ...);
 #endif
 }
 
@@ -85,6 +91,9 @@ void constexpr info(fmt::format_string<Args...> const& format, Args&&... args)
 	if (detail::LogLevel >= Level::Info) {
 		fmt::print("Info:  {}\n", fmt::format(format, std::forward<Args>(args)...));
 	}
+#else
+	(void) format;
+	((void) args, ...);
 #endif
 }
 
@@ -96,6 +105,9 @@ void constexpr debug(fmt::format_string<Args...> const& format, Args&&... args)
 	if (detail::LogLevel >= Level::Debug) {
 		fmt::print("Debug: {}\n", fmt::format(format, std::forward<Args>(args)...));
 	}
+#else
+	(void) format;
+	((void) args, ...);
 #endif
 }
 
@@ -107,6 +119,9 @@ void constexpr trace(fmt::format_string<Args...> const& format, Args&&... args)
 	if (detail::LogLevel >= Level::Trace) {
 		fmt::print("Trace: {}\n", fmt::format(format, std::forward<Args>(args)...));
 	}
+#else
+	(void) format;
+	((void) args, ...);
 #endif
 }
 
