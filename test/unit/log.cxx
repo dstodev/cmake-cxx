@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 
-#ifndef ENABLE_LOGGING
 #define ENABLE_LOGGING 1
-#endif
 #include <log.hxx>
 
 using namespace project;
@@ -222,3 +220,5 @@ TEST(Log, level_from_empty)
 {
 	EXPECT_EQ(log::Level::None, log::level_from(""));
 }
+
+#undef ENABLE_LOGGING

@@ -23,6 +23,10 @@ target_compile_features(${target_name}
 	PUBLIC
 		cxx_std_${CMAKE_CXX_STANDARD}
 )
+target_compile_options(${target_name}
+	PRIVATE
+		$<$<CXX_COMPILER_ID:MSVC>:/W4>
+)
 
 set(header_files_to_package
 	"${CMAKE_CURRENT_BINARY_DIR}/version.h"

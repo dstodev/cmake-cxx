@@ -51,6 +51,10 @@ DLL void set_level(Level level);
 
 DLL Level get_level();
 
+#ifndef ENABLE_LOGGING
+#define ENABLE_LOGGING 0
+#endif
+
 /// Emit an error message.
 template <typename... Args>
 void constexpr error(fmt::format_string<Args...> const& format, Args&&... args)

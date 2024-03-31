@@ -16,7 +16,7 @@ Level level_from(std::string_view level)
 	std::string level_lowercase;
 	std::string_view it(level);
 	std::transform(it.begin(), it.end(), std::back_inserter(level_lowercase), [](unsigned char c) {
-		return std::tolower(c);
+		return static_cast<char>(std::tolower(static_cast<int>(c)));
 	});
 
 	Level result = Level::None;
