@@ -26,8 +26,8 @@ target_compile_features(${target_name}
 target_compile_options(${target_name}
 	PRIVATE
 		# https://cmake.org/cmake/help/latest/variable/CMAKE_LANG_COMPILER_ID.html
-		"$<$<CXX_COMPILER_ID:MSVC>:/W4>"
-		"$<$<CXX_COMPILER_ID:AppleClang,Clang,GNU>:-Wall -Wextra>"
+		$<$<CXX_COMPILER_ID:MSVC>:/W4>
+		$<$<CXX_COMPILER_ID:AppleClang,Clang,GNU>:-Wall -Wextra>
 )
 
 set(header_files_to_package
