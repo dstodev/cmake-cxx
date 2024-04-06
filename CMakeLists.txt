@@ -12,6 +12,10 @@ include(AllModules)  # lib/cmake/module/AllModules.cmake
 
 ## Our policies
 
+message(DEBUG "Prior policy values:")
+log_policy(CMP0091 MODE DEBUG)
+log_policy(CMP0152 MODE DEBUG)
+
 set_policy(CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0091.html
 set_policy(CMP0152 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0152.html
 
@@ -64,9 +68,9 @@ add_subdirectory(src)
 
 if(PROJECT_IS_TOP_LEVEL)
 
-	##############
-	#  Testing   #
-	##############
+	#############
+	#  Testing  #
+	#############
 
 	set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)  # Do not populate CTest/CDash targets
 	include(CTest)  # `include(CTest)` instead of `enable_testing()` for better IDE compatibility
