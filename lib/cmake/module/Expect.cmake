@@ -165,6 +165,9 @@ function(expect)
 	string(REPLACE "\r" "\\r" argv "${argv}")
 	string(REPLACE "\n" "\\n" argv "${argv}")
 
+	# Escape dollar signs
+	string(REPLACE "$" "\\$" argv "${argv}")
+
 	# Manually separate list by replacing non-escaped semicolons with space " "
 	# Do not have to worry about escaped backslashes here, because elements
 	# with any escaped semicolons are surrounded by quotes.
@@ -398,6 +401,14 @@ function(test_required)
 	#expect(FALSE MESSAGE "Comment-out this test!" REQUIRED)  # uncomment to check error output
 endfunction()
 test_required()
+
+function(test_expect_escape_dollar)
+	set(a "value")
+	set(b "value of \${a} is: ${a}")
+	expect("value of \${a} is: value" STREQUAL "${b}")
+	expect(NOT "\${a}" STREQUAL "${a}")
+endfunction()
+test_expect_escape_dollar()
 
 ##########################
 #  Test list_tokenize()  #
