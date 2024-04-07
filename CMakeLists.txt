@@ -12,6 +12,7 @@ include(AllModules)  # lib/cmake/module/AllModules.cmake
 
 ## Our policies
 
+message(DEBUG "Setting CMake policies:")
 set_policy(CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0091.html
 set_policy(CMP0152 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0152.html
 

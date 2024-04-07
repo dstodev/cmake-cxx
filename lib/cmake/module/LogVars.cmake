@@ -33,6 +33,7 @@ function(log_vars)
 	set(raw_lists "${${prefix}_RAW_LISTS}")
 	set(mode "${${prefix}_MODE}")
 	set(to_var ${${prefix}_TO_VAR})
+	unset(msg)
 
 	if(mode MATCHES "^(STATUS|VERBOSE|DEBUG|TRACE)$")
 		set(line_prefix "-- ")
@@ -159,5 +160,20 @@ function(test_log_vars_output)
 
 	log_vars(a b a RAW_LISTS TO_VAR msg)
 	expect("${msg}" STREQUAL "\${a} : value\n\${b} : a;b;c\n\${a} : value")
+
+	log_vars(a b a TO_VAR msg)
+	expect("${msg}" STREQUAL "\${a} : value\n\${b} : (list:)\n - a\n - b\n - c\n\${a} : value")
+
+	log_vars(a b a RAW_LISTS TO_VAR msg MODE STATUS)
+	expect("${msg}" STREQUAL "-- \${a} : value\n-- \${b} : a;b;c\n-- \${a} : value")
+
+	log_vars(a b a TO_VAR msg MODE STATUS)
+	expect("${msg}" STREQUAL "-- \${a} : value\n-- \${b} : (list:)\n--  - a\n--  - b\n--  - c\n-- \${a} : value")
+
+	log_vars(a b a RAW_LISTS TO_VAR msg MODE WARNING)
+	expect("${msg}" STREQUAL " \${a} : value\n \${b} : a;b;c\n \${a} : value")
+
+	log_vars(a b a TO_VAR msg MODE WARNING)
+	expect("${msg}" STREQUAL " \${a} : value\n \${b} : (list:)\n  - a\n  - b\n  - c\n \${a} : value")
 endfunction()
 test_log_vars_output()
