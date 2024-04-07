@@ -123,11 +123,22 @@ function(expect)
 	math(EXPR max_arg_index "${ARGC} - 1")
 
 	foreach(index RANGE ${max_arg_index})
-		# Modify ARGV# in place, escaping backslashes.
-		# Do not escape backslashes added by cmake_parse_arguments().
+		# Modify ARGV# in place, escaping backslashes and special characters.
+
+		# Do before calling cmake_parse_arguments() to skip escaping backslashes
+		# added by cmake_parse_arguments().
 
 		set(arg "${ARGV${index}}")
-		string(REPLACE "\\" "\\\\" arg "${arg}")
+
+		string(REPLACE "\\" "\\\\" arg "${arg}")  # backslashes first
+
+		string(REPLACE "\"" "\\\"" arg "${arg}")
+		string(REPLACE "$" "\\$" arg "${arg}")
+
+		string(REPLACE "\t" "\\t" arg "${arg}")
+		string(REPLACE "\r" "\\r" arg "${arg}")
+		string(REPLACE "\n" "\\n" arg "${arg}")
+
 		set(ARGV${index} "${arg}")
 	endforeach()
 
@@ -159,14 +170,6 @@ function(expect)
 	endwhile()
 
 	set(argv "${new_argv}")
-
-	# Escape non-space whitespace
-	string(REPLACE "\t" "\\t" argv "${argv}")
-	string(REPLACE "\r" "\\r" argv "${argv}")
-	string(REPLACE "\n" "\\n" argv "${argv}")
-
-	# Escape dollar signs
-	string(REPLACE "$" "\\$" argv "${argv}")
 
 	# Manually separate list by replacing non-escaped semicolons with space " "
 	# Do not have to worry about escaped backslashes here, because elements
@@ -346,6 +349,9 @@ function(test_expect)
 	expect(${not} "\\\\" STREQUAL "\\\\")
 	expect(${not} "\;" STREQUAL "\;")
 	expect(${not} "\\\;" STREQUAL "\\\;")
+
+	expect(${not} "\";\"" STREQUAL "\";\"")
+	expect(${negate} "\";\"" STREQUAL ";")
 
 	set(mylist ";;1;2; ; 3;;")  # trailing semicolon puts empty string i.e. "" at end
 	list(LENGTH mylist len)
