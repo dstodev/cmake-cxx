@@ -12,10 +12,6 @@ include(AllModules)  # lib/cmake/module/AllModules.cmake
 
 ## Our policies
 
-message(DEBUG "Prior policy values:")
-log_policy(CMP0091 MODE DEBUG)
-log_policy(CMP0152 MODE DEBUG)
-
 set_policy(CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0091.html
 set_policy(CMP0152 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0152.html
 
