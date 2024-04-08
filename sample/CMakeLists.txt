@@ -58,6 +58,6 @@ target_link_libraries(main
 )
 
 add_custom_target(run
-	COMMAND ${target_name} --log-level=info > ${target_name}.txt
+	COMMAND ${target_name} $<$<CONFIG:Debug>:--log-level=info> > ${target_name}.txt
 	COMMAND ${CMAKE_COMMAND} -E cat ${target_name}.txt
 )

@@ -21,8 +21,11 @@ Cli::Cli(char const* argv_0)
 	_options.add_options()
 		("h,help", "Print usage")
 		("v,version", "Print version")
+#if ENABLE_LOGGING
 		("l,log-level", "Set log level. LEVEL=error|warn|info|debug|trace",
-			cxxopts::value<std::string>()->default_value("none"), "LEVEL");
+			cxxopts::value<std::string>()->default_value("none"), "LEVEL")
+#endif
+		;  // terminate add_options()
 	// clang-format on
 }
 
