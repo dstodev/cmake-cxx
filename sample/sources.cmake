@@ -2,6 +2,8 @@
 	This file is included by:
 	- sample/CMakeLists.txt
 	- sample/targets.cmake
+
+	To each, ${target_name} refers to a separate target.
 ]]
 
 set(source_dir "${CMAKE_CURRENT_LIST_DIR}")
