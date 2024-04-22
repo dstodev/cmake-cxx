@@ -16,9 +16,9 @@ record_alias_definitions(dependency_alias_names dependency_alias_targets)
 #  Dependencies  #
 ##################
 
-include(${dependency_dir}/GoogleTest.cmake)  # for testing
-include(${dependency_dir}/cxxopts.cmake)  # for command line option parsing
-include(${dependency_dir}/fmt.cmake)  # for string formatting & logging
+include("${dependency_dir}/GoogleTest.cmake")  # for testing
+include("${dependency_dir}/cxxopts.cmake")  # for command line option parsing
+include("${dependency_dir}/fmt.cmake")  # for string formatting & logging
 
 ##################
 
