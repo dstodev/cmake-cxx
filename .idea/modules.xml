@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/eigen-cxx.iml" filepath="$PROJECT_DIR$/.idea/eigen-cxx.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/cmake-cxx.iml" filepath="$PROJECT_DIR$/.idea/cmake-cxx.iml" />
     </modules>
   </component>
 </project>
