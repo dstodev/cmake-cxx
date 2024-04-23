@@ -1,8 +1,6 @@
-#if defined(_WIN32)
-#define _CRT_SECURE_NO_WARNINGS 1  // NOLINT(*-reserved-identifier)
-#endif
+#define _CRT_SECURE_NO_WARNINGS 1
 
-#include <cstdlib>
+#include <cstdlib>  // for std::getenv
 #include <iostream>
 #include <optional>
 #include <string>
@@ -71,10 +69,11 @@ void print_enabled_log_levels()
 	else {
 		auto const last_item = std::prev(log_levels.rend());
 		for (auto it = log_levels.rbegin(); it != last_item; ++it) {
-			std::cout << *it;
-			std::cout << ", ";
+			std::cout << *it << ", ";
 		}
 		std::cout << *last_item;
 	}
 	std::cout << std::endl;
 }
+
+#undef _CRT_SECURE_NO_WARNINGS
