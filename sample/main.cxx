@@ -20,6 +20,8 @@ int main(int argc, char const* argv[])
 {
 	Cli const cli(argc, argv);
 
+	auto test = cli.log_level();
+
 #if ENABLE_LOGGING
 	set_log_level(cli.log_level());
 	print_enabled_log_levels();
@@ -66,11 +68,13 @@ void print_enabled_log_levels()
 	if (log_levels.empty()) {
 		std::cout << "None";
 	}
-	for (auto it = log_levels.rbegin(); it != log_levels.rend(); ++it) {
-		std::cout << *it;
-		if (std::next(it) != log_levels.rend()) {
+	else {
+		auto const last_item = std::prev(log_levels.rend());
+		for (auto it = log_levels.rbegin(); it != last_item; ++it) {
+			std::cout << *it;
 			std::cout << ", ";
 		}
+		std::cout << *last_item;
 	}
 	std::cout << std::endl;
 }
