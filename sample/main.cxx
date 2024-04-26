@@ -18,10 +18,9 @@ int main(int argc, char const* argv[])
 {
 	Cli const cli(argc, argv);
 
-	auto test = cli.log_level();
-
 #if ENABLE_LOGGING
-	set_log_level(cli.log_level());
+	auto level = cli.log_level();
+	set_log_level(level);
 	print_enabled_log_levels();
 #endif
 
