@@ -14,11 +14,26 @@ function(_configure)
 	list(APPEND CMAKE_MODULE_PATH "${output_root}")
 	list(APPEND CMAKE_PREFIX_PATH "${output_root}")
 
+	# If the file already exists, check its hash.
+	# If the hash is not expected, remove the file before re-downloading.
+	# This is useful when updating to a new version where the expected
+	# hash changes, but a previous version already exists on-disk.
+	if(EXISTS "${output_path}")
+		file(MD5 "${output_path}" output_hash)
+
+		if(NOT "${output_hash}" STREQUAL "${expected_hash}")
+			message(WARNING "CPM.cmake hash mismatch! Removing ${output_path}")
+			file(REMOVE "${output_path}")
+		endif()
+	endif()
+
+	# Download CPM.cmake
 	if(NOT EXISTS "${output_path}")
 		message(STATUS "Downloading CPM.cmake to ${output_path}")
 		file(DOWNLOAD "${url}" "${output_path}")
 	endif()
 
+	# Validate hash
 	file(MD5 "${output_path}" output_hash)
 
 	if(NOT "${output_hash}" STREQUAL "${expected_hash}")
