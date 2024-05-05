@@ -57,7 +57,15 @@ target_link_libraries(main
 		project::cxxopts
 )
 
+# If LOG_LEVEL is set while configuring, use that value for the sample app.
+# This allows e.g. CI systems to set the log level.
+if(ENV{LOG_LEVEL})
+	set(level "$ENV{LOG_LEVEL}")
+else()
+	set(level "info")
+endif()
+
 add_custom_target(run
-	COMMAND ${target_name} $<$<CONFIG:Debug>:--log-level=info> > ${target_name}.txt
+	COMMAND ${target_name} $<$<CONFIG:Debug>:--log-level=${level}> > ${target_name}.txt
 	COMMAND ${CMAKE_COMMAND} -E cat ${target_name}.txt
 )
