@@ -16,7 +16,7 @@ void print_enabled_log_levels();
 
 int main(int argc, char const* argv[])
 {
-	Cli const cli(argc, argv);
+	Cli const cli(argc, argv);  // Calls std::exit() if CLI error occurs
 
 #if ENABLE_LOGGING
 	auto level = cli.log_level();
@@ -52,27 +52,28 @@ auto get_env_var(char const* name) -> std::optional<std::string>
 
 void print_enabled_log_levels()
 {
-	std::cout << "Logging: ";
+	// For consistency with the default log target, print to stderr.
+	std::cerr << "Logging: ";
 	std::vector<char const*> log_levels;
 	switch (log::get_level()) {
 	case log::Level::Trace: log_levels.emplace_back("Trace"); [[fallthrough]];
 	case log::Level::Debug: log_levels.emplace_back("Debug"); [[fallthrough]];
 	case log::Level::Info: log_levels.emplace_back("Info"); [[fallthrough]];
-	case log::Level::Warn: log_levels.emplace_back("Warning"); [[fallthrough]];
+	case log::Level::Warning: log_levels.emplace_back("Warning"); [[fallthrough]];
 	case log::Level::Error: log_levels.emplace_back("Error"); [[fallthrough]];
 	default:;
 	}
 	if (log_levels.empty()) {
-		std::cout << "None";
+		std::cerr << "None";
 	}
 	else {
 		auto const last_item = std::prev(log_levels.rend());
 		for (auto it = log_levels.rbegin(); it != last_item; ++it) {
-			std::cout << *it << ", ";
+			std::cerr << *it << ", ";
 		}
-		std::cout << *last_item;
+		std::cerr << *last_item;
 	}
-	std::cout << std::endl;
+	std::cerr << std::endl;
 }
 
 #undef _CRT_SECURE_NO_WARNINGS

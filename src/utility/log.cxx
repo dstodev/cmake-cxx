@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <cstdio>
 #include <iterator>
 #include <string>
 
@@ -9,6 +10,7 @@ namespace project::log {
 
 namespace detail {
 Level LogLevel = Level::Info;
+FILE* LogTarget = stderr;
 }  // namespace detail
 
 Level level_from(std::string_view level)
@@ -31,7 +33,7 @@ Level level_from(std::string_view level)
 		result = Level::Info;
 	}
 	else if (level_lowercase == "warn" || level_lowercase == "warning") {
-		result = Level::Warn;
+		result = Level::Warning;
 	}
 	else if (level_lowercase == "error") {
 		result = Level::Error;
@@ -48,6 +50,16 @@ void set_level(Level level)
 Level get_level()
 {
 	return detail::LogLevel;
+}
+
+void set_target(FILE* target)
+{
+	detail::LogTarget = target;
+}
+
+FILE* get_target()
+{
+	return detail::LogTarget;
 }
 
 }  // namespace project::log

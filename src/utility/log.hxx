@@ -1,6 +1,7 @@
 #ifndef LOG_HXX
 #define LOG_HXX
 
+#include <cstdio>
 #include <string_view>
 #include <utility>
 
@@ -14,7 +15,7 @@ namespace project::log {
 @code
 -- More severe --
  Level::Error
- Level::Warn
+ Level::Warning
  Level::Info
  Level::Debug
  Level::Trace
@@ -25,7 +26,7 @@ enum class Level
 {
 	None = 0,
 	Error,
-	Warn,
+	Warning,
 	Info,
 	Debug,
 	Trace,
@@ -33,10 +34,11 @@ enum class Level
 
 namespace detail {
 DLL extern Level LogLevel;
+DLL extern FILE* LogTarget;
 }  // namespace detail
 
 /** @brief Convert a string to a logging severity level.
-    @param level Options are: error warn info debug trace.
+    @param level Options are: error warning info debug trace.
     @return Corresponding Level or Level::None if \p level is invalid or empty.
 
     std::string_view is constructible via e.g. cast from std::string const&
@@ -51,6 +53,10 @@ DLL void set_level(Level level);
 
 DLL Level get_level();
 
+DLL void set_target(FILE* target);
+
+DLL FILE* get_target();
+
 #ifndef ENABLE_LOGGING
 #define ENABLE_LOGGING 0
 #endif
@@ -61,7 +67,7 @@ void constexpr error(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	if (detail::LogLevel >= Level::Error) {
-		fmt::print("Error: {}\n", fmt::format(format, std::forward<Args>(args)...));
+		fmt::print(detail::LogTarget, "Error: {}\n", fmt::format(format, std::forward<Args>(args)...));
 	}
 #else
 	(void) format;
@@ -71,16 +77,22 @@ void constexpr error(fmt::format_string<Args...> const& format, Args&&... args)
 
 /// Emit a warning message.
 template <typename... Args>
-void constexpr warn(fmt::format_string<Args...> const& format, Args&&... args)
+void constexpr warning(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
-	if (detail::LogLevel >= Level::Warn) {
-		fmt::print("Warn:  {}\n", fmt::format(format, std::forward<Args>(args)...));
+	if (detail::LogLevel >= Level::Warning) {
+		fmt::print(detail::LogTarget, "Warning: {}\n", fmt::format(format, std::forward<Args>(args)...));
 	}
 #else
 	(void) format;
 	((void) args, ...);
 #endif
+}
+
+template <typename... Args>
+void constexpr warn(Args&&... args)
+{
+	warning(std::forward<Args>(args)...);
 }
 
 /// Emit an informational message.
@@ -89,7 +101,7 @@ void constexpr info(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	if (detail::LogLevel >= Level::Info) {
-		fmt::print("Info:  {}\n", fmt::format(format, std::forward<Args>(args)...));
+		fmt::print(detail::LogTarget, "Info: {}\n", fmt::format(format, std::forward<Args>(args)...));
 	}
 #else
 	(void) format;
@@ -103,7 +115,7 @@ void constexpr debug(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	if (detail::LogLevel >= Level::Debug) {
-		fmt::print("Debug: {}\n", fmt::format(format, std::forward<Args>(args)...));
+		fmt::print(detail::LogTarget, "Debug: {}\n", fmt::format(format, std::forward<Args>(args)...));
 	}
 #else
 	(void) format;
@@ -117,7 +129,7 @@ void constexpr trace(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	if (detail::LogLevel >= Level::Trace) {
-		fmt::print("Trace: {}\n", fmt::format(format, std::forward<Args>(args)...));
+		fmt::print(detail::LogTarget, "Trace: {}\n", fmt::format(format, std::forward<Args>(args)...));
 	}
 #else
 	(void) format;
