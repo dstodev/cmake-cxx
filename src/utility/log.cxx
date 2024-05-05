@@ -10,7 +10,7 @@ namespace project::log {
 
 namespace detail {
 Level LogLevel = Level::Info;
-FILE* LogTarget = stderr;
+std::FILE* LogTarget = stderr;  // https://en.cppreference.com/w/cpp/io/c/FILE
 }  // namespace detail
 
 Level level_from(std::string_view level)
@@ -52,12 +52,12 @@ Level get_level()
 	return detail::LogLevel;
 }
 
-void set_target(FILE* target)
+void set_target(std::FILE* target)
 {
 	detail::LogTarget = target;
 }
 
-FILE* get_target()
+std::FILE* get_target()
 {
 	return detail::LogTarget;
 }

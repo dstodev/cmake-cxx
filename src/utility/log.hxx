@@ -35,7 +35,7 @@ enum class Level
 
 namespace detail {
 DLL extern Level LogLevel;
-DLL extern FILE* LogTarget;
+DLL extern std::FILE* LogTarget;
 }  // namespace detail
 
 /** @brief Convert a string to a logging severity level.
@@ -54,9 +54,9 @@ DLL void set_level(Level level);
 
 DLL Level get_level();
 
-DLL void set_target(FILE* target);
+DLL void set_target(std::FILE* target);
 
-DLL FILE* get_target();
+DLL std::FILE* get_target();
 
 #ifndef ENABLE_LOGGING
 #define ENABLE_LOGGING 0
