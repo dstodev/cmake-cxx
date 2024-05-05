@@ -5,6 +5,7 @@
       <configuration PROFILE_NAME="Debug" ENABLED="true" GENERATION_DIR="build/clion-debug" CONFIG_NAME="Debug" GENERATION_OPTIONS="--log-level=DEBUG" BUILD_OPTIONS="--parallel">
         <ADDITIONAL_GENERATION_ENVIRONMENT>
           <envs>
+            <env name="LOG_LEVEL" value="info" />
             <env name="CL" value="/MP" />
           </envs>
         </ADDITIONAL_GENERATION_ENVIRONMENT>
