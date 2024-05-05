@@ -24,7 +24,7 @@ on:
         required: false
 
       log-level:
-        description: 'Log level (Debug only)'
+        description: 'Log level (native debug only)'
         default: 'info'
         type: choice
         options:
