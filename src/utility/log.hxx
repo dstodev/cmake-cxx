@@ -24,7 +24,8 @@ namespace project::log {
  */
 enum class Level
 {
-	None = 0,
+	None,
+
 	Error,
 	Warning,
 	Info,
@@ -89,6 +90,7 @@ void constexpr warning(fmt::format_string<Args...> const& format, Args&&... args
 #endif
 }
 
+/// Emit a warning message.
 template <typename... Args>
 void constexpr warn(Args&&... args)
 {
