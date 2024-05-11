@@ -1,4 +1,5 @@
 # https://github.com/fmtlib/fmt
+# for string formatting
 
 CPMAddPackage(NAME fmt
 	GITHUB_REPOSITORY fmtlib/fmt

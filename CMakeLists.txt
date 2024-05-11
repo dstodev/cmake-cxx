@@ -3,12 +3,13 @@ cmake_minimum_required(VERSION 3.24)
 ## Modules
 
 set(cmake_module_paths
+	"${CMAKE_CURRENT_LIST_DIR}"
 	"${CMAKE_CURRENT_LIST_DIR}/lib/cmake/include"
 	"${CMAKE_CURRENT_LIST_DIR}/lib/cmake/module"
 )
 list(APPEND CMAKE_MODULE_PATH ${cmake_module_paths})
 
-include(AllModules)  # lib/cmake/module/AllModules.cmake
+include(all_modules)  # lib/cmake/include/all_modules.cmake
 
 ## Our policies
 
@@ -17,6 +18,7 @@ set_policy(CMP0091 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0091.ht
 set_policy(CMP0152 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0152.html
 
 ## Dependency policies
+
 set(CMAKE_POLICY_DEFAULT_CMP0068 NEW)  # https://cmake.org/cmake/help/latest/policy/CMP0068.html
 
 #############
@@ -59,7 +61,7 @@ check_pie_supported()
 #  Dependency & Project Targets  #
 ##################################
 
-add_subdirectory(dependencies)
+include(all_dependencies)  # lib/cmake/include/all_dependencies.cmake
 
 add_subdirectory(src)
 

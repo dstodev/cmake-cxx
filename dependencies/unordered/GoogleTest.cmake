@@ -1,4 +1,5 @@
 # https://github.com/google/googletest
+# for testing
 
 #[[
 	If GoogleTest is taking a long time to add, it may be because it's trying

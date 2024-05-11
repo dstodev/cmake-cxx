@@ -3,14 +3,14 @@ file(REAL_PATH "${PROJECT_BINARY_DIR}/../_dependency-cache" CPM_SOURCE_CACHE)
 
 message(STATUS "Adding dependency packages... (from: ${CPM_SOURCE_CACHE})")
 
-set(dependency_dir "${CMAKE_CURRENT_LIST_DIR}")
+get_filename_component(dir "${PROJECT_SOURCE_DIR}/dependencies" REALPATH)
 
 ########################
 #  First Dependencies  #
 ########################
 
-include("${dependency_dir}/first/CPack.cmake")
-include("${dependency_dir}/first/cpm.cmake")
+include("${dir}/first/CPack.cmake")
+include("${dir}/first/cpm.cmake")
 
 ########################
 
@@ -22,9 +22,12 @@ record_alias_definitions(dependency_alias_names dependency_alias_targets)
 #  Dependencies  #
 ##################
 
-include("${dependency_dir}/GoogleTest.cmake")  # for testing
-include("${dependency_dir}/cxxopts.cmake")  # for command line option parsing
-include("${dependency_dir}/fmt.cmake")  # for string formatting & logging
+file(GLOB unordered_dependencies CONFIGURE_DEPENDS RELATIVE "${dir}/unordered/" "${dir}/unordered/*.cmake")
+
+foreach(file ${unordered_dependencies})
+	message(DEBUG "Including dependency stub: ${file}")
+	include("${dir}/unordered/${file}")
+endforeach()
 
 ##################
 
