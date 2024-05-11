@@ -22,11 +22,12 @@ record_alias_definitions(dependency_alias_names dependency_alias_targets)
 #  Dependencies  #
 ##################
 
-file(GLOB unordered_dependencies CONFIGURE_DEPENDS RELATIVE "${dir}/unordered/" "${dir}/unordered/*.cmake")
+file(GLOB unordered_dependencies CONFIGURE_DEPENDS "${dir}/unordered/*.cmake")
 
 foreach(file ${unordered_dependencies})
-	message(DEBUG "Including dependency stub: ${file}")
-	include("${dir}/unordered/${file}")
+	get_filename_component(name "${file}" NAME)
+	message(DEBUG "Including dependency stub: ${name}")
+	include("${file}")
 endforeach()
 
 ##################
