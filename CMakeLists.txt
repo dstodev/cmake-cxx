@@ -11,10 +11,6 @@ list(APPEND CMAKE_MODULE_PATH ${cmake_module_paths})
 
 include(all_modules)  # lib/cmake/include/all_modules.cmake
 
-## Builtin modules
-
-include(GNUInstallDirs)  # https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html
-
 ## Our policies
 
 message(DEBUG "Setting CMake policies:")
@@ -32,6 +28,10 @@ set(CMAKE_POLICY_DEFAULT_CMP0068 NEW)  # https://cmake.org/cmake/help/latest/pol
 default_build_type("Release")
 
 project(Project VERSION 0.1.0 LANGUAGES CXX)
+
+## Builtin modules
+
+include(GNUInstallDirs)  # https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html
 
 ## Options
 
