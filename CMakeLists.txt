@@ -11,6 +11,10 @@ list(APPEND CMAKE_MODULE_PATH ${cmake_module_paths})
 
 include(all_modules)  # lib/cmake/include/all_modules.cmake
 
+## Builtin modules
+
+include(GNUInstallDirs)  # https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html
+
 ## Our policies
 
 message(DEBUG "Setting CMake policies:")
@@ -46,9 +50,13 @@ option(CMAKE_VERBOSE_MAKEFILE "Emit verbose build output?" FALSE)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE STRING "MSVC runtime")
 
 # https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#output-artifacts
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib" CACHE PATH ".lib, .a, etc.")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib" CACHE PATH ".so, .dylib, etc.")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin" CACHE PATH ".exe, .dll, etc.")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}" CACHE PATH ".lib, .a, etc.")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}" CACHE PATH ".so, .dylib, etc.")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}" CACHE PATH ".exe, .dll, etc.")
+
+set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install-stage"
+	CACHE PATH "When building the `install` target, put artifacts in this directory."
+)  # https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html
 
 ## Features
 

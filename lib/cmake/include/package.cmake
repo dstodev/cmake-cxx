@@ -1,9 +1,5 @@
 set(export_name "project")
 
-set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install-stage"
-	CACHE PATH "When building the `install` target, put artifacts in this directory."
-)  # https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html
-
 # Package CMake targets for the application to import
 install(TARGETS
 	# Project targets
@@ -14,7 +10,13 @@ install(TARGETS
 	fmt      # for logging
 
 	EXPORT ${export_name}
-	BUNDLE DESTINATION bin
+
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+
+	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+	BUNDLE DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 # Package sample application executable
