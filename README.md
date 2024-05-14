@@ -1,12 +1,31 @@
 # Project
 
-This project serves as an opinionated template for C++ developers.
+This project serves as an opinionated template for C/C++ developers.
+
+Instead of small & concise, this project offers a comprehensive C/C++ development
+environment to C++ developers, with the hope that it is faster to remove unnecessary
+features than it is to add them.
+This is especially for those who are new to CMake or C/C++, who may wish to learn
+by example and remove or change what they please.
+
+It configures the build-system with CMake targets:
+
+- Shared library `project` comprising main project code
+- Unit tests `all-test`* for library testing
+- Sample executable `app-console` which links to the library and offers basic command-line argument parsing
+- Target `build-package`* creates a distributable package with the library, sample executable, and CMake exports
+- Target `app-sample`* creates and runs the sample executable in the distribution package.  
+  The sample is comprehensive: builds the package, includes the package CMake exports, compiles the sample source, &
+  links to the shared library, all outside the context of the primary build system. See
+  [sample.dio.svg](sample/sample.dio.svg) for more.
+
+&ast; : This target runs by building it, and does not correlate to a file on disk.
 
 It includes common libraries:
 
-- [GoogleTest](https://github.com/google/googletest/)
-- [CMake Package Manager "CPM"](https://github.com/cpm-cmake/CPM.cmake)
-- See [dependencies.cmake](lib/cmake/include/dependencies.cmake) for more!
+- [GoogleTest](https://github.com/google/googletest/) for testing
+- [CMake Package Manager "CPM"](https://github.com/cpm-cmake/CPM.cmake) for dependency acquisition
+- [cxxopts](https://github.com/jarro2783/cxxopts) for command-line argument parsing (used by sample app)
 
 And plenty of CMake & C++ utilities; see [FEATURES.md](FEATURES.md) for details!
 
@@ -50,12 +69,13 @@ The following scripts have been tested on MacOS Monterey and Windows 11.
 
 > **NOTE:**  
 > Building the package requires CPack, normally included with CMake.  
-> If CMake is installed by an IDE, such as CLion, CPack may not be included.
+> If CMake is installed by an IDE, such as CLion, CPack may not be included.  
+> Additionally, some package managers such as Chocolatey may include
+> conflicting software also named `CPack`.
 
 ## Logging
 
-Tests and the main program log information to the console if `app-console` is
-launched
+The sample executable supports logging.
 
 The main program additionally respects the `LOG_LEVEL` environment variable.
 The value of `LOG_LEVEL` may be one of:

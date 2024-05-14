@@ -2,7 +2,7 @@
 
 # Project Features
 
-This project implements CMake and C++ utilities for developers starting new
+This project implements CMake and C++ utilities for developers starting new,
 modern C++ projects.
 
 ## CMake Features
@@ -11,6 +11,8 @@ modern C++ projects.
 - Argument parsing helper [help_parse_arguments()](lib/cmake/module/HelpParseArguments.cmake)
 - Logging utilities e.g. [log_vars()](lib/cmake/module/LogVars.cmake)
 - Target utilities e.g. [directory_targets()](lib/cmake/module/DirectoryTargets.cmake)
+- See `lib/cmake/module` for more!  
+  All modules are included by the top-level `CMakeLists.txt` file.
 
 ## C++ Features
 
