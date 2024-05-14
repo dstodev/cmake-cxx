@@ -3,10 +3,10 @@
 This project serves as an opinionated template for C/C++ developers.
 
 Instead of small & concise, this project offers a comprehensive C/C++ development
-environment to C++ developers, with the hope that it is faster to remove unnecessary
-features than it is to add them.
+environment to C++ developers, with the hope that it is faster to remove features
+you do not need than it is to add features you may find useful yourself.
 This is especially for those who are new to CMake or C/C++, who may wish to learn
-by example and remove or change what they please.
+by example.
 
 It configures the build-system with CMake targets:
 
