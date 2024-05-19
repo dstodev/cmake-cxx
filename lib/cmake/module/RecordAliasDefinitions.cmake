@@ -29,10 +29,11 @@ endfunction()
 
 function(add_library)
 	list(FIND ARGN ALIAS alias_index)
-	#                      alias_index
-	#          name_index       |       target_index
-	#             0|           1|            2|
-	# add_library(Alias::Name ALIAS some_target)
+	# The following variables contain parameter indices:
+	#          name_index   alias_index  target_index
+	#             0|            1|            2|
+	#             -+---------  --+--  ---------+-
+	# add_library(Alias::Name  ALIAS  some_target)
 
 	math(EXPR last_index "${ARGC} - 1")
 

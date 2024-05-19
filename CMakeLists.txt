@@ -31,6 +31,7 @@ project(Project VERSION 0.1.0 LANGUAGES CXX)
 
 ## Builtin modules
 
+include(CheckPIESupported)  # https://cmake.org/cmake/help/latest/module/CheckPIESupported.html
 include(GNUInstallDirs)  # https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html
 
 ## Options
@@ -61,8 +62,6 @@ set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install-stage"
 ## Features
 
 configure_rpath_variables()
-
-include(CheckPIESupported)  # https://cmake.org/cmake/help/latest/module/CheckPIESupported.html
 check_pie_supported()
 
 ##################################
