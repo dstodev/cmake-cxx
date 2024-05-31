@@ -7,7 +7,7 @@
 
 #include <fmt/core.h>
 
-#include <dll-export.h>
+#include <project_dll-export.h>
 
 namespace project::log {
 

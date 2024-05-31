@@ -41,7 +41,7 @@ include(HelpParseArguments)
 		Adds generated sources to <target>.
 ]]
 function(file_to_raw_string_literal file_path)
-	help_parse_arguments(args "" "CHAR_SEQ;OUTPUT_DIRECTORY;TARGET" "")
+	help_parse_arguments(args "" "CHAR_SEQ;OUTPUT_DIRECTORY;TARGET;API_INCLUDE;API_DEFINE" "")
 
 	if(args_CHAR_SEQ)
 		set(char_seq "${args_CHAR_SEQ}")
@@ -53,6 +53,11 @@ function(file_to_raw_string_literal file_path)
 		set(out_dir "${args_OUTPUT_DIRECTORY}")
 	else()
 		set(out_dir "${CMAKE_CURRENT_BINARY_DIR}")
+	endif()
+
+	if(args_API_INCLUDE AND args_API_DEFINE)
+		set(api_include "#include <${args_API_INCLUDE}>\n")
+		set(api_define "${args_API_DEFINE} ")
 	endif()
 
 	get_filename_component(file_name "${file_path}" NAME)  # /path/to/My_File.txt -> My_File.txt
@@ -72,7 +77,8 @@ function(file_to_raw_string_literal file_path)
 	string(JOIN "\n" declaration
 		"#ifndef ${include_guard}"
 		"#define ${include_guard}\n"
-		"extern char const ${symbol}[];\n"
+		${api_include}
+		"${api_define}extern char const ${symbol}[];\n"
 		"#endif  // ${include_guard}\n"
 	)
 	string(JOIN "\n" definition

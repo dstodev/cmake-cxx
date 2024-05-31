@@ -9,8 +9,8 @@
 namespace project::log {
 
 namespace detail {
-Level LogLevel = Level::Info;
-std::FILE* LogTarget = stderr;  // https://en.cppreference.com/w/cpp/io/c/FILE
+Level LogLevel {Level::Info};
+std::FILE* LogTarget {stderr};  // https://en.cppreference.com/w/cpp/io/c/FILE
 }  // namespace detail
 
 Level level_from(std::string_view level)
@@ -21,7 +21,7 @@ Level level_from(std::string_view level)
 		return static_cast<char>(std::tolower(static_cast<int>(c)));
 	});
 
-	Level result = Level::None;
+	Level result {Level::None};
 
 	if (level_lowercase == "trace") {
 		result = Level::Trace;

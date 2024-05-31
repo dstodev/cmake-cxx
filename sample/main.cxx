@@ -19,7 +19,7 @@ int main(int argc, char const* argv[])
 	Cli const cli(argc, argv);  // Calls std::exit() if CLI error occurs
 
 #if ENABLE_LOGGING
-	auto level = cli.log_level();
+	auto level {cli.log_level()};
 	set_log_level(level);
 	print_enabled_log_levels();
 #endif
@@ -31,13 +31,13 @@ int main(int argc, char const* argv[])
 
 void set_log_level(std::optional<std::string> const& cli_level)
 {
-	log::Level level = log::Level::None;
+	log::Level level {log::Level::None};
 
 	// Give CLI precedence over environment variable.
 	if (cli_level) {
 		level = log::level_from(cli_level.value());
 	}
-	else if (auto const env_level = get_env_var("LOG_LEVEL")) {
+	else if (auto const env_level {get_env_var("LOG_LEVEL")}) {
 		level = log::level_from(env_level.value());
 	}
 
@@ -46,7 +46,7 @@ void set_log_level(std::optional<std::string> const& cli_level)
 
 auto get_env_var(char const* name) -> std::optional<std::string>
 {
-	char const* value = std::getenv(name);
+	char const* value {std::getenv(name)};
 	return value ? std::make_optional(value) : std::nullopt;
 }
 
@@ -67,8 +67,8 @@ void print_enabled_log_levels()
 		std::cerr << "None";
 	}
 	else {
-		auto const last_item = std::prev(log_levels.rend());
-		for (auto it = log_levels.rbegin(); it != last_item; ++it) {
+		auto const last_item {std::prev(log_levels.rend())};
+		for (auto it {log_levels.rbegin()}; it != last_item; ++it) {
 			std::cerr << *it << ", ";
 		}
 		std::cerr << *last_item;

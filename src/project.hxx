@@ -3,7 +3,7 @@
 
 #include <string_view>
 
-#include <dll-export.h>
+#include <project_dll-export.h>
 
 // Include all public headers
 #include <deduplicate.hxx>

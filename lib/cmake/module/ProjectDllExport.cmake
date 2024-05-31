@@ -6,7 +6,7 @@ set(__dll_export_macro "DLL" CACHE STRING "Name of the dll export macro")
 include(GenerateExportHeader)
 
 function(project_dll_export target)
-	set(file "${PROJECT_BINARY_DIR}/include/${__dll_export_file}")
+	set(file "${PROJECT_BINARY_DIR}/include/${target}_${__dll_export_file}")
 
 	generate_export_header(${target}
 		EXPORT_FILE_NAME ${file}

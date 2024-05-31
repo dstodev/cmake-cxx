@@ -97,13 +97,21 @@ endfunction()
 ]]
 macro(log_all_vars)
 	# This is a macro and not a function, because function() introduces new
-	# variables into scope before get_cmake_property() is called.
+	# variables into scope before get_cmake_property(VARIABLES) is called.
 	get_cmake_property(_vars VARIABLES)
-	cmake_parse_arguments(_args "" "FILTER;MODE" "" ${ARGN})
-	set(_notice "All variables")
+	cmake_parse_arguments(_args "" "FILTER;MODE;MESSAGE" "" ${ARGN})
+
+	if(_args_MESSAGE)
+		set(_notice "${_args_MESSAGE}")
+	else()
+		set(_notice "All variables")
+	endif()
 
 	if(_args_FILTER)
-		set(_notice "${_notice} matching regex '${_args_FILTER}'")
+		if(NOT _args_MESSAGE)
+			set(_notice "${_notice} matching regex '${_args_FILTER}'")
+		endif()
+
 		list(FILTER _vars INCLUDE REGEX "${_args_FILTER}")
 	endif()
 

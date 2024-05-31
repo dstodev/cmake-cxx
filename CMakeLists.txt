@@ -59,6 +59,8 @@ set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/install-stage"
 	CACHE PATH "When building the `install` target, put artifacts in this directory."
 )  # https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX.html
 
+set(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "Debug artifact postfix")
+
 ## Features
 
 configure_rpath_variables()

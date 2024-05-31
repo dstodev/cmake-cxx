@@ -17,10 +17,10 @@ T stable_deduplicate(T container)
 	// on input elements in order. In the case of std::stable_partition, this
 	// may be a bug.
 
-	auto iter = container.begin();
+	auto iter {container.begin()};
 
 	for (auto const& element : container) {
-		bool const is_unique = set.insert(element).second;
+		bool const is_unique {set.insert(element).second};
 
 		if (is_unique) {
 			*iter++ = element;  // Assign to the next position in the container

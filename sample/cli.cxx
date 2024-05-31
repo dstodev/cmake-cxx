@@ -38,10 +38,10 @@ auto Cli::basename(char const* argv_0) -> char const*
 
 void Cli::parse(int argc, char const* argv[])
 {
-	auto const result = _options.parse(argc, argv);
-	auto const version_string = "Project " + std::string {project::version()};
+	auto const result {_options.parse(argc, argv)};
+	auto const version_string {"Project " + std::string {project::version()}};
 
-	int exit_code = -1;  // <0 means no exit, 0 means exit without error, >0 means exit with error.
+	int exit_code {-1};  // <0 means no exit, 0 means exit without error, >0 means exit with error.
 
 	// If user provides --help, print version number & help text, then exit without error.
 	if (result.count("help")) {
@@ -77,7 +77,7 @@ auto Cli::format_unrecognized_options() const -> std::string
 	std::stringstream result;
 
 	if (!std::empty(_unrecognized_options)) {
-		auto const& last = _unrecognized_options.back();
+		auto const& last {_unrecognized_options.back()};
 
 		result << "Unrecognized options: ";
 
