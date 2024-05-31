@@ -10,17 +10,18 @@
 
 using namespace project;
 
+namespace {
 void set_log_level(std::optional<std::string> const& cli_level = std::nullopt);
 auto get_env_var(char const* name) -> std::optional<std::string>;
 void print_enabled_log_levels();
+}  // namespace
 
 int main(int argc, char const* argv[])
 {
-	Cli const cli(argc, argv);  // Calls std::exit() if CLI error occurs
+	Cli const cli {argc, argv};  // Calls std::exit() if CLI error occurs
 
 #if ENABLE_LOGGING
-	auto level {cli.log_level()};
-	set_log_level(level);
+	set_log_level(cli.log_level());
 	print_enabled_log_levels();
 #endif
 
@@ -28,6 +29,8 @@ int main(int argc, char const* argv[])
 
 	return 0;
 }
+
+namespace {
 
 void set_log_level(std::optional<std::string> const& cli_level)
 {
@@ -75,5 +78,7 @@ void print_enabled_log_levels()
 	}
 	std::cerr << std::endl;
 }
+
+}  // namespace
 
 #undef _CRT_SECURE_NO_WARNINGS

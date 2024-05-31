@@ -67,16 +67,6 @@ TEST(Log, warning_varargs)
 	ASSERT_TRUE(result.find("Warning: message 1\n") != std::string::npos);
 }
 
-TEST(Log, warning_alias_warn)
-{
-	log::set_level(log::Level::Warning);
-
-	::testing::internal::CaptureStderr();
-	log::warn("{} {}", "message", 1);
-	std::string result {::testing::internal::GetCapturedStderr()};
-	ASSERT_TRUE(result.find("Warning: message 1\n") != std::string::npos);
-}
-
 TEST(Log, info)
 {
 	log::set_level(log::Level::Info);
@@ -231,10 +221,19 @@ TEST(Log, level_from_empty)
 	EXPECT_EQ(log::Level::None, log::level_from(""));
 }
 
+TEST(Log, level_label)
+{
+	EXPECT_EQ("Error", log::level_label(log::Level::Error));
+	EXPECT_EQ("Warning", log::level_label(log::Level::Warning));
+	EXPECT_EQ("Info", log::level_label(log::Level::Info));
+	EXPECT_EQ("Debug", log::level_label(log::Level::Debug));
+	EXPECT_EQ("Trace", log::level_label(log::Level::Trace));
+	EXPECT_EQ("None", log::level_label(log::Level::None));
+}
+
 TEST(Log, set_target)
 {
 	ASSERT_EQ(stderr, log::get_target());
-
 	log::set_target(stdout);
 	ASSERT_EQ(stdout, log::get_target());
 

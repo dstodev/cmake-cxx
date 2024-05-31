@@ -7,7 +7,7 @@
 #include <project.hxx>
 
 Cli::Cli(int argc, char const* argv[])
-    : Cli(argv[0])
+    : Cli {argv[0]}
 {
 	parse(argc, argv);
 }

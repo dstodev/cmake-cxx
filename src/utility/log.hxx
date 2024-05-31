@@ -47,29 +47,44 @@ DLL extern std::FILE* LogTarget;
     or via std::basic_string_view(char const* cstr) etc.
 
  */
-DLL Level level_from(std::string_view level);
+DLL auto level_from(std::string_view level) -> Level;
+
+/// Convert a logging severity level to a string.
+DLL auto level_label(Level level) -> std::string_view;
 
 /// Ignore messages less-severe than \p level.
 DLL void set_level(Level level);
+DLL auto get_level() -> Level;
 
-DLL Level get_level();
-
+/// Set the log output target.
 DLL void set_target(std::FILE* target);
-
-DLL std::FILE* get_target();
+DLL auto get_target() -> std::FILE*;
 
 #ifndef ENABLE_LOGGING
 #define ENABLE_LOGGING 0
 #endif
+
+/// Emit a log message.
+template <typename... Args>
+void constexpr print(Level level, fmt::format_string<Args...> const& format, Args&&... args)
+{
+#if ENABLE_LOGGING
+	if (detail::LogLevel >= level) {
+		fmt::print(detail::LogTarget, "{}: {}\n", level_label(level), fmt::format(format, std::forward<Args>(args)...));
+	}
+#else
+	(void) level;
+	(void) format;
+	((void) args, ...);
+#endif
+}
 
 /// Emit an error message.
 template <typename... Args>
 void constexpr error(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
-	if (detail::LogLevel >= Level::Error) {
-		fmt::print(detail::LogTarget, "Error: {}\n", fmt::format(format, std::forward<Args>(args)...));
-	}
+	print(Level::Error, format, std::forward<Args>(args)...);
 #else
 	(void) format;
 	((void) args, ...);
@@ -81,20 +96,11 @@ template <typename... Args>
 void constexpr warning(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
-	if (detail::LogLevel >= Level::Warning) {
-		fmt::print(detail::LogTarget, "Warning: {}\n", fmt::format(format, std::forward<Args>(args)...));
-	}
+	print(Level::Warning, format, std::forward<Args>(args)...);
 #else
 	(void) format;
 	((void) args, ...);
 #endif
-}
-
-/// Emit a warning message.
-template <typename... Args>
-void constexpr warn(Args&&... args)
-{
-	warning(std::forward<Args>(args)...);
 }
 
 /// Emit an informational message.
@@ -102,9 +108,7 @@ template <typename... Args>
 void constexpr info(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
-	if (detail::LogLevel >= Level::Info) {
-		fmt::print(detail::LogTarget, "Info: {}\n", fmt::format(format, std::forward<Args>(args)...));
-	}
+	print(Level::Info, format, std::forward<Args>(args)...);
 #else
 	(void) format;
 	((void) args, ...);
@@ -116,9 +120,7 @@ template <typename... Args>
 void constexpr debug(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
-	if (detail::LogLevel >= Level::Debug) {
-		fmt::print(detail::LogTarget, "Debug: {}\n", fmt::format(format, std::forward<Args>(args)...));
-	}
+	print(Level::Debug, format, std::forward<Args>(args)...);
 #else
 	(void) format;
 	((void) args, ...);
@@ -130,9 +132,7 @@ template <typename... Args>
 void constexpr trace(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
-	if (detail::LogLevel >= Level::Trace) {
-		fmt::print(detail::LogTarget, "Trace: {}\n", fmt::format(format, std::forward<Args>(args)...));
-	}
+	print(Level::Trace, format, std::forward<Args>(args)...);
 #else
 	(void) format;
 	((void) args, ...);
