@@ -1,5 +1,6 @@
-#include <fmt/core.h>
 #include <gtest/gtest.h>
+
+#include <fmt/core.h>
 
 TEST(Link, fmt)
 {

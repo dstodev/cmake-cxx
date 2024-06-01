@@ -60,6 +60,9 @@ DLL auto get_level() -> Level;
 DLL void set_target(std::FILE* target);
 DLL auto get_target() -> std::FILE*;
 
+/// Print all active log levels given the current global log level.
+DLL void print_enabled_levels();
+
 #ifndef ENABLE_LOGGING
 #define ENABLE_LOGGING 0
 #endif

@@ -5,6 +5,8 @@
 #include <cstdio>
 #include <iterator>
 #include <string>
+#include <string_view>
+#include <vector>
 
 namespace project::log {
 
@@ -32,7 +34,7 @@ auto level_from(std::string_view level) -> Level
 	else if (level_lowercase == "info" || level_lowercase == "status") {
 		result = Level::Info;
 	}
-	else if (level_lowercase == "warn" || level_lowercase == "warning") {
+	else if (level_lowercase == "warning" || level_lowercase == "warn") {
 		result = Level::Warning;
 	}
 	else if (level_lowercase == "error") {
@@ -72,6 +74,36 @@ void set_target(std::FILE* target)
 auto get_target() -> std::FILE*
 {
 	return detail::LogTarget;
+}
+
+void print_enabled_levels()
+{
+	std::vector<std::string_view> log_levels;
+
+	auto const append = [&log_levels](log::Level level) { log_levels.emplace_back(level_label(level)); };
+
+	// clang-format off
+	switch (log::get_level()) {
+	case log::Level::Trace:   append(log::Level::Trace);   [[fallthrough]];
+	case log::Level::Debug:   append(log::Level::Debug);   [[fallthrough]];
+	case log::Level::Info:    append(log::Level::Info);    [[fallthrough]];
+	case log::Level::Warning: append(log::Level::Warning); [[fallthrough]];
+	case log::Level::Error:   append(log::Level::Error);   break;
+
+	case log::Level::None: [[fallthrough]];
+	default: append(log::Level::None); break;
+	}
+	// clang-format on
+
+	fmt::print(detail::LogTarget, "Logging: ");
+
+	auto const last_item {std::prev(log_levels.rend())};
+
+	for (auto it {log_levels.rbegin()}; it != last_item; ++it) {
+		fmt::print(detail::LogTarget, "{}, ", *it);
+	}
+
+	fmt::print(detail::LogTarget, "{}\n", *last_item);
 }
 
 }  // namespace project::log
