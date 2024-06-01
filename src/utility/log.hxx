@@ -52,7 +52,7 @@ DLL auto level_from(std::string_view level) -> Level;
 /// Convert a logging severity level to a string.
 DLL auto level_label(Level level) -> std::string_view;
 
-/// Ignore messages less-severe than \p level.
+/// Set the global log level. Ignore messages less-severe than \p level.
 DLL void set_level(Level level);
 DLL auto get_level() -> Level;
 
