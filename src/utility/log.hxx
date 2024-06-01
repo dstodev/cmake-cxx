@@ -69,75 +69,69 @@ DLL void print_enabled_levels();
 
 /// Emit a log message.
 template <typename... Args>
-void print(Level level, fmt::format_string<Args...> const& format, Args&&... args)
+void print(Level level, Args&&... args)
 {
 #if ENABLE_LOGGING
 	if (detail::LogLevel >= level) {
-		fmt::print(detail::LogTarget, "{}: {}\n", level_label(level), fmt::format(format, std::forward<Args>(args)...));
+		fmt::print(detail::LogTarget, "{}: {}\n", level_label(level), fmt::format(std::forward<Args>(args)...));
 	}
 #else
 	(void) level;
-	(void) format;
 	((void) args, ...);
 #endif
 }
 
 /// Emit an error message.
 template <typename... Args>
-void error(fmt::format_string<Args...> const& format, Args&&... args)
+void error(Args&&... args)
 {
 #if ENABLE_LOGGING
-	print(Level::Error, format, std::forward<Args>(args)...);
+	print(Level::Error, std::forward<Args>(args)...);
 #else
-	(void) format;
 	((void) args, ...);
 #endif
 }
 
 /// Emit a warning message.
 template <typename... Args>
-void warning(fmt::format_string<Args...> const& format, Args&&... args)
+void warning(Args&&... args)
 {
 #if ENABLE_LOGGING
-	print(Level::Warning, format, std::forward<Args>(args)...);
+	print(Level::Warning, std::forward<Args>(args)...);
 #else
-	(void) format;
 	((void) args, ...);
 #endif
 }
 
 /// Emit an informational message.
 template <typename... Args>
-void info(fmt::format_string<Args...> const& format, Args&&... args)
+void info(Args&&... args)
 {
 #if ENABLE_LOGGING
-	print(Level::Info, format, std::forward<Args>(args)...);
+	print(Level::Info, std::forward<Args>(args)...);
 #else
-	(void) format;
 	((void) args, ...);
 #endif
 }
 
 /// Emit a debugging message.
 template <typename... Args>
-void debug(fmt::format_string<Args...> const& format, Args&&... args)
+void debug(Args&&... args)
 {
 #if ENABLE_LOGGING
-	print(Level::Debug, format, std::forward<Args>(args)...);
+	print(Level::Debug, std::forward<Args>(args)...);
 #else
-	(void) format;
 	((void) args, ...);
 #endif
 }
 
 /// Emit a trace message.
 template <typename... Args>
-void trace(fmt::format_string<Args...> const& format, Args&&... args)
+void trace(Args&&... args)
 {
 #if ENABLE_LOGGING
-	print(Level::Trace, format, std::forward<Args>(args)...);
+	print(Level::Trace, std::forward<Args>(args)...);
 #else
-	(void) format;
 	((void) args, ...);
 #endif
 }
