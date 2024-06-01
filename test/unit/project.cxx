@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <project.hxx>
-#include <version.h>
 
 TEST(Project, version)
 {

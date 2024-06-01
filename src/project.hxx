@@ -6,8 +6,8 @@
 #include <project_dll-export.h>
 
 // Include all public headers
-#include <deduplicate.hxx>
 #include <log.hxx>
+#include <version.h>
 
 namespace project {
 

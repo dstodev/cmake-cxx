@@ -1,7 +1,5 @@
 #include "project.hxx"
 
-#include <version.h>
-
 namespace project {
 
 auto version() -> std::string_view

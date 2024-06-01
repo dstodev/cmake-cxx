@@ -4,6 +4,8 @@
 #include <iostream>
 #include <optional>
 #include <string>
+#include <string_view>
+#include <vector>
 
 #include <cli.hxx>
 #include <project.hxx>
@@ -18,7 +20,7 @@ void print_enabled_log_levels();
 
 int main(int argc, char const* argv[])
 {
-	Cli const cli {argc, argv};  // Calls std::exit() if CLI error occurs
+	Cli const cli {argc, argv};  // May call std::exit(); see Cli constructor documentation.
 
 #if ENABLE_LOGGING
 	set_log_level(cli.log_level());
@@ -55,28 +57,31 @@ auto get_env_var(char const* name) -> std::optional<std::string>
 
 void print_enabled_log_levels()
 {
+	std::vector<std::string_view> log_levels;
+
+	auto const append = [&log_levels](log::Level level) { log_levels.emplace_back(level_label(level)); };
+
+	// clang-format off
+	switch (log::get_level()) {
+	case log::Level::Trace:   append(log::Level::Trace);   [[fallthrough]];
+	case log::Level::Debug:   append(log::Level::Debug);   [[fallthrough]];
+	case log::Level::Info:    append(log::Level::Info);    [[fallthrough]];
+	case log::Level::Warning: append(log::Level::Warning); [[fallthrough]];
+	case log::Level::Error:   append(log::Level::Error);   break;
+
+	case log::Level::None: [[fallthrough]];
+	default: append(log::Level::None); break;
+	}
+	// clang-format on
+
 	// For consistency with the default log target, print to stderr.
 	std::cerr << "Logging: ";
-	std::vector<char const*> log_levels;
-	switch (log::get_level()) {
-	case log::Level::Trace: log_levels.emplace_back("Trace"); [[fallthrough]];
-	case log::Level::Debug: log_levels.emplace_back("Debug"); [[fallthrough]];
-	case log::Level::Info: log_levels.emplace_back("Info"); [[fallthrough]];
-	case log::Level::Warning: log_levels.emplace_back("Warning"); [[fallthrough]];
-	case log::Level::Error: log_levels.emplace_back("Error"); [[fallthrough]];
-	default:;
+
+	auto const last_item {std::prev(log_levels.rend())};
+	for (auto it {log_levels.rbegin()}; it != last_item; ++it) {
+		std::cerr << *it << ", ";
 	}
-	if (log_levels.empty()) {
-		std::cerr << "None";
-	}
-	else {
-		auto const last_item {std::prev(log_levels.rend())};
-		for (auto it {log_levels.rbegin()}; it != last_item; ++it) {
-			std::cerr << *it << ", ";
-		}
-		std::cerr << *last_item;
-	}
-	std::cerr << std::endl;
+	std::cerr << *last_item << std::endl;
 }
 
 }  // namespace

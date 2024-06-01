@@ -33,7 +33,6 @@ target_compile_options(${target_name}
 set(header_files_to_package
 	"${CMAKE_CURRENT_BINARY_DIR}/version.h"
 	"${CMAKE_CURRENT_LIST_DIR}/project.hxx"
-	"${CMAKE_CURRENT_LIST_DIR}/utility/deduplicate.hxx"
 	"${CMAKE_CURRENT_LIST_DIR}/utility/log.hxx"
 )
 

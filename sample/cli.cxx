@@ -2,7 +2,6 @@
 
 #include <filesystem>
 #include <iostream>
-#include <sstream>
 
 #include <project.hxx>
 
@@ -15,8 +14,6 @@ Cli::Cli(int argc, char const* argv[])
 Cli::Cli(char const* argv_0)
     : _options {basename(argv_0), "My example project using my library"}
 {
-	_options.allow_unrecognised_options();
-
 	// clang-format off
 	_options.add_options()
 		("h,help", "Print usage")
@@ -38,61 +35,34 @@ auto Cli::basename(char const* argv_0) -> char const*
 
 void Cli::parse(int argc, char const* argv[])
 {
-	auto const result {_options.parse(argc, argv)};
-	auto const version_string {"Project " + std::string {project::version()}};
+	cxxopts::ParseResult result {};
 
-	int exit_code {-1};  // <0 means no exit, 0 means exit without error, >0 means exit with error.
+	try {
+		result = _options.parse(argc, argv);
+	} catch (cxxopts::exceptions::parsing const& e) {
+		// If user provides invalid options, print help text, then exit with error.
+		// Since this is an error condition, print to stderr.
+		std::cerr << "Error parsing options:\n\t" << e.what() << "\n\n";
+		std::cerr << _options.help() << std::endl;
+		std::exit(1);
+	}
+
+	auto const version_string {"Project " + std::string {project::version()}};
 
 	// If user provides --help, print version number & help text, then exit without error.
 	if (result.count("help")) {
 		std::cout << version_string << '\n';
 		std::cout << _options.help() << std::endl;
-		exit_code = 0;
+		std::exit(0);
 	}
 
-	// If user provides unrecognized options, print help text then exit with error.
-	// Since this is an error condition, print to stderr.
-	if (!std::empty(result.unmatched())) {
-		_unrecognized_options = project::stable_deduplicate(result.unmatched());
-		std::cerr << format_unrecognized_options();
-		std::cerr << _options.help() << std::endl;
-		exit_code = 1;
-	}
-
-	// If user provides --version, print version number then exit without error.
+	// If user provides --version, print version number, then exit without error.
 	if (result.count("version")) {
 		std::cout << version_string << std::endl;
-		exit_code = 0;
-	}
-
-	if (exit_code >= 0) {
-		std::exit(exit_code);
+		std::exit(0);
 	}
 
 	_result = result;
-}
-
-auto Cli::format_unrecognized_options() const -> std::string
-{
-	std::stringstream result;
-
-	if (!std::empty(_unrecognized_options)) {
-		auto const& last {_unrecognized_options.back()};
-
-		result << "Unrecognized options: ";
-
-		for (auto const& option : _unrecognized_options) {
-			result << option;
-
-			if (&option != &last) {
-				result << ", ";
-			}
-		}
-
-		result << '\n';
-	}
-
-	return result.str();
 }
 
 auto Cli::log_level() const -> std::optional<std::string>

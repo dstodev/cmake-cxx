@@ -1,9 +1,9 @@
 #ifndef LOG_HXX
 #define LOG_HXX
 
-#include <cstdio>
+#include <cstdio>  // for std::FILE
 #include <string_view>
-#include <utility>
+#include <utility>  // for std::forward
 
 #include <fmt/core.h>
 
@@ -66,7 +66,7 @@ DLL auto get_target() -> std::FILE*;
 
 /// Emit a log message.
 template <typename... Args>
-void constexpr print(Level level, fmt::format_string<Args...> const& format, Args&&... args)
+void print(Level level, fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	if (detail::LogLevel >= level) {
@@ -81,7 +81,7 @@ void constexpr print(Level level, fmt::format_string<Args...> const& format, Arg
 
 /// Emit an error message.
 template <typename... Args>
-void constexpr error(fmt::format_string<Args...> const& format, Args&&... args)
+void error(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	print(Level::Error, format, std::forward<Args>(args)...);
@@ -93,7 +93,7 @@ void constexpr error(fmt::format_string<Args...> const& format, Args&&... args)
 
 /// Emit a warning message.
 template <typename... Args>
-void constexpr warning(fmt::format_string<Args...> const& format, Args&&... args)
+void warning(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	print(Level::Warning, format, std::forward<Args>(args)...);
@@ -105,7 +105,7 @@ void constexpr warning(fmt::format_string<Args...> const& format, Args&&... args
 
 /// Emit an informational message.
 template <typename... Args>
-void constexpr info(fmt::format_string<Args...> const& format, Args&&... args)
+void info(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	print(Level::Info, format, std::forward<Args>(args)...);
@@ -117,7 +117,7 @@ void constexpr info(fmt::format_string<Args...> const& format, Args&&... args)
 
 /// Emit a debugging message.
 template <typename... Args>
-void constexpr debug(fmt::format_string<Args...> const& format, Args&&... args)
+void debug(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	print(Level::Debug, format, std::forward<Args>(args)...);
@@ -129,7 +129,7 @@ void constexpr debug(fmt::format_string<Args...> const& format, Args&&... args)
 
 /// Emit a trace message.
 template <typename... Args>
-void constexpr trace(fmt::format_string<Args...> const& format, Args&&... args)
+void trace(fmt::format_string<Args...> const& format, Args&&... args)
 {
 #if ENABLE_LOGGING
 	print(Level::Trace, format, std::forward<Args>(args)...);
