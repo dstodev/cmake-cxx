@@ -12,8 +12,10 @@ Cli::Cli(int argc, char const* argv[])
 }
 
 Cli::Cli(char const* argv_0)
-    : _options {basename(argv_0), "My example project using my library"}
+    : _options {basename(argv_0), "My example project using my library\n"}
 {
+	_options.set_width(80);
+
 	// clang-format off
 	_options.add_options()
 		("h,help", "Print usage")
@@ -40,7 +42,7 @@ void Cli::parse(int argc, char const* argv[])
 	try {
 		result = _options.parse(argc, argv);
 	} catch (cxxopts::exceptions::parsing const& e) {
-		// If user provides invalid options, print help text, then exit with error.
+		// If user provides invalid options: print help text, then exit with error.
 		// Since this is an error condition, print to stderr.
 		std::cerr << "Error parsing options:\n\t" << e.what() << "\n\n";
 		std::cerr << _options.help() << std::endl;
@@ -49,14 +51,14 @@ void Cli::parse(int argc, char const* argv[])
 
 	auto const version_string {"Project " + std::string {project::version()}};
 
-	// If user provides --help, print version number & help text, then exit without error.
+	// If user provides --help: print version number & help text, then exit without error.
 	if (result.count("help")) {
 		std::cout << version_string << '\n';
 		std::cout << _options.help() << std::endl;
 		std::exit(0);
 	}
 
-	// If user provides --version, print version number, then exit without error.
+	// If user provides --version: print version number, then exit without error.
 	if (result.count("version")) {
 		std::cout << version_string << std::endl;
 		std::exit(0);
