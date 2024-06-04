@@ -18,8 +18,7 @@ std::FILE* LogTarget {stderr};  // https://en.cppreference.com/w/cpp/io/c/FILE
 auto level_from(std::string_view level) -> Level
 {
 	std::string level_lowercase;
-	std::string_view it(level);
-	std::transform(it.begin(), it.end(), std::back_inserter(level_lowercase), [](unsigned char c) {
+	std::transform(level.begin(), level.end(), std::back_inserter(level_lowercase), [](unsigned char c) {
 		return static_cast<char>(std::tolower(static_cast<int>(c)));
 	});
 
