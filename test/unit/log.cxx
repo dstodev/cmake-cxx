@@ -231,11 +231,22 @@ TEST_F(Log, level_from_empty)
 TEST_F(Log, level_label)
 {
 	EXPECT_EQ("Error", log::level_label(log::Level::Error));
+	EXPECT_EQ(5, log::level_label(log::Level::Error).size());
+
 	EXPECT_EQ("Warning", log::level_label(log::Level::Warning));
+	EXPECT_EQ(7, log::level_label(log::Level::Warning).size());
+
 	EXPECT_EQ("Info", log::level_label(log::Level::Info));
+	EXPECT_EQ(4, log::level_label(log::Level::Info).size());
+
 	EXPECT_EQ("Debug", log::level_label(log::Level::Debug));
+	EXPECT_EQ(5, log::level_label(log::Level::Debug).size());
+
 	EXPECT_EQ("Trace", log::level_label(log::Level::Trace));
+	EXPECT_EQ(5, log::level_label(log::Level::Trace).size());
+
 	EXPECT_EQ("None", log::level_label(log::Level::None));
+	EXPECT_EQ(4, log::level_label(log::Level::None).size());
 }
 
 TEST_F(Log, set_target)

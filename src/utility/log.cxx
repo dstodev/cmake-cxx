@@ -44,18 +44,6 @@ auto level_from(std::string_view level) -> Level
 	return result;
 }
 
-auto level_label(Level level) -> std::string_view
-{
-	switch (level) {
-	case Level::Error: return "Error";
-	case Level::Warning: return "Warning";
-	case Level::Info: return "Info";
-	case Level::Debug: return "Debug";
-	case Level::Trace: return "Trace";
-	default: return "None";
-	}
-}
-
 void set_level(Level level)
 {
 	detail::LogLevel = level;
@@ -78,32 +66,33 @@ auto get_target() -> std::FILE*
 
 void print_enabled_levels()
 {
-	std::vector<std::string_view> log_levels;
+	auto constexpr error {level_label(Level::Error)};
+	auto constexpr warning {level_label(Level::Warning)};
+	auto constexpr info {level_label(Level::Info)};
+	auto constexpr debug {level_label(Level::Debug)};
+	auto constexpr trace {level_label(Level::Trace)};
+	auto constexpr none {level_label(Level::None)};
 
-	auto const append = [&log_levels](log::Level level) { log_levels.emplace_back(level_label(level)); };
+	std::string levels {fmt::format("{}, {}, {}, {}, {}", error, warning, info, debug, trace)};
 
-	// clang-format off
-	switch (log::get_level()) {
-	case log::Level::Trace:   append(log::Level::Trace);   [[fallthrough]];
-	case log::Level::Debug:   append(log::Level::Debug);   [[fallthrough]];
-	case log::Level::Info:    append(log::Level::Info);    [[fallthrough]];
-	case log::Level::Warning: append(log::Level::Warning); [[fallthrough]];
-	case log::Level::Error:   append(log::Level::Error);   break;
+	auto constexpr error_end {error.size()};
+	auto constexpr warning_end {error_end + warning.size() + 2};  // +2 for ", "
+	auto constexpr info_end {warning_end + info.size() + 2};
+	auto constexpr debug_end {info_end + debug.size() + 2};
+	// auto constexpr trace_end {debug_end + trace.size() + 2};
 
-	case log::Level::None: [[fallthrough]];
-	default: append(log::Level::None); break;
+	char const* msg_ptr {levels.data()};
+
+	switch (detail::LogLevel) {
+	case Level::Error: levels[error_end] = '\0'; break;
+	case Level::Warning: levels[warning_end] = '\0'; break;
+	case Level::Info: levels[info_end] = '\0'; break;
+	case Level::Debug: levels[debug_end] = '\0'; break;
+	case Level::Trace: /* levels[trace_end] = '\0' */; break;  // unnecessary
+	case Level::None: msg_ptr = none.data(); break;
 	}
-	// clang-format on
 
-	fmt::print(detail::LogTarget, "Logging: ");
-
-	auto const last_item {std::prev(log_levels.rend())};
-
-	for (auto it {log_levels.rbegin()}; it != last_item; ++it) {
-		fmt::print(detail::LogTarget, "{}, ", *it);
-	}
-
-	fmt::print(detail::LogTarget, "{}\n", *last_item);
-}
+	fmt::print(detail::LogTarget, "Logging: {}\n", msg_ptr);
+};
 
 }  // namespace project::log

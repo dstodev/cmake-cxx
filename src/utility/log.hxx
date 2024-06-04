@@ -50,7 +50,17 @@ DLL extern std::FILE* LogTarget;
 DLL auto level_from(std::string_view level) -> Level;
 
 /// Convert a logging severity level to a string.
-DLL auto level_label(Level level) -> std::string_view;
+auto constexpr level_label(Level level) -> std::string_view
+{
+	switch (level) {
+	case Level::Error: return "Error";
+	case Level::Warning: return "Warning";
+	case Level::Info: return "Info";
+	case Level::Debug: return "Debug";
+	case Level::Trace: return "Trace";
+	default: return "None";
+	}
+}
 
 /// Set the global log level. Ignore messages less-severe than \p level.
 DLL void set_level(Level level);
