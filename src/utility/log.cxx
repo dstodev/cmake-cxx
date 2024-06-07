@@ -6,7 +6,6 @@
 #include <iterator>
 #include <string>
 #include <string_view>
-#include <vector>
 
 namespace project::log {
 
@@ -65,31 +64,33 @@ auto get_target() -> std::FILE*
 
 void print_enabled_levels()
 {
-	auto constexpr error {level_label(Level::Error)};
+	// clang-format off
+	auto constexpr error   {level_label(Level::Error)};
 	auto constexpr warning {level_label(Level::Warning)};
-	auto constexpr info {level_label(Level::Info)};
-	auto constexpr debug {level_label(Level::Debug)};
-	auto constexpr trace {level_label(Level::Trace)};
-	auto constexpr none {level_label(Level::None)};
+	auto constexpr info    {level_label(Level::Info)};
+	auto constexpr debug   {level_label(Level::Debug)};
+	auto constexpr trace   {level_label(Level::Trace)};
+	auto constexpr none    {level_label(Level::None)};
 
 	std::string levels {fmt::format("{}, {}, {}, {}, {}", error, warning, info, debug, trace)};
 
-	auto constexpr error_end {error.size()};
-	auto constexpr warning_end {error_end + warning.size() + 2};  // +2 for ", "
-	auto constexpr info_end {warning_end + info.size() + 2};
-	auto constexpr debug_end {info_end + debug.size() + 2};
-	// auto constexpr trace_end {debug_end + trace.size() + 2};
+	auto constexpr error_end    {              error.size()      };
+	auto constexpr warning_end  {error_end   + warning.size() + 2};  // +2 for ", "
+	auto constexpr info_end     {warning_end + info.size()    + 2};
+	auto constexpr debug_end    {info_end    + debug.size()   + 2};
+	// auto constexpr trace_end {debug_end   + trace.size()   + 2};
 
 	char const* msg_ptr {levels.data()};
 
 	switch (detail::LogLevel) {
-	case Level::Error: levels[error_end] = '\0'; break;
+	case Level::Error:   levels[error_end]   = '\0'; break;
 	case Level::Warning: levels[warning_end] = '\0'; break;
-	case Level::Info: levels[info_end] = '\0'; break;
-	case Level::Debug: levels[debug_end] = '\0'; break;
-	case Level::Trace: /* levels[trace_end] = '\0' */; break;  // unnecessary
+	case Level::Info:    levels[info_end]    = '\0'; break;
+	case Level::Debug:   levels[debug_end]   = '\0'; break;
+	case Level::Trace: /* levels[trace_end] = '\0' */; break;
 	case Level::None: msg_ptr = none.data(); break;
 	}
+	// clang-format on
 
 	fmt::print(detail::LogTarget, "Logging: {}\n", msg_ptr);
 };

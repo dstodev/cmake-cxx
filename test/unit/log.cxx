@@ -12,6 +12,8 @@ class Log : public ::testing::Test
 protected:
 	void SetUp() override
 	{
+		// These tests change and depend on the global log level,
+		// so lock a mutex between tests to prevent interference.
 		_mutex.lock();
 		log::set_target(stderr);
 		log::set_level(log::Level::None);

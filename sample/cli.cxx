@@ -12,7 +12,9 @@ Cli::Cli(int argc, char const* argv[])
 }
 
 Cli::Cli(char const* argv_0)
-    : _options {basename(argv_0), "My example project using my library\n"}
+    : _program_name {}
+    , _options {basename(argv_0), "My example application using my library\n"}
+    , _result {}
 {
 	_options.set_width(80);
 
