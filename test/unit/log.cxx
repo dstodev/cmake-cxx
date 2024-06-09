@@ -5,6 +5,10 @@
 
 using namespace project;
 
+#include <mutex>
+
+static std::mutex Mutex;
+
 class Log : public ::testing::Test
 {
 protected:
@@ -17,6 +21,7 @@ protected:
 
 TEST_F(Log, error)
 {
+	std::lock_guard<std::mutex> lock {Mutex};
 	log::set_level(log::Level::Error);
 	ASSERT_EQ(log::Level::Error, log::get_level());
 	::testing::internal::CaptureStderr();
