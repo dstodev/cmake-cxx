@@ -1,37 +1,17 @@
 #include <gtest/gtest.h>
 
-#include <mutex>
-
 #define ENABLE_LOGGING 1
 #include <log.hxx>
 
 using namespace project;
-
-#if !GTEST_IS_THREADSAFE
-#error "test"
-#endif
-
-auto mutex_ref() -> std::mutex&
-{
-	static std::mutex mutex {};
-	return mutex;
-}
 
 class Log : public ::testing::Test
 {
 protected:
 	void SetUp() override
 	{
-		// These tests change and depend on the global log level,
-		// so lock a mutex between tests to prevent interference.
-		mutex_ref().lock();
 		log::set_target(stderr);
 		log::set_level(log::Level::None);
-	}
-
-	void TearDown() override
-	{
-		mutex_ref().unlock();
 	}
 };
 
