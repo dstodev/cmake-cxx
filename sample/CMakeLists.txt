@@ -45,9 +45,9 @@ include(project-config)
 set(CMAKE_MSVCIDE_RUN_PATH "${package_root}/bin")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE STRING "MSVC runtime")
 
-set(target_name main)
+set(target main)
 
-add_executable(${target_name})
+add_executable(${target})
 
 include(sources.cmake)
 
@@ -58,6 +58,6 @@ target_link_libraries(main
 )
 
 add_custom_target(run
-	COMMAND ${target_name} > ${target_name}.txt
-	COMMAND ${CMAKE_COMMAND} -E cat ${target_name}.txt
+	COMMAND ${target} > ${target}.txt
+	COMMAND ${CMAKE_COMMAND} -E cat ${target}.txt
 )
