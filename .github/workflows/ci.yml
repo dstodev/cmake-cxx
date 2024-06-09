@@ -44,7 +44,7 @@ on:
 env:
   # Defaults
   DEFAULT_BUILD_TYPE: 'Release'
-  DEFAULT_JOB_FILTER: 'windows'
+  DEFAULT_JOB_FILTER: ''
   DEFAULT_LOG_LEVEL: 'info'
   DEFAULT_VERBOSE: false
 
