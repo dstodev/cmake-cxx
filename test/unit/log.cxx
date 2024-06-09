@@ -27,7 +27,7 @@ protected:
 	static std::mutex _mutex;
 };
 
-std::mutex Log::_mutex {};
+std::mutex Log::_mutex;
 
 TEST_F(Log, error)
 {

@@ -65,19 +65,19 @@ auto get_target() -> std::FILE*
 void print_enabled_levels()
 {
 	// clang-format off
-	auto constexpr error   {level_label(Level::Error)};
-	auto constexpr warning {level_label(Level::Warning)};
-	auto constexpr info    {level_label(Level::Info)};
-	auto constexpr debug   {level_label(Level::Debug)};
-	auto constexpr trace   {level_label(Level::Trace)};
-	auto constexpr none    {level_label(Level::None)};
+	static auto constexpr error   {level_label(Level::Error)};
+	static auto constexpr warning {level_label(Level::Warning)};
+	static auto constexpr info    {level_label(Level::Info)};
+	static auto constexpr debug   {level_label(Level::Debug)};
+	static auto constexpr trace   {level_label(Level::Trace)};
+	static auto constexpr none    {level_label(Level::None)};
 
 	std::string levels {fmt::format("{}, {}, {}, {}, {}", error, warning, info, debug, trace)};
 
-	auto constexpr error_end    {              error.size()      };
-	auto constexpr warning_end  {error_end   + warning.size() + 2};  // +2 for ", "
-	auto constexpr info_end     {warning_end + info.size()    + 2};
-	auto constexpr debug_end    {info_end    + debug.size()   + 2};
+	static auto constexpr error_end    {              error.size()      };
+	static auto constexpr warning_end  {error_end   + warning.size() + 2};  // +2 for ", "
+	static auto constexpr info_end     {warning_end + info.size()    + 2};
+	static auto constexpr debug_end    {info_end    + debug.size()   + 2};
 	// auto constexpr trace_end {debug_end   + trace.size()   + 2};
 
 	char const* msg_ptr {levels.data()};
@@ -87,7 +87,7 @@ void print_enabled_levels()
 	case Level::Warning: levels[warning_end] = '\0'; break;
 	case Level::Info:    levels[info_end]    = '\0'; break;
 	case Level::Debug:   levels[debug_end]   = '\0'; break;
-	case Level::Trace: /* levels[trace_end] = '\0' */; break;
+	case Level::Trace: /* levels[trace_end] = '\0'; */ break;
 	case Level::None: msg_ptr = none.data(); break;
 	}
 	// clang-format on
