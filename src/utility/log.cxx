@@ -10,7 +10,7 @@
 namespace project::log {
 
 namespace detail {
-auto LogLevel {Level::Info};
+Level LogLevel {Level::Info};
 std::FILE* LogTarget {stderr};  // https://en.cppreference.com/w/cpp/io/c/FILE
 }  // namespace detail
 
