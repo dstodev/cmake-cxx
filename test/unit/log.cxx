@@ -7,6 +7,12 @@
 
 using namespace project;
 
+auto mutex_ref() -> std::mutex&
+{
+	static std::mutex mutex {};
+	return mutex;
+}
+
 class Log : public ::testing::Test
 {
 protected:
@@ -14,20 +20,16 @@ protected:
 	{
 		// These tests change and depend on the global log level,
 		// so lock a mutex between tests to prevent interference.
-		_mutex.lock();
+		mutex_ref().lock();
 		log::set_target(stderr);
 		log::set_level(log::Level::None);
 	}
 
 	void TearDown() override
 	{
-		_mutex.unlock();
+		mutex_ref().unlock();
 	}
-
-	static std::mutex _mutex;
 };
-
-std::mutex Log::_mutex {};
 
 TEST_F(Log, error)
 {
