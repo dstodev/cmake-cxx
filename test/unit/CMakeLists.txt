@@ -4,7 +4,7 @@ find_package(Threads)
 
 if(Threads_FOUND)
 	message(DEBUG "Linking ${target} to Threads library")
-	set(Threads_lib Threads::Threads)
+	log_vars(CMAKE_THREAD_LIBS_INIT)
 endif()
 
 add_google_executable(${target}
@@ -14,7 +14,7 @@ add_google_executable(${target}
 
 	LIBRARIES
 		project
-		${Threads_lib}
+		${CMAKE_THREAD_LIBS_INIT}
 )
 
 add_local_all_target(all-unit)
