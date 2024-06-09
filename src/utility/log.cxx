@@ -93,6 +93,6 @@ void print_enabled_levels()
 	// clang-format on
 
 	fmt::print(detail::LogTarget, "Logging: {}\n", msg_ptr);
-};
+}
 
 }  // namespace project::log
