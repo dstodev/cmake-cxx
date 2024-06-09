@@ -7,6 +7,10 @@
 
 using namespace project;
 
+#if !GTEST_IS_THREADSAFE
+#error "test"
+#endif
+
 auto mutex_ref() -> std::mutex&
 {
 	static std::mutex mutex {};
