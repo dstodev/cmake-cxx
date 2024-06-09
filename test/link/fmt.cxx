@@ -4,6 +4,6 @@
 
 TEST(Link, fmt)
 {
-	fmt::format_string<char> o {""};
+	fmt::format_string<char> const o {""};
 	(void) o;
 }

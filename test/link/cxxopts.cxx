@@ -4,6 +4,6 @@
 
 TEST(Link, cxxopts)
 {
-	cxxopts::String str;
+	cxxopts::String const str;
 	(void) str;
 }

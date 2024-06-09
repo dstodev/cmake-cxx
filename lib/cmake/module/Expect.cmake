@@ -13,7 +13,7 @@ include_guard()
 	----------
 
 	expr :
-		Expression to test. Can use the same way as if(), e.g. expect("" IN_LIST mylist)
+		Expression to test. Can use the same way as if(), e.g. expect("" IN_LIST my_list)
 
 
 	Options
@@ -61,11 +61,11 @@ include_guard()
 
 	If an assertion fails, you will see a message e.g.:
 
-	set(myvar 10)
-	expect(myvar EQUAL 11)
+	set(my_var 10)
+	expect(my_var EQUAL 11)
 
 	>  CMake Warning (dev) at lib/cmake/module/Expect.cmake:178:EVAL:1 (message):
-	>     expect(myvar EQUAL 11) failed!
+	>     expect(my_var EQUAL 11) failed!
 	>     Search call stack for: (expect)
 	>  Call Stack (most recent call first):
 	>    lib/cmake/module/Expect.cmake:178 (cmake_language)
@@ -75,11 +75,11 @@ include_guard()
 	showing the assertion failed in CMakeLists.txt at line 97.
 
 	Notice the message shows the expect() expression verbatim, above showing the
-	name of the variable (myvar). To log the value of myvar instead, use a normal
+	name of the variable (my_var). To log the value of my_var instead, use a normal
 	variable expansion:
 
-	set(myvar 10)
-	expect(${myvar} EQUAL 11)
+	set(my_var 10)
+	expect(${my_var} EQUAL 11)
 
 	>  expect(10 EQUAL 11) failed!
 	>  Search call stack for: (expect)
@@ -92,10 +92,10 @@ include_guard()
 		expect_test_preamble()  # Always call before expect() tests so they run only once
 
 		function(test_example)
-			set(mylist "1;2")
-			expect(1 IN_LIST mylist)
-			expect(2 IN_LIST mylist)
-			expect(NOT 3 IN_LIST mylist)
+			set(my_list "1;2")
+			expect(1 IN_LIST my_list)
+			expect(2 IN_LIST my_list)
+			expect(NOT 3 IN_LIST my_list)
 		endfunction()
 		test_example()
 
@@ -178,7 +178,7 @@ function(expect)
 	string(REPLACE "\;" ";" expr "${argv}")  # Un-escape semicolons after separating for if()
 
 	#[[
-		Use cmake_langauge(EVAL CODE) to support wrapping arguments in quotes.
+		Use cmake_language(EVAL CODE) to support wrapping arguments in quotes.
 		Cannot use quote literals \"\" because they are interpreted as string
 		elements, not CMake syntax.
 		Cannot otherwise inject quotes around arguments.
@@ -353,38 +353,38 @@ function(test_expect)
 	expect(${not} "\";\"" STREQUAL "\";\"")
 	expect(${negate} "\";\"" STREQUAL ";")
 
-	set(mylist ";;1;2; ; 3;;")  # trailing semicolon puts empty string i.e. "" at end
-	list(LENGTH mylist len)
+	set(my_list ";;1;2; ; 3;;")  # trailing semicolon puts empty string i.e. "" at end
+	list(LENGTH my_list len)
 	expect(${not} ${len} EQUAL 8)
 
-	expect(${not} 1 IN_LIST mylist)
-	expect(${not} 2 IN_LIST mylist)
-	expect(${not} "" IN_LIST mylist)
-	expect(${not} " " IN_LIST mylist)
-	expect(${not} " 3" IN_LIST mylist)
-	expect(${negate} 3 IN_LIST mylist)
-	expect(${not} mylist STREQUAL ";;1;2; ; 3;;")
-	expect(${not} mylist STREQUAL "${mylist}")
+	expect(${not} 1 IN_LIST my_list)
+	expect(${not} 2 IN_LIST my_list)
+	expect(${not} "" IN_LIST my_list)
+	expect(${not} " " IN_LIST my_list)
+	expect(${not} " 3" IN_LIST my_list)
+	expect(${negate} 3 IN_LIST my_list)
+	expect(${not} my_list STREQUAL ";;1;2; ; 3;;")
+	expect(${not} my_list STREQUAL "${my_list}")
 
-	set(mylist ";\;;\;;")
-	list(LENGTH mylist len)
+	set(my_list ";\;;\;;")
+	list(LENGTH my_list len)
 	expect(${not} ${len} EQUAL 4)
 
-	expect(${not} "${mylist}" STREQUAL ";\;;\;;")
-	expect(${not} ";" IN_LIST mylist)
-	expect(${not} "" IN_LIST mylist)
+	expect(${not} "${my_list}" STREQUAL ";\;;\;;")
+	expect(${not} ";" IN_LIST my_list)
+	expect(${not} "" IN_LIST my_list)
 
-	set(mylist "; ;  ;   ")
-	list(LENGTH mylist len)
+	set(my_list "; ;  ;   ")
+	list(LENGTH my_list len)
 	expect(${not} ${len} EQUAL 4)
 
-	expect(${not} "" IN_LIST mylist)
-	expect(${not} " " IN_LIST mylist)
-	expect(${not} "  " IN_LIST mylist)
-	expect(${not} "   " IN_LIST mylist)
-	expect(${negate} "    " IN_LIST mylist)
-	expect(${not} mylist STREQUAL "; ;  ;   ")
-	expect(${negate} "${mylist}" STREQUAL "   ;  ; ;")
+	expect(${not} "" IN_LIST my_list)
+	expect(${not} " " IN_LIST my_list)
+	expect(${not} "  " IN_LIST my_list)
+	expect(${not} "   " IN_LIST my_list)
+	expect(${negate} "    " IN_LIST my_list)
+	expect(${not} my_list STREQUAL "; ;  ;   ")
+	expect(${negate} "${my_list}" STREQUAL "   ;  ; ;")
 endfunction()
 test_expect()
 

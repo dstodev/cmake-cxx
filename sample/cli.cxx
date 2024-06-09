@@ -5,7 +5,7 @@
 
 #include <project.hxx>
 
-Cli::Cli(int argc, char const* argv[])
+Cli::Cli(int const argc, char const* argv[])
     : Cli {argv[0]}
 {
 	parse(argc, argv);
@@ -37,7 +37,7 @@ auto Cli::basename(char const* argv_0) -> char const*
 	return _program_name.c_str();
 }
 
-void Cli::parse(int argc, char const* argv[])
+void Cli::parse(int const argc, char const* argv[])
 {
 	cxxopts::ParseResult result {};
 

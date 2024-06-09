@@ -15,7 +15,7 @@ void set_log_level(std::optional<std::string> const& cli_level = std::nullopt);
 auto get_env_var(char const* name) -> std::optional<std::string>;
 }  // namespace
 
-int main(int argc, char const* argv[])
+int main(int const argc, char const* argv[])
 {
 	Cli const cli {argc, argv};  // May call std::exit(); see Cli constructor documentation.
 

@@ -10,18 +10,18 @@
 namespace project::log {
 
 namespace detail {
-Level LogLevel {Level::Info};
+auto LogLevel {Level::Info};
 std::FILE* LogTarget {stderr};  // https://en.cppreference.com/w/cpp/io/c/FILE
 }  // namespace detail
 
-auto level_from(std::string_view level) -> Level
+auto level_from(std::string_view const level) -> Level
 {
 	std::string level_lowercase;
-	std::transform(level.begin(), level.end(), std::back_inserter(level_lowercase), [](unsigned char c) {
-		return static_cast<char>(std::tolower(static_cast<int>(c)));
+	std::transform(level.begin(), level.end(), std::back_inserter(level_lowercase), [](unsigned char const c) {
+		return static_cast<char>(std::tolower(c));
 	});
 
-	Level result {Level::None};
+	auto result {Level::None};
 
 	if (level_lowercase == "trace") {
 		result = Level::Trace;
@@ -42,7 +42,7 @@ auto level_from(std::string_view level) -> Level
 	return result;
 }
 
-void set_level(Level level)
+void set_level(Level const level)
 {
 	detail::LogLevel = level;
 }

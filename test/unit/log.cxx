@@ -179,7 +179,7 @@ TEST_F(Log, none)
 
 TEST_F(Log, level_default_none)
 {
-	log::Level const level {};
+	log::Level constexpr level {};
 	EXPECT_EQ(log::Level::None, level);
 }
 

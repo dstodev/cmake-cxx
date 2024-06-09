@@ -125,11 +125,11 @@ endfunction()
 test_balanced_match_two_nested()
 
 function(test_balanced_match_no_match)
-	set(input "some(thingelse")
+	set(input "some(thing else")
 	balanced_match(out "(" ")" "${input}")
 	expect(NOT DEFINED out)
 
-	set(input "something)else")
+	set(input "some thing)else")
 	balanced_match(out "(" ")" "${input}")
 	expect(NOT DEFINED out)
 endfunction()
