@@ -1,8 +1,8 @@
 include_guard()
 
 #[[
-	string_capitalize(input_string result) uppercases the first letter of input_string,
-	lowercases all other letters, then stores the result in result.
+	string_capitalize(in_string out_var) uppercases the first letter of in_string,
+	lowercases all other letters, then stores the result in ${out_var}.
 ]]
 function(string_capitalize in_string out_var)
 	string(SUBSTRING ${in_string} 0 1 first_letter)

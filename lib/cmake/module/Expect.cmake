@@ -6,7 +6,8 @@ include_guard()
 
 #[[
 	expect(expr...) asserts that expr evaluates TRUE. If expr instead evaluates FALSE, then
-	the expect() call "fails", and a warning message is immediately emitted.
+	the expect() call "fails", and immediately emits a warning message.
+	When configuration completes, failures are counted and expressed by message(FATAL_ERROR).
 
 
 	Parameters
@@ -25,12 +26,11 @@ include_guard()
 		Still emits a warning message on failure.
 
 	REQUIRED :
-		If provided and expect() fails, emits message(FATAL_ERROR) immediately
-		instead of a warning.
+		If provided and expect() fails, emits message(FATAL_ERROR) immediately.
 		Because it emits FATAL_ERROR immediately, SAFE has no effect.
 
 	MESSAGE "custom-error-message" :
-		If provided and expect() fails, custom-error-message emits instead of the
+		If provided and expect() fails, emits custom-error-message instead of the
 		default warning message.
 
 
@@ -50,12 +50,10 @@ include_guard()
 		include(Expect)
 		expect(CMAKE_BUILD_TYPE MATCHES "Debug|Release")
 
-	If any expect() call fails, emits message(FATAL_ERROR) once the CMake directory
-	which first includes this module finishes configuring. For this reason, developers
-	should first include this module near the top of the top-level CMakeLists.txt.
-
-	Once the CMake directory which first includes this module finishes configuring,
-	emits a message conveying the total number of expect() calls.
+	Once the CMake directory which includes this module finishes configuring,
+	emits a message conveying the total number of expect() calls, or message(FATAL_ERROR)
+	if any expect() call failed. For this reason, developers should include this
+	module near the top of the top-level CMakeLists.txt.
 
 	-- expect() output
 
@@ -72,7 +70,8 @@ include_guard()
 	>    CMakeLists.txt:97 (expect)
 
 	Developers are encouraged to search the call stack for (expect), here
-	showing the assertion failed in CMakeLists.txt at line 97.
+	showing the assertion failed in CMakeLists.txt at line 97. This is a language
+	limitation, as the calling line number is not available to this module.
 
 	Notice the message shows the expect() expression verbatim, above showing the
 	name of the variable (my_var). To log the value of my_var instead, use a normal
@@ -80,11 +79,12 @@ include_guard()
 
 	set(my_var 10)
 	expect(${my_var} EQUAL 11)
+	       ^^      ^
 
 	>  expect(10 EQUAL 11) failed!
 	>  Search call stack for: (expect)
 
-	-- Using expect() to unit test CMake code:
+	-- Using expect() to test CMake code:
 
 	Using a simple idiom, developers may test CMake code:
 
@@ -100,12 +100,12 @@ include_guard()
 		test_example()
 
 	Developers should call expect_test_preamble() before expect() tests so the tests
-	run only once when modules calling expect() are, for example, included more than
-	once. For each file using expect(), this guard should come before the first call
-	to expect(), but only once.
+	run only once when modules calling expect() are e.g. included more than once.
+	For each file testing with expect(), this preamble must be evaluated before
+	running the first test calling expect(), but only one preamble is necessary per file.
 
 	If module developers do not call expect_test_preamble() before expect() tests, then
-	printed metrics (number of expect() pass/fail) are invalid; some calls may or may not
+	printed metrics (number of expect() passes/fails) are invalid: some calls may or may not
 	run multiple times, counting as multiple pass/fails.
 
 	When used as suggested, expect() tests run every CMake configure. This means CMake code
@@ -330,9 +330,10 @@ function(test_expect)
 	set(check_output FALSE)
 
 	if(check_output)
+		# Keyword for intentional failure case
 		set(not NOT)
 	else()
-		# Keyword for normal case
+		# Keyword for normally-negated case
 		set(negate NOT)
 	endif()
 

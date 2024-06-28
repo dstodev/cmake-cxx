@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS 1
-
 #include <cstdlib>  // for std::getenv
+#undef _CRT_SECURE_NO_WARNINGS
+
 #include <iostream>
 #include <optional>
 #include <string>
@@ -53,5 +54,3 @@ auto get_env_var(char const* name) -> std::optional<std::string>
 }
 
 }  // namespace
-
-#undef _CRT_SECURE_NO_WARNINGS

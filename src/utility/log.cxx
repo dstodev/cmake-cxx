@@ -65,20 +65,21 @@ auto get_target() -> std::FILE*
 void print_enabled_levels()
 {
 	// clang-format off
-	static auto constexpr error   {level_label(Level::Error)};
-	static auto constexpr warning {level_label(Level::Warning)};
-	static auto constexpr info    {level_label(Level::Info)};
-	static auto constexpr debug   {level_label(Level::Debug)};
-	static auto constexpr trace   {level_label(Level::Trace)};
-	static auto constexpr none    {level_label(Level::None)};
+	auto constexpr error   {level_label(Level::Error)};
+	auto constexpr warning {level_label(Level::Warning)};
+	auto constexpr info    {level_label(Level::Info)};
+	auto constexpr debug   {level_label(Level::Debug)};
+	auto constexpr trace   {level_label(Level::Trace)};
+	auto constexpr none    {level_label(Level::None)};
 
 	std::string levels {fmt::format("{}, {}, {}, {}, {}", error, warning, info, debug, trace)};
 
-	static auto constexpr error_end    {              error.size()      };
-	static auto constexpr warning_end  {error_end   + warning.size() + 2};  // +2 for ", "
-	static auto constexpr info_end     {warning_end + info.size()    + 2};
-	static auto constexpr debug_end    {info_end    + debug.size()   + 2};
-	// auto constexpr trace_end {debug_end   + trace.size()   + 2};
+	auto constexpr delimiter_size = 2;  // size of ", "
+
+	auto constexpr error_end    { /* no leading delimiter */    error.size()  };
+	auto constexpr warning_end  {error_end   + delimiter_size + warning.size()};
+	auto constexpr info_end     {warning_end + delimiter_size + info.size()   };
+	auto constexpr debug_end    {info_end    + delimiter_size + debug.size()  };
 
 	char const* msg_ptr {levels.data()};
 
@@ -87,7 +88,7 @@ void print_enabled_levels()
 	case Level::Warning: levels[warning_end] = '\0'; break;
 	case Level::Info:    levels[info_end]    = '\0'; break;
 	case Level::Debug:   levels[debug_end]   = '\0'; break;
-	case Level::Trace: /* levels[trace_end] = '\0'; */ break;
+	case Level::Trace: break;  // print full message
 	case Level::None: msg_ptr = none.data(); break;
 	}
 	// clang-format on
