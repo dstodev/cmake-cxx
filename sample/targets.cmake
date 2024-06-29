@@ -21,10 +21,14 @@ set(target "app-console")
 
 add_executable(${target})
 
-include(${source_dir}/sources.cmake)
+include("${source_dir}/sources.cmake")
 
 target_link_libraries(${target}
 	PRIVATE
 		project
 		cxxopts::cxxopts
 )
+
+unset(binary_dir)
+unset(source_dir)
+unset(target)

@@ -19,3 +19,5 @@ target_include_directories(${target}
 	PRIVATE
 		${CMAKE_CURRENT_LIST_DIR}
 )
+
+unset(source_dir)

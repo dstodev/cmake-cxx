@@ -30,7 +30,8 @@ include(Expect)
 expect_test_preamble()
 
 function(test_line_number_match_text)
-	set(pattern "function\\(test_line_number_match_text\\)")
+	# Would match pattern line too, but the first match is the function name.
+	set(pattern "test_line_number_match_text")
 	set(line ${CMAKE_CURRENT_FUNCTION_LIST_LINE})
 	set(file "${CMAKE_CURRENT_FUNCTION_LIST_FILE}")
 
@@ -42,13 +43,13 @@ endfunction()
 test_line_number_match_text()
 
 function(test_line_number_match_regex)
-	set(pattern "function\\(test_line_number_match_r[a-z]+\\)")
+	set(pattern "test_line_number_match_r[a-z]+")
 	set(line ${CMAKE_CURRENT_FUNCTION_LIST_LINE})
 	set(file "${CMAKE_CURRENT_FUNCTION_LIST_FILE}")
 
 	line_number(line_number ${file} "${pattern}")
 
-	expect(44 EQUAL ${line_number})
+	expect(45 EQUAL ${line_number})
 	expect(${line} EQUAL ${line_number})
 endfunction()
 test_line_number_match_regex()

@@ -77,6 +77,10 @@ macro(help_parse_arguments prefix options one_value_keywords multi_value_keyword
 		"${multi_value_keywords}"
 	)
 
+	unset(_num_argv)
+	unset(_num_argn)
+	unset(_expected_args_offset)
+
 	############################################################################################
 
 	#[[

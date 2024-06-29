@@ -42,3 +42,12 @@ endforeach()
 
 list(SORT dependency_targets)
 log_vars(dependency_targets MODE DEBUG)  # log remaining dependency targets
+
+unset(before_dependencies)
+unset(dependency_alias_names)
+unset(dependency_alias_targets)
+unset(dependency_targets)
+unset(dir)
+unset(name)
+unset(target)
+unset(unordered_dependencies)

@@ -1,7 +1,7 @@
 include_guard()
 
 #[[
-	CMake does not provide a way to detect library aliases.
+	CMake does not provide a way to detect library target aliases.
 	Instead, override add_library() to record alias definitions.
 
 	This is a heavy-handed approach--may only override add_library() once.
@@ -45,7 +45,7 @@ function(add_library)
 		_record_alias(${alias_name} ${alias_target})
 	endif()
 
-	_add_library(${ARGN})
+	_add_library(${ARGN})  # Forward all arguments to normal add_library() unchanged
 endfunction()
 
 function(_record_alias alias_name alias_target)

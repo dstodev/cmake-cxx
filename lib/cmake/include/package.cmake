@@ -57,3 +57,8 @@ install(EXPORT ${export_name}
 	DESTINATION cmake
 	NAMESPACE project::
 )
+
+unset(export_name)
+unset(release_runtimes)
+unset(debug_runtimes)
+unset(file_content)
