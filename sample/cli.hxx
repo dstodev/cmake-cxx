@@ -13,8 +13,8 @@ public:
 
 	    Calls @c std::exit() if user provides:
 	    @li invalid options: print error message & help text, then exit with error.
-	    @li @c --help print version number & help text, then exit without error.
-	    @li @c --version print version number, then exit without error.
+	    @li @c --help : print version number & help text, then exit without error.
+	    @li @c --version : print version number, then exit without error.
 	 */
 	Cli(int argc, char const* argv[]);
 

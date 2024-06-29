@@ -29,8 +29,8 @@ endfunction()
 include(Expect)
 expect_test_preamble()
 
-function(test_line_number)
-	set(pattern "function\\(test_line_number\\)")
+function(test_line_number_match_text)
+	set(pattern "function\\(test_line_number_match_text\\)")
 	set(line ${CMAKE_CURRENT_FUNCTION_LIST_LINE})
 	set(file "${CMAKE_CURRENT_FUNCTION_LIST_FILE}")
 
@@ -39,4 +39,31 @@ function(test_line_number)
 	expect(32 EQUAL ${line_number})
 	expect(${line} EQUAL ${line_number})
 endfunction()
-test_line_number()
+test_line_number_match_text()
+
+function(test_line_number_match_regex)
+	set(pattern "function\\(test_line_number_match_r[a-z]+\\)")
+	set(line ${CMAKE_CURRENT_FUNCTION_LIST_LINE})
+	set(file "${CMAKE_CURRENT_FUNCTION_LIST_FILE}")
+
+	line_number(line_number ${file} "${pattern}")
+
+	expect(44 EQUAL ${line_number})
+	expect(${line} EQUAL ${line_number})
+endfunction()
+test_line_number_match_regex()
+
+function(test_line_number_no_match)
+	# The pattern must not exist in its full form in this file, since this test
+	# is specifically testing the non-match case.
+	# If the full pattern is expressed in one string, the function would match
+	# on the pattern line itself.
+	set(not_match "not-match")
+	set(pattern "this-will-${not_match}")
+	set(file "${CMAKE_CURRENT_FUNCTION_LIST_FILE}")
+
+	line_number(line_number ${file} "${pattern}")
+
+	expect(-1 EQUAL ${line_number})
+endfunction()
+test_line_number_no_match()

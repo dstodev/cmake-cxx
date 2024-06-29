@@ -5,7 +5,7 @@ include(SortListByLength)
 #[[
 	Given two strings string1 and string2, and a character to align on, prepends
 	spaces to string1 or string2 until they align on the first occurrence of the
-	character.
+	align character.
 ]]
 function(align_strings string1 string2 align)
 	string(FIND "${${string1}}" "${align}" index1)

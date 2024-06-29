@@ -2,6 +2,7 @@
 
 #define ENABLE_LOGGING 1
 #include <log.hxx>
+#undef ENABLE_LOGGING
 
 using namespace project;
 
@@ -323,5 +324,3 @@ TEST_F(Log, print_enabled_levels_stdout_none)
 	std::string const result = ::testing::internal::GetCapturedStdout();
 	ASSERT_TRUE(result.find("Logging: None\n") != std::string::npos);
 }
-
-#undef ENABLE_LOGGING
