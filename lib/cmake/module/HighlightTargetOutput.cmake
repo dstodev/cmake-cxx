@@ -17,5 +17,6 @@ function(highlight_target_output target)
 	add_custom_command(TARGET ${target} POST_BUILD
 		COMMAND ${CMAKE_COMMAND} -E echo "${out_path}"
 		COMMAND ${CMAKE_COMMAND} -E echo "${out_dir}"
+		VERBATIM
 	)
 endfunction()

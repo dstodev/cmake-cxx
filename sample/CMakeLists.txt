@@ -60,4 +60,5 @@ target_link_libraries(main
 add_custom_target(run
 	COMMAND ${target} > ${target}.txt
 	COMMAND ${CMAKE_COMMAND} -E cat ${target}.txt
+	VERBATIM
 )
