@@ -65,12 +65,12 @@ auto get_target() -> std::FILE*
 void print_enabled_levels()
 {
 	// clang-format off
-	auto constexpr error   {level_label(Level::Error)};
-	auto constexpr warning {level_label(Level::Warning)};
-	auto constexpr info    {level_label(Level::Info)};
-	auto constexpr debug   {level_label(Level::Debug)};
-	auto constexpr trace   {level_label(Level::Trace)};
-	auto constexpr none    {level_label(Level::None)};
+	static auto constexpr error   {level_label(Level::Error)};
+	static auto constexpr warning {level_label(Level::Warning)};
+	static auto constexpr info    {level_label(Level::Info)};
+	static auto constexpr debug   {level_label(Level::Debug)};
+	static auto constexpr trace   {level_label(Level::Trace)};
+	static auto constexpr none    {level_label(Level::None)};
 
 	std::string levels {fmt::format("{}, {}, {}, {}, {}", error, warning, info, debug, trace)};
 
