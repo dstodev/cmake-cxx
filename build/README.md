@@ -5,7 +5,7 @@ different directories without interfering with each other:
 
 ```text
 build
- ┼ clion-debug
+ ├ clion-debug
  ├ clion-default
  ├ clion-release
  ├ compose-build  
